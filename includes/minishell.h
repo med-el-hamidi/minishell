@@ -22,7 +22,7 @@ void	shell_loop(t_shell *shell);
 void	cleanup_shell(t_shell *shell);
 
 /* Error functions*/
-void	exit_error(const char *msg, const int sys_error);
+void	exit_error(char *msg, const int sys_error);
 
 /* Init functions*/
 char	**copy_env(char **envp);
