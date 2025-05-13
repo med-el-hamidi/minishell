@@ -41,6 +41,7 @@ void init_shell(t_shell *shell, char **envp)
 	setup_signals();
 	//if (shell->is_interactive)
 	//	init_history();
+	free_2d_array(shell->env); // freed for testing leaks
 }
 
 void shell_loop(t_shell *shell)
