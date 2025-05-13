@@ -1,7 +1,9 @@
 # ============================================================================ #
 #                               MINISHELL MAKEFILE                             #
 # ============================================================================ #
-
+#                Conflict Zone
+#                git pull -> update -> git push
+#
 # ******************************** COLORS ************************************ #
 RED		:= \033[31m
 GREEN	:= \033[32m
@@ -12,15 +14,12 @@ RESET	:= \033[0m
 
 # ******************************* VARIABLES ********************************** #
 NAME		:= minishell
-CC			:= gcc
+CC			:= cc
 CFLAGS		:= -Wall -Wextra -Werror -fsanitize=address
 LDFLAGS		:= -Llibft -lft
 LIBFT		:= libft/libft.a
 
 # Header files
-#                Conflict zone
-#                git pull -> update -> git push
-#
 INCLUDES	:=	libft/libft.h \
 				includes/minishell.h \
 				includes/structures.h
@@ -33,9 +32,6 @@ EXE_DIR		:= $(SRC_DIR)/executor
 BLT_DIR		:= $(SRC_DIR)/builtins
 
 # Source files
-#                Conflict zone
-#                git pull -> update -> git push
-#
 SRCS		:= $(SRC_DIR)/main.c \
 
 # Object files
@@ -73,4 +69,4 @@ norm:
 #   libft already tested :)
 	@printf "$(YELLOW)🧐 Norm check completed$(RESET)\n"
 
-.PHONY: all clean fclean re norm test
+.PHONY: clean norm
