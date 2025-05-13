@@ -31,6 +31,16 @@ char	**copy_env(char **envp)
 	return (new_env);
 }
 
+static void handle_sigint(int sig)
+{
+	(void)sig;
+	ft_putchar_fd('\n', STDOUT_FILENO);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+	//g_exit_status = 130; // Set exit status (128 + SIGINT=2)
+}
+
 void	setup_signals(void)
 {
 	struct sigaction	sa;
@@ -45,14 +55,4 @@ void	setup_signals(void)
 	sigaction(SIGINT, &sa, NULL);
 
 	// Handle EOF (Ctrl+D)
-}
-
-static void handle_sigint(int sig)
-{
-	(void)sig;
-	ft_putchar_fd("\n", STDOUT_FILENO);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	//g_exit_status = 130; // Set exit status (128 + SIGINT=2)
 }
