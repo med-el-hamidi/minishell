@@ -30,6 +30,7 @@ LEX_DIR		:= $(SRC_DIR)/lexer
 PAR_DIR		:= $(SRC_DIR)/parser
 EXE_DIR		:= $(SRC_DIR)/executor
 BLT_DIR		:= $(SRC_DIR)/builtins
+UTL_DIR		:= $(SRC_DIR)/utils
 
 # Source files
 SRCS		:= $(SRC_DIR)/main.c \
