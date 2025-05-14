@@ -1,11 +1,5 @@
 #include "../../includes/minishell.h"
 
-static void handle_sigquit(int sig)
-{
-	(void)sig;
-	ft_putchar_fd('\a', STDOUT_FILENO);
-}
-
 static void handle_sigint(int sig)
 {
 	(void)sig;
@@ -22,7 +16,7 @@ void	setup_signals(void)
 
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
-	sa.sa_handler = handle_sigquit;
+	sa.sa_handler = SIG_IGN;
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
 		exit_error("SIGQUIT (Ctrl+\\) handler failed", 1);
 	sa.sa_handler = handle_sigint;
