@@ -43,14 +43,40 @@ void init_shell(t_shell *shell, char **envp)
 	//	init_history();
 }
 
+/*
+* shell_loop: Program loop of Minishell
+*
+*/
 void shell_loop(t_shell *shell)
 {
+	char	*line;
+	char	*cmd;
+
     (void)shell;
 	while (1)
-		pause();
+	{
+		line = readline(">> ");
+		// Handle EOF (Ctrl+D)
+		if (!line)
+		{
+			printf("exit\n");
+			break ;
+		}
+		cmd = ft_strtrim(line, " ");
+		free(line);
+		// TODO: handle "cmd" ("" should interpret $) and 'cmd'
+		if (ft_strncmp(cmd, "exit", 4) == 0)
+		{
+			printf("exit\n");
+			free(cmd);
+			break ;
+		}
+		free(cmd);
+	}
 }
 
 void cleanup_shell(t_shell *shell)
 {
 	free_2d_array(shell->env);
+	rl_clear_history();
 }
