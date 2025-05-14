@@ -16,7 +16,7 @@ RESET	:= \033[0m
 NAME		:= minishell
 CC			:= cc
 CFLAGS		:= -Wall -Wextra -Werror -fsanitize=address
-LDFLAGS		:= -Llibft -lft
+LDFLAGS		:= -Llibft -lft -lreadline
 LIBFT		:= libft/libft.a
 
 # Header files
@@ -33,6 +33,9 @@ BLT_DIR		:= $(SRC_DIR)/builtins
 
 # Source files
 SRCS		:= $(SRC_DIR)/main.c \
+			$(UTL_DIR)/init.c \
+			$(UTL_DIR)/error.c \
+			$(UTL_DIR)/free.c
 
 # Object files
 OBJS		:= $(SRCS:.c=.o)
