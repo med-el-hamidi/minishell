@@ -15,6 +15,7 @@
 # include <readline/history.h>
 # include "../libft/libft.h"
 # include "structures.h"
+# include "exec.h"
 
 /* Main Functions */
 void	init_shell(t_shell *shell, char **envp);
