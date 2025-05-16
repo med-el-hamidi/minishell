@@ -4,17 +4,6 @@
 #ifndef STRUCTURES_H
 # define STRUCTURES_H
 
-/*
-*
-* t_token
-*
-*/
-typedef struct s_token {
-    t_token_type   type;     // Type from the enum
-    char           *value;   // The actual string content
-    struct s_token *next;    // Next token in linked list
-} t_token;
-
 typedef enum e_token_type {
 	TOKEN_WORD,         // Regular command/argument (e.g., "ls", "-l")
 	TOKEN_PIPE,         // | (pipe operator)
@@ -30,13 +19,21 @@ typedef enum e_token_type {
 	TOKEN_ERROR         // Invalid token (for error handling)
 }	t_token_type;
 
+/*
+*
+* t_token
+*
+*/
+typedef struct s_token {
+    t_token_type   type;     // Type from the enum
+    char           *value;   // The actual string content
+    struct s_token *next;    // Next token in linked list
+} t_token;
+
 typedef enum e_ast_type {
 	AST_CMD,        // Simple command (e.g., "ls -l")
 	AST_PIPE,       // Pipe between commands (e.g., "cmd1 | cmd2")
-	AST_REDIR_IN,   // Input redirection "<"
-	AST_REDIR_OUT,  // Output redirection ">"
-	AST_REDIR_APPEND, // Append output ">>"
-	AST_HEREDOC,    // Heredoc "<<"
+	AST_REDIR,      // Redirection
 }	t_ast_type;
 
 typedef enum e_redir_type {
