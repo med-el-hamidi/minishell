@@ -14,6 +14,6 @@ int exec_buildin(t_ast *node, t_shell *shell)
 {
 	if(!ft_strncmp(node->args[0], "echo", 5))
 		return (buildin_echo(node->args));
-	// +++ i willl ad the other build ins hereee..
+	// +++ REST OF BUILDINS here...
 	return (1);
 }
