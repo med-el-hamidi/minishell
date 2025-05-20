@@ -10,11 +10,11 @@ int execute_ast(t_ast *node, t_shell *shell)
         if (is_builtin(node->args[0]))
             return exec_builtin(node, shell);
         else
-            return exec_external(node, shell); // I WILL inshalah hhhhh implement this later
+            return exec_external(node, shell); // TO DO...
     }
     else if (node->type == AST_PIPE)
-        return exec_pipe(node, shell);
+        return exec_pipe(node, shell); // TO DO...
     else if (node->type == AST_REDIR)
-        return exec_redirection(node, shell);
+        return exec_redirection(node, shell); //TO DO...
     return (1);
 }
