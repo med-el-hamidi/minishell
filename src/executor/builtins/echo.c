@@ -1,6 +1,6 @@
 #include "../../../includes/minishell.h"
 
-int buildin_echo(char **argv)
+int builtin_echo(char **argv)
 {
 	int i = 1;
 	int new_line = 1;
