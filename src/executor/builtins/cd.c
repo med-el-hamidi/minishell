@@ -2,7 +2,7 @@
 
 int builtin_cd(char **argv)
 {
-	char *path;
+	char *path = NULL;
 
 	if (!argv[1] || ft_strncmp(argv[1], "~", 1) == 0)
 	{
