@@ -18,6 +18,11 @@ int exec_builtins(t_ast *node, t_shell *shell)
 		return (builtin_cd(node->args));
 	if(!ft_strcmp(node->args[0], "exit"))
 		return (builtin_exit(node->args));
-	// +++ REST OF BUILDINS here...
+	if(!ft_strcmp(node->args[0], "export"))
+		return (builtin_export(node->args));
+	if(!ft_strcmp(node->args[0], "unset"))
+		return (builtin_unset(node->args));
+	if(!ft_strcmp(node->args[0], "env"))
+		return (builtin_env(node->args));
 	return (1);
 }
