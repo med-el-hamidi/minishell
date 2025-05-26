@@ -4,7 +4,7 @@ int builtin_cd(char **argv)
 {
 	char *path = NULL;
 
-	if (!argv[1] || ft_strncmp(argv[1], "~", 1) == 0)
+	if (!argv[1] || ft_strcmp(argv[1], "~") == 0)
 	{
 		path = getenv("HOME");
 		if(path == NULL)

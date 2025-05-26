@@ -5,7 +5,7 @@ int builtin_echo(char **argv)
 	int i = 1;
 	int new_line = 1;
 
-	while (argv[i] && ft_strncmp(argv[i], "-n", 2) == 0)
+	while (argv[i] && ft_strcmp(argv[i], "-n") == 0)
 	{
 		new_line = 0;
 		i++;
