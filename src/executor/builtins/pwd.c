@@ -1,10 +1,9 @@
 #include "../../../includes/minishell.h"
 
-int	builtin_pwd(char **argv)
+int	builtin_pwd(void)
 {
 	char	*buf;
 
-	(void)argv;
 	buf = getcwd(NULL, 0);
 	if (!buf)
 	{

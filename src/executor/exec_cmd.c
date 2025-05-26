@@ -24,8 +24,8 @@ int	exec_builtins(t_ast *node, t_shell *shell)
 	if (!ft_strcmp(node->args[0], "unset"))
 		return (builtin_unset(node->args));
 	if (!ft_strcmp(node->args[0], "env"))
-		return (builtin_env(node->args));
+		return (builtin_env());
 	if (!ft_strcmp(node->args[0], "pwd"))
-		return (builtin_pwd(node->args));
+		return (builtin_pwd());
 	return (1);
 }
