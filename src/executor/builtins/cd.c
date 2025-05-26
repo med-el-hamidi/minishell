@@ -1,15 +1,16 @@
 #include "../../../includes/minishell.h"
 
-int builtin_cd(char **argv)
+int	builtin_cd(char **argv)
 {
-	char *path = NULL;
+	char	*path;
 
+	path = NULL;
 	if (!argv[1] || ft_strcmp(argv[1], "~") == 0)
 	{
 		path = getenv("HOME");
-		if(path == NULL)
+		if (path == NULL)
 		{
-			ft_putstr_fd("Minishell: cd: HOME not set\n", STDERR_FILENO);
+			ft_putendl_fd("Minishell: cd: HOME not set", STDERR_FILENO);
 			return (1);
 		}
 	}
@@ -17,11 +18,10 @@ int builtin_cd(char **argv)
 		return (0);
 	else
 		path = argv[1];
-	if(chdir(path) == -1)
+	if (chdir(path) == -1)
 	{
 		perror("cd :");
-		return 1;
+		return (1);
 	}
 	return (0);
-	
 }
