@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-int execute_ast(t_ast *node, t_shell *shell)
+int executor(t_ast *node, t_shell *shell)
 {
     if (!node)
         return (1);
