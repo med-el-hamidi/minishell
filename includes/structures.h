@@ -17,6 +17,7 @@
 typedef struct s_shell
 {
 	char	**env;
+	t_env	*env_list;
 	int		exit_status;
 	int		is_interactive;
 	int     stdin_fd;
