@@ -1,9 +1,6 @@
 # ============================================================================ #
 #                               MINISHELL MAKEFILE                             #
 # ============================================================================ #
-#                Conflict Zone
-#                git pull -> update -> git push
-#
 # ******************************** COLORS ************************************ #
 RED		:= \033[31m
 GREEN	:= \033[32m
@@ -37,7 +34,10 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(UTL_DIR)/init.c \
 			$(UTL_DIR)/signal.c \
 			$(UTL_DIR)/error.c \
-			$(UTL_DIR)/free.c
+			$(UTL_DIR)/free.c \
+			$(UTL_DIR)/history_utils.c \
+			$(UTL_DIR)/history.c \
+
 
 # Object files
 OBJS		:= $(SRCS:.c=.o)
