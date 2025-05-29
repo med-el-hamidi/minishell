@@ -39,44 +39,57 @@ void init_shell(t_shell *shell, char **envp)
 	if (shell->stdin_fd == -1 || shell->stdout_fd == -1)
 		exit_error("Failed to backup std file descriptors", 0);
 	setup_signals();
-	//if (shell->is_interactive)
-	//	init_history();
+	if (shell->is_interactive)
+		init_history(shell);
+	init_termios(shell);
 }
 
 /*
 * shell_loop: Program loop of Minishell
+* 1. Display prompt and read input
+* 2. Process non-empty input
+* 3. 3. Lexing → Parsing → Execution
+* 4. Cleanup and repeat
+*
 *
 */
 void shell_loop(t_shell *shell)
 {
-	char	*line;
-	char	*cmd;
+	char	*input;
+	//t_token	*tokens;
+	//t_ast	*ast;
 
-    (void)shell;
-	while (1)
+	while (1)  // REPL (Read-Eval-Print Loop)
 	{
-		line = readline(">> ");
-		// Handle EOF (Ctrl+D)
-		if (!line)
-		{
-			printf("exit\n");
-			break ;
-		}
-		cmd = ft_strtrim(line, " ");
-		free(line);
-		// TODO: handle "cmd" ("" should interpret $) and 'cmd'
-		if (ft_strncmp(cmd, "exit", 4) == 0)
-		{
-			printf("exit\n");
-			free(cmd);
-			break ;
-		}
-		free(cmd);
+		input = readline("minishell$ ");
+		if (!input)  // EOF (Ctrl+D)
+			break;
+		add_to_history(shell, input);  // Save to history
+		// tokens = lexer(input);
+		// if (tokens)
+		// {
+		// 	ast = parser(tokens);
+		// 	if (ast)
+		// 	{
+		// 		shell->exit_status = executor(ast, shell);
+		// 		free_ast(ast);
+		// 	}
+		// 	free_tokens(tokens);
+		// }
+		free(input);
 	}
 }
 
 void cleanup_shell(t_shell *shell)
 {
-	free_2d_array(shell->env);
+	if ((shell->history.count - shell->history.current) > 0)
+		save_history(shell);
+	free_2d_array(shell->history.entries);
 	rl_clear_history();
+	//cleanup_resources();
+	free_2d_array(shell->env);
+	close(shell->stdin_fd);
+	close(shell->stdout_fd);
+	if (shell->is_interactive)
+		printf("exit\n");
 }
