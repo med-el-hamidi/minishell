@@ -1,8 +1,17 @@
-//                     Conflict Zone
-//                git pull -> instant update -> git push
-//
 #ifndef STRUCTURES_H
 # define STRUCTURES_H
+
+# define HISTORY_FILE "/.minishell_history"
+# define HISTSIZE 500
+# define HISTFILESIZE 500
+
+typedef struct s_history {
+	char	**entries;     // Inputs (limited by histfilesize)
+	int		count;         // The last index of of the session entries
+	int		current;       // The first index of of the session entries
+	int		histsize;      // Number of lines to load
+	int		histfilesize;  // Number of lines should be in HISTORY_FILE
+}	t_history;
 
 typedef enum e_token_type {
 	TOKEN_WORD,         // Regular command/argument (e.g., "ls", "-l")
@@ -81,12 +90,15 @@ typedef struct s_ast {
 */
 typedef struct s_shell
 {
-	char	**env;
-	int		exit_status;
-	t_token	*tokens;
-	int		is_interactive;
-	int     stdin_fd;
-	int     stdout_fd;
+	char			**env;
+	int				exit_status;
+	struct termios	orig_termios;
+	struct termios	new_termios;
+	t_history		history;
+	t_token			*tokens;
+	int				is_interactive;
+	int				stdin_fd;
+	int				stdout_fd;
 }	t_shell;
 
 
