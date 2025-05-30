@@ -6,11 +6,12 @@
 # define HISTFILESIZE 500
 
 typedef struct s_history {
-	char	**entries;     // Inputs (limited by histfilesize)
-	int		count;         // The last index of of the session entries
-	int		current;       // The first index of of the session entries
-	int		histsize;      // Number of lines to load
-	int		histfilesize;  // Number of lines should be in HISTORY_FILE
+	char	**entries;        // Inputs (limited by histfilesize)
+	int		count;            // The last index of of the session entries
+	int		current;          // The first index of of the session entries
+	int		histmem_lines_c;   // Count of in-memory history lines
+	int		histsize;         // Number of lines to load
+	int		histfilesize;     // Number of lines should be in HISTORY_FILE
 }	t_history;
 
 typedef enum e_token_type {
