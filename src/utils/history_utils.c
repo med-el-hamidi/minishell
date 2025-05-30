@@ -80,7 +80,7 @@ void	load_history_fd(t_shell *shell, int	histfile_lines_c, int *skip, int fd)
 }
 
 /* Get the recent lines from HISTORY_FILE from "exceed" (Look at load_recent_history)*/
-static void	get_recent_history_fd(t_shell *shell, int exceed, int fd)
+static void	get_recent_history_fd(t_shell *shell, int exceed, int histfile_lines_c, int *fd)
 {
 	char	*line;
 	int		i;
@@ -88,13 +88,15 @@ static void	get_recent_history_fd(t_shell *shell, int exceed, int fd)
 
 	i = 0;
 	j = 0;
-	while (i < shell->history.histfilesize)
+
+	while (i < histfile_lines_c)
 	{
-		line = get_next_line(fd);
+		line = get_next_line(*fd);
 		if (!line)
 			break ;
-		if (i >= exceed)
+		if (i >= exceed && j < shell->history.histfilesize)
 		{
+			free(shell->history.entries[j]);
 			shell->history.entries[j++] = line;
 			shell->history.count++;
 		}
@@ -123,14 +125,15 @@ void	load_recent_history(char *path, t_shell *shell, int histmem_lines_c, int hi
 	if (histfile_lines_c > shell->history.histfilesize)
 		start = histfile_lines_c - shell->history.histfilesize;
 	// Calculate the exceed part from the HISTORY_FILE out of histfilesize
-	exceed =  (histmem_lines_c + histfile_lines_c) - shell->history.histfilesize - start;
-
+	exceed =  histmem_lines_c + start;
+	printf("start: %d\n", start);
+	printf("exceed: %d\n", exceed);
 	// Move our in-memory history into its position (histfilesize - histmem_lines_c) in entries,
 	// To let the first entris to lines from HISTORY_FILE from "exceed"
 	if (shell->history.current != (shell->history.histfilesize - histmem_lines_c))
 		ft_memmove(shell->history.entries + (shell->history.histfilesize - histmem_lines_c),
 					shell->history.entries + shell->history.current,
 					histmem_lines_c * sizeof(char *));
-	get_recent_history_fd(shell, exceed, fd);
+	get_recent_history_fd(shell, exceed, histfile_lines_c, &fd);
 	close(fd);
 }
