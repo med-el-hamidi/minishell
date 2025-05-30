@@ -31,7 +31,7 @@ void	init_termios(t_shell *shell);
 void	load_history(t_shell *shell);
 void	add_to_history(t_shell *shell, char *input);
 void	save_history(t_shell *shell);
-void	load_recent_history(char *path, t_shell *shell, int histmem_lines_c, int histfile_lines_c);
+int		load_recent_history(char *path, t_shell *shell, int histfile_lines_c);
 void	load_history_fd(t_shell *shell, int	histfile_lines_c, int *skip, int fd);
 int		get_histfile_lines_count(char *path, int oflag, int perm);
 

@@ -96,7 +96,8 @@ static void	get_recent_history_fd(t_shell *shell, int exceed, int histfile_lines
 			break ;
 		if (i >= exceed && j < shell->history.histfilesize)
 		{
-			free(shell->history.entries[j]);
+			if (shell->history.entries[j])
+				free(shell->history.entries[j]);
 			shell->history.entries[j++] = line;
 			shell->history.count++;
 		}
@@ -107,17 +108,17 @@ static void	get_recent_history_fd(t_shell *shell, int exceed, int histfile_lines
 }
 
 /* Load the recent history from HISTORY_FILE*/
-void	load_recent_history(char *path, t_shell *shell, int histmem_lines_c, int histfile_lines_c)
+int	load_recent_history(char *path, t_shell *shell, int histfile_lines_c)
 {
 	int		fd;
 	int		start;
 	int		exceed;
 
-	fd = open(path, O_CREAT | O_WRONLY, 0644);
+	fd = open(path, O_CREAT | O_RDWR, 0644);
 	if (fd == -1)
 	{
 		perror("Minishell: error");
-		return ;
+		return (0);
 	}
 	start = 0;
 	// In case recent HISTORY_FILE has more that histfilesize,
@@ -125,15 +126,14 @@ void	load_recent_history(char *path, t_shell *shell, int histmem_lines_c, int hi
 	if (histfile_lines_c > shell->history.histfilesize)
 		start = histfile_lines_c - shell->history.histfilesize;
 	// Calculate the exceed part from the HISTORY_FILE out of histfilesize
-	exceed =  histmem_lines_c + start;
-	printf("start: %d\n", start);
-	printf("exceed: %d\n", exceed);
-	// Move our in-memory history into its position (histfilesize - histmem_lines_c) in entries,
+	exceed =  shell->history.histmem_lines_c + start;
+	// Move our in-memory history into its position (histfilesize - shell->history.histmem_lines_c) in entries,
 	// To let the first entris to lines from HISTORY_FILE from "exceed"
-	if (shell->history.current != (shell->history.histfilesize - histmem_lines_c))
-		ft_memmove(shell->history.entries + (shell->history.histfilesize - histmem_lines_c),
+	if (shell->history.current != (shell->history.histfilesize - shell->history.histmem_lines_c))
+		ft_memmove(shell->history.entries + (shell->history.histfilesize - shell->history.histmem_lines_c),
 					shell->history.entries + shell->history.current,
-					histmem_lines_c * sizeof(char *));
+					shell->history.histmem_lines_c * sizeof(char *));
 	get_recent_history_fd(shell, exceed, histfile_lines_c, &fd);
 	close(fd);
+	return (histfile_lines_c - exceed);
 }

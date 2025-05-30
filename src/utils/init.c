@@ -65,6 +65,7 @@ void	init_history(t_shell *shell)
 
 	shell->history.count = 0;
 	shell->history.current = 0;
+	shell->history.histmem_lines_c = 0;
 	n = 0;
 	val = getenv("HISTSIZE");
 	if (val)
@@ -81,7 +82,7 @@ void	init_history(t_shell *shell)
 	shell->history.histfilesize = n;
 	shell->history.entries = malloc((shell->history.histfilesize + 1) * sizeof(char *));
 	if (!shell->history.entries)
-		exit_error("History is not initialized!", 1);
+		perror("Minishell: History is not initialized!");
 	ft_bzero(shell->history.entries, (shell->history.histfilesize + 1) * sizeof(char *));
 	load_history(shell);
 }
