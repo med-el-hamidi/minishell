@@ -127,8 +127,6 @@ int	load_recent_history(char *path, t_shell *shell, int histfile_lines_c)
 		start = histfile_lines_c - shell->history.histfilesize;
 	// Calculate the exceed part from the HISTORY_FILE out of histfilesize
 	exceed =  shell->history.histmem_lines_c + start;
-	printf("start: %d\n", start);
-	printf("exceed: %d\n", exceed);
 	// Move our in-memory history into its position (histfilesize - shell->history.histmem_lines_c) in entries,
 	// To let the first entris to lines from HISTORY_FILE from "exceed"
 	if (shell->history.current != (shell->history.histfilesize - shell->history.histmem_lines_c))
