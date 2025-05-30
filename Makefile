@@ -1,9 +1,6 @@
 # ============================================================================ #
 #                               MINISHELL MAKEFILE                             #
 # ============================================================================ #
-#                Conflict Zone
-#                git pull -> update -> git push
-#
 # ******************************** COLORS ************************************ #
 RED		:= \033[31m
 GREEN	:= \033[32m
@@ -16,7 +13,7 @@ RESET	:= \033[0m
 NAME		:= minishell
 CC			:= cc
 CFLAGS		:= -Wall -Wextra -Werror -fsanitize=address
-LDFLAGS		:= -Llibft -lft
+LDFLAGS		:= -Llibft -lft -lreadline
 LIBFT		:= libft/libft.a
 
 # Header files
@@ -30,9 +27,17 @@ LEX_DIR		:= $(SRC_DIR)/lexer
 PAR_DIR		:= $(SRC_DIR)/parser
 EXE_DIR		:= $(SRC_DIR)/executor
 BLT_DIR		:= $(SRC_DIR)/builtins
+UTL_DIR		:= $(SRC_DIR)/utils
 
 # Source files
 SRCS		:= $(SRC_DIR)/main.c \
+			$(UTL_DIR)/init.c \
+			$(UTL_DIR)/signal.c \
+			$(UTL_DIR)/error.c \
+			$(UTL_DIR)/free.c \
+			$(UTL_DIR)/history_utils.c \
+			$(UTL_DIR)/history.c \
+
 
 # Object files
 OBJS		:= $(SRCS:.c=.o)
