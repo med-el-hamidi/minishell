@@ -1,34 +1,53 @@
 # include "../../includes/minishell.h"
 
-char	**copy_env(char **envp)
+static void	*cleanup_init_shell(t_list	**head_env, char **split)
 {
-	char	**new_env;
+	free_2d_array(split);
+	ft_lstclear(head_env, del_env);
+	return (NULL);
+}
+
+static t_env	*create_env_v(char **split)
+{
+	t_env *v;
+
+	v = malloc(sizeof(t_env));
+	if (!v)
+		return (NULL);
+	v->key = ft_strdup(split[0]);
+	v->value = ft_strdup(split[1]);
+	return (v);
+}
+
+t_list	*init_env(char **envp)
+{
+	t_list	*head_env;
+	t_list	*node_env;
+	t_env	*v;
+	char	**split;
 	int		i;
-	int		count;
 
 	if (!envp || !*envp)
 		return (NULL);
-	count = 0;
-	while (envp[count])
-		count++;
-	new_env = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!new_env)
-		return (NULL);
-	i = 0;
-	while (envp[i])
+	head_env = NULL;
+	i = -1;
+	while (envp[++i])
 	{
-		new_env[i] = ft_strdup(envp[i]);
-		if (!new_env[i])
-		{
-			free_2d_array(new_env);
-			return (NULL);
-		}
-		i++;
+		split = ft_split(envp[i], '=');
+		if (!split || !*split)
+			cleanup_init_shell(&head_env, NULL);
+		v = create_env_v(split);
+		if (!v)
+			cleanup_init_shell(&head_env, split);
+		node_env = ft_lstnew(v);
+		if (!node_env)
+			cleanup_init_shell(&head_env, split);
+		free_2d_array(split);
+		ft_lstadd_back(&head_env, node_env);
 	}
-	new_env[i] = NULL;
 	// Increment SHLVL if it exists
-	//increment_shell_level(new_env);
-	return (new_env);
+	//increment_shell_level(head_env);
+	return (head_env);
 }
 
 /*
