@@ -79,6 +79,18 @@ typedef struct s_ast {
 }	t_ast;
 
 /*
+* t_env: Environement variable wich contains:
+*
+* key:     e.g. "PATH"
+* value:   e.g. "/usr/bin"
+*/
+typedef struct s_env
+{
+	char	*key;
+	char	*value;
+}	t_env;
+
+/*
 *
 * t_shell: Tracks everything the shell needs during execution.
 *
@@ -90,7 +102,7 @@ typedef struct s_ast {
 */
 typedef struct s_shell
 {
-	char			**env;
+	t_list			*env_list;
 	int				exit_status;
 	struct termios	orig_termios;
 	struct termios	new_termios;
