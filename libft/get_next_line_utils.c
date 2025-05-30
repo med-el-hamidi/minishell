@@ -19,9 +19,9 @@ int	found_new_line(t_list *list)
 	while (list)
 	{
 		i = 0;
-		while (list->buffer[i])
+		while (((char *)list->content)[i])
 		{
-			if ('\n' == list->buffer[i])
+			if ('\n' == ((char *)list->content)[i])
 				return (1);
 			i++;
 		}
@@ -39,9 +39,9 @@ int	get_length_new_line(t_list *list)
 	while (list)
 	{
 		i = 0;
-		while (list->buffer[i])
+		while (((char *)list->content)[i])
 		{
-			if ('\n' == list->buffer[i])
+			if ('\n' == ((char *)list->content)[i])
 			{
 				len++;
 				return (len);
@@ -56,12 +56,12 @@ int	get_length_new_line(t_list *list)
 
 void	safe_free(t_list **list, t_list *node)
 {
-	ft_lstclear(list);
-	if (node->buffer[0])
+	ft_lstclear(list, free);
+	if (((char *)node->content)[0])
 		*list = node;
 	else
 	{
-		free(node->buffer);
+		free(node->content);
 		free(node);
 	}
 }
