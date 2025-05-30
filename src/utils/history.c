@@ -82,7 +82,7 @@ void save_history(t_shell *shell)
 		save_history_oflag(path, O_CREAT | O_WRONLY | O_TRUNC, shell, histmem_lines_c); /* Save in-memory history to HISTORY_FILE after truncate it */
 
 	// Append all history from in-memory history list to HISTORY_FILE
-	if (histmem_lines_c + histfile_lines_c < shell->history.histfilesize)
+	else if (histmem_lines_c + histfile_lines_c < shell->history.histfilesize)
 		save_history_oflag(path, O_CREAT | O_WRONLY | O_APPEND, shell, histmem_lines_c); /* Append in-memory history to HISTORY_FILE */
 	else
 	{
@@ -107,7 +107,6 @@ void add_to_history(t_shell *shell, char *input)
 			== shell->history.histsize)
 	{
 		rl_clear_history();
-		i = 0;
 		free(shell->history.entries[0]);
 		ft_memmove(shell->history.entries,
 					shell->history.entries + 1,
@@ -115,6 +114,7 @@ void add_to_history(t_shell *shell, char *input)
 		shell->history.count--;
 		if (shell->history.current)
 			shell->history.current--;
+		i = 0;
 		while (i < shell->history.count)
 			add_history(shell->history.entries[i++]);
 	}
