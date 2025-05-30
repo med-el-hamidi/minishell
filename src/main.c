@@ -29,8 +29,8 @@ int	main(int argc, char **argv, char **envp)
 */
 void init_shell(t_shell *shell, char **envp)
 {
-	shell->env = copy_env(envp);
-	if (!shell->env)
+	shell->env_list = init_env(envp);
+	if (!shell->env_list)
 		exit_error("Failed to initialize the environment\n", 1);
 	shell->exit_status = 0;
 	shell->is_interactive = isatty(STDIN_FILENO);
@@ -82,12 +82,21 @@ void shell_loop(t_shell *shell)
 
 void cleanup_shell(t_shell *shell)
 {
-	if ((shell->history.count - shell->history.current) > 0)
-		save_history(shell);
+	char	*f;
+
+	f = ft_strjoin(getenv("HOME"), HISTORY_FILE);
+	if (!access(f, R_OK))
+	{
+		if ((shell->history.count - shell->history.current) > 0)
+			save_history(shell);
+	}
+	else
+		perror("Minishell: History is not saved!");
+	free(f);
 	free_2d_array(shell->history.entries);
 	rl_clear_history();
 	//cleanup_resources();
-	free_2d_array(shell->env);
+	ft_lstclear(&shell->env_list, del_env);;
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
 	if (shell->is_interactive)
