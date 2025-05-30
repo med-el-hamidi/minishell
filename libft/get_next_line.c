@@ -46,7 +46,7 @@ static void	_create_list(t_list **list, int fd)
 		if (bytes_readed <= 0)
 		{
 			if (bytes_readed == -1)
-				ft_lstclear(list);
+				ft_lstclear(list, free);
 			free(buffer);
 			return ;
 		}
@@ -66,7 +66,7 @@ static void	_listadd_back(t_list **list, char *buffer)
 		free(buffer);
 		return ;
 	}
-	node->buffer = buffer;
+	node->content = buffer;
 	node->next = NULL;
 	last_node = ft_lstlast(*list);
 	if (last_node)
@@ -88,10 +88,10 @@ static char	*_gnl(t_list *list)
 	while (list)
 	{
 		i = 0;
-		while (list->buffer[i])
+		while (((char *)list->content)[i])
 		{
-			next_line[j++] = list->buffer[i];
-			if ('\n' == list->buffer[i++])
+			next_line[j++] = ((char *)list->content)[i];
+			if ('\n' == ((char *)list->content)[i++])
 			{
 				next_line[j] = '\0';
 				return (next_line);
@@ -122,12 +122,12 @@ static void	_getready_next_gnl(t_list **list)
 	last_node = ft_lstlast(*list);
 	i = 0;
 	j = 0;
-	while (last_node->buffer[i] && last_node->buffer[i] != '\n')
+	while (((char *)last_node->content)[i] && ((char *)last_node->content)[i] != '\n')
 		i++;
-	while (last_node->buffer[i] && last_node->buffer[++i])
-		buf[j++] = last_node->buffer[i];
+	while (((char *)last_node->content)[i] && ((char *)last_node->content)[++i])
+		buf[j++] = ((char *)last_node->content)[i];
 	buf[j] = '\0';
-	node->buffer = buf;
+	node->content = buf;
 	node->next = NULL;
 	safe_free(list, node);
 }
