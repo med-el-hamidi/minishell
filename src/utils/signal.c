@@ -18,9 +18,9 @@ void	setup_signals(void)
 	sa.sa_flags = 0;
 	sa.sa_handler = SIG_IGN;
 	if (sigaction(SIGQUIT, &sa, NULL) == -1)
-		exit_error("SIGQUIT (Ctrl+\\) handler failed", 1);
+		perror("Minishell: SIGQUIT (Ctrl+\\) handler failed");
 	sa.sa_handler = handle_sigint;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
-		exit_error("SIGINT (Ctrl+C) handler failed", 1);
+		perror("Minishell: SIGINT (Ctrl+C) handler failed");
 	// Handle EOF (Ctrl+D)
 }
