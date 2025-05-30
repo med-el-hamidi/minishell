@@ -22,7 +22,7 @@ void	cleanup_shell(t_shell *shell);
 void	exit_error(char *msg, const int sys_error);
 
 /* Init functions*/
-char	**copy_env(char **envp);
+t_list	*init_env(char **envp);
 void	setup_signals(void);
 void	init_history(t_shell *shell);
 void	init_termios(t_shell *shell);
@@ -35,6 +35,7 @@ void	load_recent_history(char *path, t_shell *shell, int histmem_lines_c, int hi
 void	load_history_fd(t_shell *shell, int	histfile_lines_c, int *skip, int fd);
 int		get_histfile_lines_count(char *path, int oflag, int perm);
 
-/* Utilities functions */
+/* Free functions */
 void	free_2d_array(char **arr);
+void	del_env(void *v);
 #endif
