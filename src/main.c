@@ -82,12 +82,17 @@ void shell_loop(t_shell *shell)
 
 void cleanup_shell(t_shell *shell)
 {
-	char	*path;
+	char	*f;
 
-	path = get_history_path();
-	if (path && !access(path, W_OK) && (shell->history.count - shell->history.current) > 0)
-			save_history(shell, path);
-	free(path);
+	f = ft_strjoin(getenv("HOME"), HISTORY_FILE);
+	if (!access(f, R_OK))
+	{
+		if ((shell->history.count - shell->history.current) > 0)
+			save_history(shell);
+	}
+	else
+		perror("Minishell: History is not saved!");
+	free(f);
 	free_2d_array(shell->history.entries);
 	rl_clear_history();
 	//cleanup_resources();

@@ -60,7 +60,6 @@ t_list	*init_env(char **envp)
 */
 void	init_history(t_shell *shell)
 {
-	char	*path;
 	char	*val;
 	int		n;
 
@@ -83,17 +82,9 @@ void	init_history(t_shell *shell)
 	shell->history.histfilesize = n;
 	shell->history.entries = malloc((shell->history.histfilesize + 1) * sizeof(char *));
 	if (!shell->history.entries)
-	{
 		perror("Minishell: History is not initialized!");
-		return ;
-	}
 	ft_bzero(shell->history.entries, (shell->history.histfilesize + 1) * sizeof(char *));
-	path = get_history_path();
-	if (!path)
-		return ;
-	if (!access(path, F_OK | R_OK))
-		load_history(shell);
-	free(path);
+	load_history(shell);
 }
 
 void	init_termios(t_shell *shell)
