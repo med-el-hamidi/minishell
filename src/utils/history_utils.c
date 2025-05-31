@@ -17,7 +17,8 @@ static int	count_lines_in_file(int fd)
 		if (bytes == -1)
 		{
 			close(fd);
-			exit_error("History is not initialized!: Cannot read from ~"HISTORY_FILE, 1);
+			perror("minishell: history : cannot read from ~"HISTFILE);
+			return (-1);
 		}
 		else if (!bytes)
 			break ;
@@ -39,8 +40,8 @@ int	get_histfile_lines_count(char *path, int oflag, int perm)
 		fd = open(path, oflag);
 	if (fd == -1)
 	{
-		free(path);
-		exit_error("History is not initialized!: Cannot read from ~"HISTORY_FILE, 1);
+		perror("minishell: history : cannot open from ~"HISTFILE);
+		return (-1);
 	}
 	histfile_lines_c = count_lines_in_file(fd);
 	close(fd);
@@ -116,10 +117,7 @@ int	load_recent_history(char *path, t_shell *shell, int histfile_lines_c)
 
 	fd = open(path, O_CREAT | O_RDWR, 0644);
 	if (fd == -1)
-	{
-		perror("Minishell: error");
 		return (0);
-	}
 	start = 0;
 	// In case recent HISTORY_FILE has more that histfilesize,
 	// We concider the recent HISTORY_FILE starts from index "start" -> histfilesize (The limit we concider from env)

@@ -1,7 +1,7 @@
 #ifndef STRUCTURES_H
 # define STRUCTURES_H
 
-# define HISTORY_FILE "/.minishell_history"
+# define HISTFILE "/.minishell_history"
 # define HISTSIZE 500
 # define HISTFILESIZE 500
 
