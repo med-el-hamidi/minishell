@@ -1,25 +1,29 @@
 # include "../../includes/minishell.h"
 
 /* Get history file path */
-static char	*get_history_path(void )
+char	*get_history_path(void )
 {
-	char *home = getenv("HOME");
+	char *home;
+
+	home = getenv("HOME");
 	if (!home)
-		return (ft_strjoin("~", HISTORY_FILE));;
-	return (ft_strjoin(home, HISTORY_FILE));
+		return (NULL);
+	return (ft_strjoin(home, HISTFILE));
 }
 
 void load_history(t_shell *shell)
 {
+	char	*path;
 	int		fd;
 	int		histfile_lines_c;
 	int		skip[2];
-	char	*path;
 
 	path = get_history_path();
 	if (!path)
 		return ;
 	histfile_lines_c = get_histfile_lines_count(path, O_RDONLY, 0);
+	if (histfile_lines_c == -1)
+		return ;
 	// Skip n == skip[0] lines to get to the first line out of histfilesize
 	skip[0] = histfile_lines_c - shell->history.histfilesize;
 	if (skip[0] <= 0)
@@ -62,21 +66,20 @@ void	save_history_oflag(char *path, int oflag, t_shell *shell, int skip)
 }
 
 /*  Save the history */
-void save_history(t_shell *shell)
+void save_history(t_shell *shell, char *path)
 {
-	char	*path;
 	int		histfile_lines_c;
 	int		skip;
 
-	path = get_history_path();
+	if (!shell || !shell->history.entries || !path)
+		return ;
 	shell->history.histmem_lines_c = shell->history.count - shell->history.current;
-	if (!path || !shell->history.histmem_lines_c)
-	{
-		free(path);
-		return;
-    }
+	if (!shell->history.histmem_lines_c)
+		return ;
 	if (shell->history.histmem_lines_c != shell->history.histfilesize)
 		histfile_lines_c = get_histfile_lines_count(path, O_CREAT | O_RDONLY, 0644);
+	if (histfile_lines_c == -1)
+		return ;
 
 	// Save all history from in-memory history list to HISTORY_FILE after truncate it.
 	if (shell->history.histmem_lines_c == shell->history.histfilesize)
@@ -85,7 +88,7 @@ void save_history(t_shell *shell)
 	// Append all history from in-memory history list to HISTORY_FILE
 	else if (shell->history.histmem_lines_c + histfile_lines_c < shell->history.histfilesize)
 		save_history_oflag(path, O_CREAT | O_WRONLY | O_APPEND, shell, 0); /* Append in-memory history to HISTORY_FILE */
-	else
+	else if (!access(path, R_OK))
 	{
 		// Our history (in-memory + file)  exceed histfilesize, so we load_recent_history from file into in-memory list in case the history file changed,
 		skip = load_recent_history(path, shell, histfile_lines_c);
@@ -93,7 +96,6 @@ void save_history(t_shell *shell)
 		shell->history.histmem_lines_c = shell->history.count;
 		save_history_oflag(path, O_CREAT | O_WRONLY | O_TRUNC, shell, skip); /* Save in-memory history to HISTORY_FILE after truncate it */
 	}
-	free(path);
 }
 
 /* Add input to in-memory history list*/
