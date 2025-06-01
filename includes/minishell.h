@@ -10,8 +10,10 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <termios.h>
+# include <sys/stat.h>
 # include "../libft/libft.h"
 # include "structures.h"
+# include "lexer.h"
 
 /* Main Functions */
 void	init_shell(t_shell *shell, char **envp);
@@ -39,4 +41,6 @@ int		get_histfile_lines_count(char *path, int oflag, int perm);
 /* Free functions */
 void	free_2d_array(char **arr);
 void	del_env(void *v);
+void	del_token(void *t);
+
 #endif

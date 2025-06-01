@@ -5,16 +5,37 @@
 # define HISTSIZE 500
 # define HISTFILESIZE 500
 
-typedef struct s_history {
-	char	**entries;        // Inputs (limited by histfilesize)
-	int		count;            // The last index of of the session entries
-	int		current;          // The first index of of the session entries
-	int		histmem_lines_c;   // Count of in-memory history lines
-	int		histsize;         // Number of lines to load
-	int		histfilesize;     // Number of lines should be in HISTORY_FILE
+
+/*
+*
+* t_history: History structure
+*
+* entries:          Inputs (limited by histfilesize)
+* count:            The last index of of the session entries
+* current:          The first index of of the session entries
+* histmem_lines_c:  Count of in-memory history lines of the session
+* histsize:         Number of lines to load from HISTFILE
+* histfilesize:     Number of lines should be in HISTFILE
+*
+*/
+typedef struct s_history
+{
+	char	**entries;
+	int		count;
+	int		current;
+	int		histmem_lines_c;
+	int		histsize;
+	int		histfilesize;
 }	t_history;
 
-typedef enum e_token_type {
+
+/*
+*
+* t_token_type: Represents type of a single string (e.g. word, pipe, ...) from the input
+*
+*/
+typedef enum e_token_type
+{
 	TOKEN_WORD,         // Regular command/argument (e.g., "ls", "-l")
 	TOKEN_PIPE,         // | (pipe operator)
 	TOKEN_REDIR_IN,     // < (input redirection)
@@ -22,8 +43,8 @@ typedef enum e_token_type {
 	TOKEN_REDIR_APPEND, // >> (append output)
 	TOKEN_REDIR_HEREDOC,// << (heredoc)
 	TOKEN_QUOTE,        // ' or " (quote character)
-	TOKEN_DQUOTE,       // " (double quote)
-	TOKEN_SQUOTE,       // ' (single quote)
+	TOKEN_DQUOTE,       // "" (double quote)
+	TOKEN_SQUOTE,       // '' (single quote)
 	TOKEN_DOLLAR,       // $ (variable expansion)
 	TOKEN_EOF,          // End of input
 	TOKEN_ERROR         // Invalid token (for error handling)
@@ -31,22 +52,27 @@ typedef enum e_token_type {
 
 /*
 *
-* t_token
+* t_token: Token structure
+*
+* type:    Type of the token
+* value:   The actual string content of the token
 *
 */
-typedef struct s_token {
-    t_token_type   type;     // Type from the enum
-    char           *value;   // The actual string content
-    struct s_token *next;    // Next token in linked list
+typedef struct s_token
+{
+	t_token_type	type;
+	char			*value;
 } t_token;
 
-typedef enum e_ast_type {
+typedef enum e_ast_type
+{
 	AST_CMD,        // Simple command (e.g., "ls -l")
 	AST_PIPE,       // Pipe between commands (e.g., "cmd1 | cmd2")
 	AST_REDIR,      // Redirection
 }	t_ast_type;
 
-typedef enum e_redir_type {
+typedef enum e_redir_type
+{
 	REDIR_NONE,
 	REDIR_INPUT,    // <
 	REDIR_OUTPUT,   // >
@@ -67,7 +93,8 @@ typedef enum e_redir_type {
 *
 *
 */
-typedef struct s_ast {
+typedef struct s_ast
+{
 	t_ast_type   type;        // Node type from enum
 	char         **args;      // Command arguments (NULL-terminated array)
 	struct s_ast *left;       // Left child node
