@@ -37,6 +37,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(UTL_DIR)/free.c \
 			$(UTL_DIR)/history_utils.c \
 			$(UTL_DIR)/history.c \
+			$(LEX_DIR)/lexer.c
 
 
 # Object files
