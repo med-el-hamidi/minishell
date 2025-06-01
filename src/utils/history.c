@@ -76,6 +76,7 @@ void save_history(t_shell *shell, char *path)
 	shell->history.histmem_lines_c = shell->history.count - shell->history.current;
 	if (!shell->history.histmem_lines_c)
 		return ;
+	histfile_lines_c = 0;
 	if (shell->history.histmem_lines_c != shell->history.histfilesize)
 		histfile_lines_c = get_histfile_lines_count(path, O_CREAT | O_RDONLY, 0644);
 	if (histfile_lines_c == -1)
