@@ -23,3 +23,14 @@ void	del_env(void *v)
 	free(ptr->value);
 	free(ptr);
 }
+
+void	del_token(void *t)
+{
+	t_token	*ptr;
+
+	if (!t)
+		return ;
+	ptr = (t_token *)t;
+	free(ptr->value);
+	free(ptr);
+}
