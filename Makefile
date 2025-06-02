@@ -1,9 +1,6 @@
 # ============================================================================ #
 #                               MINISHELL MAKEFILE                             #
 # ============================================================================ #
-#                Conflict Zone
-#                git pull -> update -> git push
-#
 # ******************************** COLORS ************************************ #
 RED		:= \033[31m
 GREEN	:= \033[32m
@@ -16,23 +13,41 @@ RESET	:= \033[0m
 NAME		:= minishell
 CC			:= cc
 CFLAGS		:= -Wall -Wextra -Werror -fsanitize=address
-LDFLAGS		:= -Llibft -lft
+LDFLAGS		:= -Llibft -lft -lreadline
 LIBFT		:= libft/libft.a
 
 # Header files
 INCLUDES	:=	libft/libft.h \
 				includes/minishell.h \
-				includes/structures.h
+				includes/structures.h \
+				includes/exec.h
 
 # Source directories
 SRC_DIR		:= src
 LEX_DIR		:= $(SRC_DIR)/lexer
 PAR_DIR		:= $(SRC_DIR)/parser
 EXE_DIR		:= $(SRC_DIR)/executor
-BLT_DIR		:= $(SRC_DIR)/builtins
+BLT_DIR		:= $(EXE_DIR)/builtins
+UTL_DIR		:= $(SRC_DIR)/utils
 
 # Source files
 SRCS		:= $(SRC_DIR)/main.c \
+			$(UTL_DIR)/init.c \
+			$(UTL_DIR)/signal.c \
+			$(UTL_DIR)/error.c \
+			$(UTL_DIR)/free.c \
+			$(UTL_DIR)/history_utils.c \
+			$(UTL_DIR)/history.c \
+			$(BLT_DIR)/cd.c \
+			$(BLT_DIR)/echo.c \
+			$(BLT_DIR)/env.c \
+			$(BLT_DIR)/pwd.c \
+			$(BLT_DIR)/unset.c \
+			$(BLT_DIR)/export.c \
+			$(EXE_DIR)/exec_cmd.c \
+			$(EXE_DIR)/exec_utils.c \
+			$(EXE_DIR)/executor.c 
+
 
 # Object files
 OBJS		:= $(SRCS:.c=.o)

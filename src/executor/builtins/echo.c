@@ -16,10 +16,10 @@ int	builtin_echo(char **argv)
 	{
 		ft_putstr_fd(argv[i], 1);
 		if (argv[i + 1])
-			ft_putchar_fd(" ", 1);
+			ft_putchar_fd(' ', 1);
 		i++;
 	}
 	if (new_line)
-		ft_putchar_fd("\n", 1);
+		ft_putchar_fd('\n', 1);
 	return (0);
 }
