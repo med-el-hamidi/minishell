@@ -47,39 +47,129 @@ char	*expand(t_shell *shell, char *word, int len)
 	return (NULL);
 }
 
-void	handle_word(t_shell *shell, char *input, int *i, t_list **tokens)
+char	*_getpid()
 {
-	char	*word;
-	int		len;
+	char	buf[11];
+	ssize_t	bytes;
+	int		fd;
 
-	word = NULL;
-	len = 0;
-	if (input[*i + len] == '$')
-		len++;
-	while (input[*i + len] && !is_special(input[*i + len]))
-		len++;
+	fd = open("/proc/self/stat", O_RDONLY);
+	if (fd == -1)
+	{
+		perror("minishell");
+		return (NULL);
+	}
+	bytes = read(fd, buf, 10);
+	close(fd);
+	if (bytes == -1)
+	{
+		perror("minishell");
+		return (NULL);
+	}
+	else if (!bytes)
+		return (NULL);
+	return (ft_itoa(ft_atoi(buf)));
+}
+
+t_token	get_token_word(t_shell *shell, char *input, int *i, int len)
+{
+	t_token	token;
+	char	*word;
+
 	if (input[*i] == '$')
 	{
 		if (input[*i + 1] == '$')
 		{
-			word = "123456";
-			add_token(tokens, create_token(TOKEN_WORD, word));
+			len++;
+			token = (t_token){TOKEN_DOLLAR, _getpid()};
 		}
 		else if (len - 1 == 0)
-			add_token(tokens, create_token(TOKEN_WORD, "$"));
+			token = (t_token){TOKEN_WORD, ft_strdup("$")};
 		else
 		{
 			word = ft_substr(input, *i + 1, len - 1);
-			add_token(tokens, create_token(TOKEN_DOLLAR, expand(shell, word, len - 1)));
+			token = (t_token){TOKEN_DOLLAR,
+				ft_strdup(expand(shell, word, len - 1))};
+			free(word);
+		}
+	}
+	else if (input[*i] == '~' && (!input[*i + 1] || is_whitespace(input[*i + 1])))
+		token = (t_token){TOKEN_DOLLAR,
+			ft_strdup(expand(shell, "HOME", len - 1))};
+	else
+		token = (t_token){TOKEN_WORD, ft_substr(input, *i, len)};
+	*i += len;
+	return (token);
+}
+
+void	handle_word(t_shell *shell, char *input, int *i, t_list **tokens)
+{
+	t_token	token;
+	int		len;
+
+	len = 0;
+	if (input[*i] == '$')
+		len++;
+	while (input[*i + len] && !is_special(input[*i + len]))
+		len++;
+	token = get_token_word(shell, input, i, len);
+	add_token(tokens, create_token(token.type, token.value));
+	free(token.value);
+}
+
+
+int	handle_redirection(char *input, int *i, t_list **tokens)
+{
+	int	j;
+
+	j = 0;
+	if (input[*i] == '>')
+	{
+		if (input[*i + 1] == '>')
+		{
+			j = 2;
+			return (2);
+		}
+		else
+		{
+			j = 1;
+			while (is_whitespace(input[*i + j]))
+				j++;
+			if (input[*i + j] == '>')
+			{
+				if (input[*i + j + 1] == '>')
+					ft_putstr_fd("minishell: syntax error near unexpected token '>>'\n", STDERR_FILENO);
+				else
+					ft_putstr_fd("minishell: syntax error near unexpected token '>'\n", STDERR_FILENO);
+				return (2);
+			}
+			else if (input[*i + j] == '<')
+			{
+				if (!ft_strncmp(input + *i + j + 1, "<<", 2))
+					ft_putstr_fd("minishell: syntax error near unexpected token '<<<'\n", STDERR_FILENO);
+				else if (input[*i + j + 1] == '<')
+					ft_putstr_fd("minishell: syntax error near unexpected token '<<'\n", STDERR_FILENO);
+				else
+					ft_putstr_fd("minishell: syntax error near unexpected token '<'\n", STDERR_FILENO);
+				return (2);
+			}
+			else if (!ft_isprint(input[*i + j]))
+			{
+				ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", STDERR_FILENO);
+				return (2);
+			}
+			else
+			{
+				add_token(tokens, create_token(TOKEN_REDIR_OUT, ">"));
+			}
 		}
 	}
 	else
 	{
-		word = ft_substr(input, *i, len);
-		add_token(tokens, create_token(TOKEN_WORD, word));
+		return (2);
 	}
-	*i += len;
-	free(word);
+	*i += j;
+	return (0);
 }
 
 t_list	*lexer(t_shell *shell, char *input)
@@ -97,11 +187,18 @@ t_list	*lexer(t_shell *shell, char *input)
 			i++;
 		else if (input[i] == '|')
 		{
-			//add_token(&tokens, create_token(TOKEN_PIPE, "|"));
+			add_token(&tokens, create_token(TOKEN_PIPE, "|"));
 			i++;
 		}
 		else if (input[i] == '>' || input[i] == '<')
-			;//handle_redirection(input, &i, &tokens);
+		{
+			shell->exit_status = handle_redirection(input, &i, &tokens);
+			if (shell->exit_status)
+			{
+				ft_lstclear(&tokens, del_token);
+				return (NULL);
+			}
+		}
 		else if (input[i] == '"' || input[i] == '\'')
 			;//handle_quoted_string(input, &i, &tokens);
 		else
