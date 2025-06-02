@@ -56,26 +56,37 @@ void init_shell(t_shell *shell, char **envp)
 void shell_loop(t_shell *shell)
 {
 	char	*input;
-	//t_token	*tokens;
+	t_list	*tokens;
 	//t_ast	*ast;
+	t_list	*ptr;
 
 	while (1)  // REPL (Read-Eval-Print Loop)
 	{
 		input = readline("minishell$ ");
 		if (!input)  // EOF (Ctrl+D)
 			break;
+		printf("%s\n", input);
 		add_to_history(shell, input);  // Save to history
-		// tokens = lexer(input);
-		// if (tokens)
-		// {
+		tokens = lexer(shell, input);
+		if (tokens)
+		{
+			// test lexer
+			ptr = tokens;
+			while (ptr)
+			{
+				printf("%d --> %s\n", ((t_token *)ptr->content)->type, ((t_token *)ptr->content)->value);
+				ptr = ptr->next;
+			}
+			// end test
 		// 	ast = parser(tokens);
 		// 	if (ast)
 		// 	{
 		// 		shell->exit_status = executor(ast, shell);
 		// 		free_ast(ast);
 		// 	}
-		// 	free_tokens(tokens);
-		// }
+			ft_lstclear(&tokens, del_token);
+			//free_tokens(tokens);
+		}
 		free(input);
 	}
 }
@@ -91,7 +102,7 @@ void cleanup_shell(t_shell *shell)
 	free_2d_array(shell->history.entries);
 	rl_clear_history();
 	//cleanup_resources();
-	ft_lstclear(&shell->env_list, del_env);;
+	ft_lstclear(&shell->env_list, del_env);
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
 	if (shell->is_interactive)
