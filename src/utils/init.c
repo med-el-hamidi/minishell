@@ -11,11 +11,17 @@ static t_env	*create_env_v(char **split)
 {
 	t_env *v;
 
+	if (!split || !*split)
+		return (NULL);
 	v = malloc(sizeof(t_env));
 	if (!v)
 		return (NULL);
+
 	v->key = ft_strdup(split[0]);
-	v->value = ft_strdup(split[1]);
+	if (split[1])
+		v->value = ft_strdup(split[1]);
+	else
+		v->value = NULL;
 	return (v);
 }
 
@@ -34,8 +40,6 @@ t_list	*init_env(char **envp)
 	while (envp[++i])
 	{
 		split = ft_split(envp[i], '=');
-		if (!split || !*split)
-			cleanup_init_shell(&head_env, NULL);
 		v = create_env_v(split);
 		if (!v)
 			cleanup_init_shell(&head_env, split);

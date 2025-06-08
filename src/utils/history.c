@@ -48,10 +48,10 @@ void	save_history_oflag(char *path, int oflag, t_shell *shell, int skip)
 	int	fd;
 	int	i;
 
-	fd = open(path, oflag, 0644);
+	fd = open(path, oflag, 0600);
 	if (fd == -1)
 	{
-		perror("Minishell: error");
+		perror("Minishell: history: cannot save history in ~"HISTFILE);
 		return ;
 	}
 	i = 0;
@@ -78,7 +78,7 @@ void save_history(t_shell *shell, char *path)
 		return ;
 	histfile_lines_c = 0;
 	if (shell->history.histmem_lines_c != shell->history.histfilesize)
-		histfile_lines_c = get_histfile_lines_count(path, O_CREAT | O_RDONLY, 0644);
+		histfile_lines_c = get_histfile_lines_count(path, O_CREAT | O_RDONLY, 0600);
 	if (histfile_lines_c == -1)
 		return ;
 

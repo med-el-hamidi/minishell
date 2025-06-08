@@ -40,7 +40,7 @@ int	get_histfile_lines_count(char *path, int oflag, int perm)
 		fd = open(path, oflag);
 	if (fd == -1)
 	{
-		perror("minishell: history : cannot open from ~"HISTFILE);
+		perror("minishell: history : cannot open ~"HISTFILE);
 		return (-1);
 	}
 	histfile_lines_c = count_lines_in_file(fd);
@@ -115,7 +115,7 @@ int	load_recent_history(char *path, t_shell *shell, int histfile_lines_c)
 	int		start;
 	int		exceed;
 
-	fd = open(path, O_CREAT | O_RDWR, 0644);
+	fd = open(path, O_CREAT | O_RDWR, 0600);
 	if (fd == -1)
 		return (0);
 	start = 0;
