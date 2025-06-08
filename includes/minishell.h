@@ -14,6 +14,7 @@
 # include "../libft/libft.h"
 # include "structures.h"
 # include "lexer.h"
+# include "parser.h"
 
 /* Main Functions */
 void	init_shell(t_shell *shell, char **envp);
@@ -42,5 +43,6 @@ int		get_histfile_lines_count(char *path, int oflag, int perm);
 void	free_2d_array(char **arr);
 void	del_env(void *v);
 void	del_token(void *t);
+void    free_ast(t_ast *node);
 
 #endif

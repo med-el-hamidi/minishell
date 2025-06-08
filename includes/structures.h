@@ -34,21 +34,15 @@ typedef struct s_history
 * t_token_type: Represents type of a single string (e.g. word, pipe, ...) from the input
 *
 */
-typedef enum e_token_type
-{
-	TOKEN_WORD,         // Regular command/argument (e.g., "ls", "-l")
-	TOKEN_PIPE,         // | (pipe operator)
-	TOKEN_REDIR_IN,     // < (input redirection)
-	TOKEN_REDIR_OUT,    // > (output redirection)
-	TOKEN_REDIR_APPEND, // >> (append output)
-	TOKEN_REDIR_HEREDOC,// << (heredoc)
-	TOKEN_QUOTE,        // ' or " (quote character)
-	TOKEN_DQUOTE,       // "" (double quote)
-	TOKEN_SQUOTE,       // '' (single quote)
-	TOKEN_DOLLAR,       // $ (variable expansion)
-	TOKEN_EOF,          // End of input
-	TOKEN_ERROR         // Invalid token (for error handling)
-}	t_token_type;
+typedef enum e_token_type {
+	TOKEN_WORD,        // All command/argument words (after expansion/quote removal)
+	TOKEN_PIPE,        // |
+	TOKEN_REDIR_IN,    // <
+	TOKEN_REDIR_OUT,   // >
+	TOKEN_REDIR_APPEND,// >>
+	TOKEN_REDIR_HEREDOC,// <<
+	TOKEN_EOF
+} t_token_type;
 
 /*
 *
