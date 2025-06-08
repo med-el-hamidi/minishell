@@ -19,6 +19,30 @@ static char    *accumulate_word(char *input, int *i)
     return (result);
 }
 
+char	*_getpid()
+{
+	char	buf[11];
+	ssize_t	bytes;
+	int		fd;
+
+	fd = open("/proc/self/stat", O_RDONLY);
+	if (fd == -1)
+	{
+		perror("minishell");
+		return (NULL);
+	}
+	bytes = read(fd, buf, 10);
+	close(fd);
+	if (bytes == -1)
+	{
+		perror("minishell");
+		return (NULL);
+	}
+	else if (!bytes)
+		return (NULL);
+	return (ft_itoa(ft_atoi(buf)));
+}
+
 static char *accumulate_dollar(t_shell *shell, char *input, int *i)
 {
 	int		start;
@@ -34,7 +58,7 @@ static char *accumulate_dollar(t_shell *shell, char *input, int *i)
     else if (input[*i] == '$')
     {
         (*i)++;
-        return (ft_itoa(getpid()));
+        return (_getpid());
     }
     start = *i;
     while (ft_isalnum(input[*i]) || input[*i] == '_')
