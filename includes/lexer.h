@@ -6,6 +6,7 @@ void	add_token(t_list **tokens, t_token *token);
 int		is_whitespace(char c);
 int		is_special(char c);
 
+char	*_getpid();
 int		handle_redirection(char *input, int *i, t_list **tokens);
 char	*accumulate_token(t_shell *shell, char *input, int *i);
 
