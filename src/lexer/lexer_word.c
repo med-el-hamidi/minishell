@@ -19,24 +19,6 @@ static char    *accumulate_word(char *input, int *i)
     return (result);
 }
 
-static char    *expand_env(t_shell *shell, const char *name)
-{
-	t_list	*ptr;
-	t_env	*env;
-    size_t	len;
-
-	ptr = shell->env_list;
-	len = ft_strlen(name);
-    while (ptr)
-    {
-        env = ptr->content;
-        if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
-            return (env->value);
-		ptr = ptr->next;
-    }
-    return (NULL);
-}
-
 static char *accumulate_dollar(t_shell *shell, char *input, int *i)
 {
 	int		start;
@@ -65,6 +47,26 @@ static char *accumulate_dollar(t_shell *shell, char *input, int *i)
 	return (ft_strdup(""));
 }
 
+static int	check_unclosed_quotes(char *input, int i)
+{
+	if (input[i++] == '\'')
+	{
+		while (input[i] && input[i] != '\'')
+			i++;
+		if (input[i] == '\'')
+			return (0);
+	}
+	else
+	{
+		while (input[i] && input[i] != '"')
+			i++;
+		if (input[i] == '"')
+			return (0);
+	}
+	ft_putstr_fd("minishell: syntax error: unclosed quotes!\n", STDERR_FILENO);
+	return (2);
+}
+
 static char *accumulate_quoted(t_shell *shell, char *input, int *i)
 {
 	char	*result;
@@ -73,6 +75,8 @@ static char *accumulate_quoted(t_shell *shell, char *input, int *i)
 	char	*tmp;
 	char	quote;
 
+	if (check_unclosed_quotes(input, *i))
+		return (NULL);
 	temp[1] = 0;
 	result = ft_strdup("");
 	quote = input[(*i)++];
@@ -123,7 +127,11 @@ char	*accumulate_token(t_shell *shell, char *input, int *i)
         }
         else
             chunk = accumulate_word(input, i);
-
+		if (!chunk)
+		{
+			free(result);
+			return (NULL);
+		}
         tmp = result;
         result = ft_strjoin(result, chunk);
         free(tmp);

@@ -28,8 +28,14 @@ t_list *lexer(t_shell *shell, char *input)
             char *word = accumulate_token(shell, input, &i);
             if (word && *word)
                 add_token(&tokens, create_token(TOKEN_WORD, word));
+			else
+			{
+				free(word);
+				ft_lstclear(&tokens, del_token);
+				return (NULL); 
+			}
             free(word);
         }
     }
-    return tokens;
+    return (tokens);
 }
