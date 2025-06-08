@@ -1,0 +1,91 @@
+#include "../../includes/minishell.h"
+
+static char	**gather_arguments(t_list **tokens)
+{
+	char	**args;
+	size_t	count;
+	t_list	*tmp;
+	size_t	i;
+
+	count = 0;
+	tmp = *tokens;
+	while (tmp && ((t_token *)tmp->content)->type == TOKEN_WORD)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+	args = malloc(sizeof(char *) * (count + 1));
+	if (!args)
+		return (NULL);
+	i = 0;
+	while (*tokens && ((t_token *)(*tokens)->content)->type == TOKEN_WORD)
+	{
+		args[i] = ft_strdup(((t_token *)(*tokens)->content)->value);
+		if (!args[i])
+		{
+			free_2d_array(args);
+			return (NULL);
+		}
+		i++;
+		advance_token(tokens);
+	}
+	args[i] = NULL;
+	return (args);
+}
+
+static t_ast	*parse_redirection(t_list **tokens, t_ast *command)
+{
+	t_token	*redir_tok;
+	t_token	*file_tok;
+	t_ast	*redir_node;
+
+	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
+	{
+		redir_tok = (t_token *)(*tokens)->content;
+		advance_token(tokens);
+		if (!*tokens || ((t_token *)(*tokens)->content)->type != TOKEN_WORD)
+			return (NULL);
+		file_tok = (t_token *)(*tokens)->content;
+		redir_node = new_ast_node(AST_REDIR, NULL);
+		if (!redir_node)
+			return (NULL);
+		redir_node->left = command;
+		redir_node->redir_file = ft_strdup(file_tok->value);
+		if (!redir_node->redir_file)
+		{
+			free(redir_node);
+			return (NULL);
+		}
+		redir_node->redir_fd = -1;
+		if (redir_tok->type == TOKEN_REDIR_IN)
+			redir_node->redir_type = REDIR_INPUT;
+		else if (redir_tok->type == TOKEN_REDIR_OUT)
+			redir_node->redir_type = REDIR_OUTPUT;
+		else if (redir_tok->type == TOKEN_REDIR_APPEND)
+			redir_node->redir_type = REDIR_APPEND;
+		else if (redir_tok->type == TOKEN_REDIR_HEREDOC)
+			redir_node->redir_type = REDIR_HEREDOC;
+		command = redir_node;
+		advance_token(tokens);
+	}
+	return (command);
+}
+
+t_ast	*parse_command(t_list **tokens)
+{
+	char	**args;
+	t_ast	*node;
+
+	if (!*tokens || ((t_token *)(*tokens)->content)->type != TOKEN_WORD)
+		return (NULL);
+	args = gather_arguments(tokens);
+	if (!args)
+		return (NULL);
+	node = new_ast_node(AST_CMD, args);
+	if (!node)
+	{
+		free_2d_array(args);
+		return (NULL);
+	}
+	return (parse_redirection(tokens, node));
+}
