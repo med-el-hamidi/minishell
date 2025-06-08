@@ -111,7 +111,8 @@ char	*accumulate_token(t_shell *shell, char *input, int *i)
             chunk = accumulate_quoted(shell, input, i);
         else if (input[*i] == '$')
             chunk = accumulate_dollar(shell, input, i);
-        else if (input[*i] == '~' && (!input[*i + 1] || input[*i + 1] == '/' || is_whitespace(input[*i + 1])))
+        else if (input[*i] == '~' && (!input[*i + 1] || input[*i + 1] == '/'
+                || is_whitespace(input[*i + 1])))
         {
             (*i)++;
             tmp = expand_env(shell, "HOME");
