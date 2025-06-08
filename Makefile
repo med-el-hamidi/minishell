@@ -19,7 +19,8 @@ LIBFT		:= libft/libft.a
 # Header files
 INCLUDES	:=	libft/libft.h \
 				includes/minishell.h \
-				includes/structures.h
+				includes/structures.h \
+				includes/lexer.h
 
 # Source directories
 SRC_DIR		:= src
@@ -37,7 +38,13 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(UTL_DIR)/free.c \
 			$(UTL_DIR)/history_utils.c \
 			$(UTL_DIR)/history.c \
-			$(LEX_DIR)/lexer.c
+			$(LEX_DIR)/lexer_word.c \
+			$(LEX_DIR)/lexer_redir.c \
+			$(LEX_DIR)/lexer_utils.c \
+			$(LEX_DIR)/lexer.c \
+			$(PAR_DIR)/parse.c \
+			$(PAR_DIR)/parser_utils.c \
+			$(PAR_DIR)/parser.c
 
 
 # Object files
