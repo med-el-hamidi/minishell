@@ -1,5 +1,44 @@
 #include "../includes/minishell.h"
 
+/*---------------print_ast to Test AST------------------------------*/
+static void print_ast(t_ast *node, int depth)
+{
+    if (!node) return;
+
+    for (int i = 0; i < depth; i++) printf("  ");
+
+    switch (node->type)
+	{
+        case AST_CMD:
+            printf("COMMAND: ");
+            for (int i = 0; node->args && node->args[i]; i++)
+                printf("%s ", node->args[i]);
+            printf("\n");
+            break;
+        case AST_PIPE:
+            printf("PIPELINE\n");
+            break;
+        case AST_REDIR:
+			if (node->redir_type == REDIR_INPUT)
+            	printf("REDIR_IN: <%s>\n", node->redir_file);
+			else if (node->redir_type == REDIR_OUTPUT)
+            	printf("REDIR_OUT: <%s>\n", node->redir_file);
+			else if (node->redir_type == REDIR_APPEND)
+            	printf("REDIR_APPEND: <%s>\n", node->redir_file);
+			else if (node->redir_type == REDIR_HEREDOC)
+            	printf("REDIR_HEREDOC: <%s>\n", node->redir_file);
+			else if (node->redir_type == REDIR_NONE)
+            	printf("REDIR_NONE: <%s>\n", node->redir_file);
+            break;
+    }
+
+    if (node->left)
+        print_ast(node->left, depth + 1);
+    if (node->right)
+        print_ast(node->right, depth + 1);
+}
+/*--------------------------------------------------------------------*/
+
 /*
 *
 * Main Function
@@ -48,7 +87,7 @@ void init_shell(t_shell *shell, char **envp)
 * shell_loop: Program loop of Minishell
 * 1. Display prompt and read input
 * 2. Process non-empty input
-* 3. 3. Lexing → Parsing → Execution
+* 3. Lexing → Parsing → Execution
 * 4. Cleanup and repeat
 *
 *
@@ -57,7 +96,7 @@ void shell_loop(t_shell *shell)
 {
 	char	*input;
 	t_list	*tokens;
-	//t_ast	*ast;
+	t_ast	*ast;
 	t_list	*ptr;
 
 	while (1)  // REPL (Read-Eval-Print Loop)
@@ -65,27 +104,27 @@ void shell_loop(t_shell *shell)
 		input = readline("minishell$ ");
 		if (!input)  // EOF (Ctrl+D)
 			break;
-		printf("%s\n", input);
 		add_to_history(shell, input);  // Save to history
 		tokens = lexer(shell, input);
 		if (tokens)
 		{
-			// test lexer
+			shell->exit_status = 0;
+			// --------------test lexer
 			ptr = tokens;
 			while (ptr)
 			{
 				printf("%d --> %s\n", ((t_token *)ptr->content)->type, ((t_token *)ptr->content)->value);
 				ptr = ptr->next;
 			}
-			// end test
-		// 	ast = parser(tokens);
-		// 	if (ast)
-		// 	{
-		// 		shell->exit_status = executor(ast, shell);
-		// 		free_ast(ast);
-		// 	}
+			// ---------------end test
+			ast = parser(tokens);
+			if (ast)
+			{
+				print_ast(ast, 0);
+				//shell->exit_status = executor(ast, shell);
+				free_ast(ast);
+			}
 			ft_lstclear(&tokens, del_token);
-			//free_tokens(tokens);
 		}
 		free(input);
 	}
@@ -96,7 +135,7 @@ void cleanup_shell(t_shell *shell)
 	char	*path;
 
 	path = get_history_path();
-	if (path && !access(path, W_OK) && (shell->history.count - shell->history.current) > 0)
+	if (path && (shell->history.count - shell->history.current) > 0)
 			save_history(shell, path);
 	free(path);
 	free_2d_array(shell->history.entries);
