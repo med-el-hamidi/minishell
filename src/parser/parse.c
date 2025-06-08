@@ -73,19 +73,47 @@ static t_ast	*parse_redirection(t_list **tokens, t_ast *command)
 
 t_ast	*parse_command(t_list **tokens)
 {
+	t_ast	*command;
+	t_ast	*redir_chain;
+	t_ast	*last;
 	char	**args;
-	t_ast	*node;
 
+    command = NULL;
+    redir_chain = NULL;
+	// Handle leading redirections
+	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
+	{
+		redir_chain = parse_redirection(tokens, redir_chain);
+		if (!redir_chain)
+			return (NULL);
+	}
+	// Check for actual command (WORD)
 	if (!*tokens || ((t_token *)(*tokens)->content)->type != TOKEN_WORD)
+	{
+		if (redir_chain)
+			return (redir_chain);
 		return (NULL);
+	}
+	// Gather command and arguments
 	args = gather_arguments(tokens);
 	if (!args)
 		return (NULL);
-	node = new_ast_node(AST_CMD, args);
-	if (!node)
+	command = new_ast_node(AST_CMD, args);
+	if (!command)
 	{
 		free_2d_array(args);
 		return (NULL);
 	}
-	return (parse_redirection(tokens, node));
+	// Apply trailing redirections after command
+	command = parse_redirection(tokens, command);
+	// Link leading redirection chain (if any) to command
+	if (redir_chain)
+	{
+		last = redir_chain;
+		while (last->left)
+			last = last->left;
+		last->left = command;
+		return (redir_chain);
+	}
+	return (command);
 }
