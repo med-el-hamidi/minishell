@@ -28,14 +28,14 @@ char	*_getpid()
 	fd = open("/proc/self/stat", O_RDONLY);
 	if (fd == -1)
 	{
-		perror("minishell");
+		perror("minishell: getpid");
 		return (NULL);
 	}
 	bytes = read(fd, buf, 10);
 	close(fd);
 	if (bytes == -1)
 	{
-		perror("minishell");
+		perror("minishell: getpid");
 		return (NULL);
 	}
 	else if (!bytes)
@@ -60,6 +60,8 @@ static char *accumulate_dollar(t_shell *shell, char *input, int *i)
         (*i)++;
         return (_getpid());
     }
+    else if (!input[*i] || is_whitespace(input[*i]))
+        return (ft_strdup("$"));
     start = *i;
     while (ft_isalnum(input[*i]) || input[*i] == '_')
         (*i)++;
@@ -130,7 +132,7 @@ char	*accumulate_token(t_shell *shell, char *input, int *i)
 	char	*result;
 	char	*chunk;
 	char	*tmp;
-	
+
 	result = ft_strdup("");
 	while (input[*i] && !is_whitespace(input[*i]) && !ft_strchr("|<>", input[*i]))
 	{
