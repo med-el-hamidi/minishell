@@ -78,8 +78,8 @@ t_ast	*parse_command(t_list **tokens)
 	t_ast	*last;
 	char	**args;
 
-    command = NULL;
-    redir_chain = NULL;
+	command = NULL;
+	redir_chain = NULL;
 	// Handle leading redirections
 	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
 	{

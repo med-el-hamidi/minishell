@@ -26,7 +26,10 @@ static void print_ast(t_ast *node, int depth)
 			else if (node->redir_type == REDIR_APPEND)
             	printf("REDIR_APPEND: <%s>\n", node->redir_file);
 			else if (node->redir_type == REDIR_HEREDOC)
+			{
             	printf("REDIR_HEREDOC: <%s>\n", node->redir_file);
+				set_herdoc_tmp_file(node);
+			}
 			else if (node->redir_type == REDIR_NONE)
             	printf("REDIR_NONE: <%s>\n", node->redir_file);
             break;
@@ -109,18 +112,18 @@ void shell_loop(t_shell *shell)
 		if (tokens)
 		{
 			shell->exit_status = 0;
-			// --------------test lexer
+			// -----------------------------------------------test lexer-------------------------------------
 			ptr = tokens;
 			while (ptr)
 			{
 				printf("%d --> %s\n", ((t_token *)ptr->content)->type, ((t_token *)ptr->content)->value);
 				ptr = ptr->next;
 			}
-			// ---------------end test
+			// -------------------------------------------------end test-------------------------------------
 			ast = parser(tokens);
 			if (ast)
 			{
-				print_ast(ast, 0);
+				print_ast(ast, 0);//--------------------------<-test ast--------------------------------------
 				//shell->exit_status = executor(ast, shell);
 				free_ast(ast);
 			}
@@ -140,7 +143,6 @@ void cleanup_shell(t_shell *shell)
 	free(path);
 	free_2d_array(shell->history.entries);
 	rl_clear_history();
-	//cleanup_resources();
 	ft_lstclear(&shell->env_list, del_env);
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
