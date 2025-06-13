@@ -43,6 +43,7 @@ int		get_histfile_lines_count(char *path, int oflag, int perm);
 void	free_2d_array(char **arr);
 void	del_env(void *v);
 void	del_token(void *t);
-void    free_ast(t_ast *node);
+void	free_ast(t_ast *node);
 
+void	set_herdoc_tmp_file(t_ast	*ast);
 #endif
