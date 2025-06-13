@@ -32,6 +32,7 @@ UTL_DIR		:= $(SRC_DIR)/utils
 
 # Source files
 SRCS		:= $(SRC_DIR)/main.c \
+			$(UTL_DIR)/herdoc_utils.c \
 			$(UTL_DIR)/init.c \
 			$(UTL_DIR)/signal.c \
 			$(UTL_DIR)/error.c \
