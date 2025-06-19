@@ -18,7 +18,12 @@ void	set_herdoc_tmp_file(t_ast	*ast)
 	while (1)
 	{
 		input = readline("> ");
-		if (!ft_strncmp(input, ast->redir_file, len))
+		if (!input)
+		{
+			printf("minishell: warning: here-document delimited by end-of-file (wanted '%s')\n", ast->redir_file);
+			break;
+		}
+		else if (!ft_strncmp(input, ast->redir_file, len))
 			break ;
 		ft_putendl_fd(input, fd);
 		free(input);
