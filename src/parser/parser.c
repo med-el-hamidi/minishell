@@ -59,7 +59,7 @@ static int	syntax_error_ast(t_ast *node)
 		return (!node->left || !node->right
 			|| syntax_error_ast(node->left) || syntax_error_ast(node->right));
 	else if (node->type == AST_REDIR)
-		return (!node->redir_file || !node->left || syntax_error_ast(node->left));
+		return (!node->redir_file);
 	return (0);
 }
 
