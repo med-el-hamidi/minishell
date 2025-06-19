@@ -28,7 +28,7 @@ void	set_herdoc_tmp_file(t_ast	*ast)
 		ft_putendl_fd(input, fd);
 		free(input);
 	}
-	close(fd);
 	free(ast->redir_file);
 	ast->redir_file = tmp_file;
+	ast->redir_fd = fd;
 }
