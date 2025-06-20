@@ -1,38 +1,5 @@
 #include "../../includes/minishell.h"
 
-static char	**gather_arguments(t_list **tokens)
-{
-	char	**args;
-	size_t	count;
-	t_list	*tmp;
-	size_t	i;
-
-	count = 0;
-	tmp = *tokens;
-	while (tmp && ((t_token *)tmp->content)->type == TOKEN_WORD)
-	{
-		count++;
-		tmp = tmp->next;
-	}
-	args = malloc(sizeof(char *) * (count + 1));
-	if (!args)
-		return (NULL);
-	i = 0;
-	while (*tokens && ((t_token *)(*tokens)->content)->type == TOKEN_WORD)
-	{
-		args[i] = ft_strdup(((t_token *)(*tokens)->content)->value);
-		if (!args[i])
-		{
-			free_2d_array(args);
-			return (NULL);
-		}
-		i++;
-		advance_token(tokens);
-	}
-	args[i] = NULL;
-	return (args);
-}
-
 static t_ast	*parse_redirection(t_list **tokens, t_ast *command)
 {
 	t_token	*redir_tok;
@@ -71,6 +38,47 @@ static t_ast	*parse_redirection(t_list **tokens, t_ast *command)
 	return (command);
 }
 
+static char	**gather_arguments(t_list **tokens, t_ast	**redir_chain)
+{
+	char	**args;
+	size_t	count;
+	t_list	*tmp;
+	size_t	i;
+
+	count = 0;
+	tmp = *tokens;
+	while (tmp && ((t_token *)tmp->content)->type != TOKEN_PIPE)
+	{
+		if (((t_token *)tmp->content)->type == TOKEN_WORD)
+			count++;
+		else if (is_redirection(((t_token *)tmp->content)->type))
+			tmp = tmp->next;
+		tmp = tmp->next;
+	}
+	args = malloc(sizeof(char *) * (count + 1));
+	if (!args)
+		return (NULL);
+	i = 0;
+	while (*tokens &&  ((t_token *)(*tokens)->content)->type != TOKEN_PIPE)
+	{
+		if (((t_token *)(*tokens)->content)->type == TOKEN_WORD)
+		{
+			args[i] = ft_strdup(((t_token *)(*tokens)->content)->value);
+			if (!args[i])
+			{
+				free_2d_array(args);
+				return (NULL);
+			}
+			i++;
+			advance_token(tokens);
+		}
+		else if (is_redirection(((t_token *)(*tokens)->content)->type))
+			*redir_chain = parse_redirection(tokens, *redir_chain);
+	}
+	args[i] = NULL;
+	return (args);
+}
+
 t_ast	*parse_command(t_list **tokens)
 {
 	t_ast	*command;
@@ -95,7 +103,7 @@ t_ast	*parse_command(t_list **tokens)
 		return (NULL);
 	}
 	// Gather command and arguments
-	args = gather_arguments(tokens);
+	args = gather_arguments(tokens, &redir_chain);
 	if (!args)
 		return (NULL);
 	command = new_ast_node(AST_CMD, args);
