@@ -35,9 +35,17 @@ char	*expand_env(t_shell *shell, const char *name)
 	t_env	*env;
     size_t	len;
 
-	ptr = shell->env_list;
 	len = ft_strlen(name);
+	ptr = shell->env_list;
     while (ptr)
+    {
+        env = ptr->content;
+        if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
+            return (env->value);
+		ptr = ptr->next;
+    }
+	ptr = shell->shell_vars;
+	while (ptr)
     {
         env = ptr->content;
         if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
