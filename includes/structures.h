@@ -124,7 +124,7 @@ typedef struct s_env
 */
 typedef struct s_shell
 {
-	t_list			*shell_vars;
+	t_list			*vars;
 	t_list			*env_list;
 	int				exit_status;
 	struct termios	orig_termios;

@@ -44,7 +44,7 @@ char	*expand_env(t_shell *shell, const char *name)
             return (env->value);
 		ptr = ptr->next;
     }
-	ptr = shell->shell_vars;
+	ptr = shell->vars;
 	while (ptr)
     {
         env = ptr->content;
