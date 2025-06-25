@@ -109,7 +109,7 @@ static char *accumulate_quoted(t_shell *shell, char *input, int *i)
 	while (input[*i] && input[*i] != quote)
 	{
 		chunk = NULL;
-		if (quote == '"' && input[*i] == '$')
+		if (quote == '"' && input[*i] == '$' && input[*i + 1] != '"')
 			chunk = accumulate_dollar(shell, input, i);
 		else
 		{
