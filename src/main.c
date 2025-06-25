@@ -71,7 +71,11 @@ int	main(int argc, char **argv, char **envp)
 */
 void init_shell(t_shell *shell, char **envp)
 {
-	shell->shell_vars = NULL;
+	shell->vars = NULL;
+	//----------------------------test shell vars--------------------------------------
+	char *envpp[] = {"a=aaa", "b=bbb", NULL};
+	shell->vars = init_env(envpp); //executor should add each assignment into vars linked list after checking env list, in case it's an env variable
+	//----------------------------end test--------------------------------------
 	shell->env_list = init_env(envp);
 	if (!shell->env_list)
 		exit_error("Failed to initialize the environment\n", 1);
@@ -126,7 +130,7 @@ void shell_loop(t_shell *shell)
 			if (ast)
 			{
 				print_ast(ast, 0);//--------------------------<-test ast--------------------------------------
-				//shell->exit_status = executor(ast, shell);
+				shell->exit_status = 0; //executor(ast, shell);
 				free_ast(ast);
 			}
 			ft_lstclear(&tokens, del_token);
@@ -146,7 +150,7 @@ void cleanup_shell(t_shell *shell)
 	free_2d_array(shell->history.entries);
 	rl_clear_history();
 	ft_lstclear(&shell->env_list, del_env);
-	ft_lstclear(&shell->shell_vars, del_env);
+	ft_lstclear(&shell->vars, del_env);
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
 	if (shell->is_interactive)
