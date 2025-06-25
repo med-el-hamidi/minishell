@@ -71,6 +71,7 @@ int	main(int argc, char **argv, char **envp)
 */
 void init_shell(t_shell *shell, char **envp)
 {
+	shell->shell_vars = NULL;
 	shell->env_list = init_env(envp);
 	if (!shell->env_list)
 		exit_error("Failed to initialize the environment\n", 1);
@@ -97,14 +98,15 @@ void init_shell(t_shell *shell, char **envp)
 */
 void shell_loop(t_shell *shell)
 {
-	char	*input;
-	t_list	*tokens;
-	t_ast	*ast;
-	t_list	*ptr;
+	const char	*prompt = "minishell$";
+	char		*input;
+	t_list		*tokens;
+	t_ast		*ast;
+	t_list		*ptr;
 
 	while (1)  // REPL (Read-Eval-Print Loop)
 	{
-		input = readline("minishell$ ");
+		input = readline(prompt);
 		if (!input)  // EOF (Ctrl+D)
 			break;
 		add_to_history(shell, input);  // Save to history
@@ -144,6 +146,7 @@ void cleanup_shell(t_shell *shell)
 	free_2d_array(shell->history.entries);
 	rl_clear_history();
 	ft_lstclear(&shell->env_list, del_env);
+	ft_lstclear(&shell->shell_vars, del_env);
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
 	if (shell->is_interactive)
