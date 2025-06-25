@@ -26,13 +26,13 @@ t_list *lexer(t_shell *shell, char *input)
         else
         {
             char *word = accumulate_token(shell, input, &i);
-            if (word && *word)
+            if (word)
                 add_token(&tokens, create_token(TOKEN_WORD, word));
 			else
 			{
 				free(word);
 				ft_lstclear(&tokens, del_token);
-				return (NULL); 
+				return (NULL);
 			}
             free(word);
         }
