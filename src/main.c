@@ -26,10 +26,7 @@ static void print_ast(t_ast *node, int depth)
 			else if (node->redir_type == REDIR_APPEND)
             	printf("REDIR_APPEND: <%s>\n", node->redir_file);
 			else if (node->redir_type == REDIR_HEREDOC)
-			{
             	printf("REDIR_HEREDOC: <%s>\n", node->redir_file);
-				set_herdoc_tmp_file(node);
-			}
 			else if (node->redir_type == REDIR_NONE)
             	printf("REDIR_NONE: <%s>\n", node->redir_file);
             break;
