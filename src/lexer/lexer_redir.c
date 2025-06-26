@@ -27,11 +27,7 @@ static int  check_invalid_token(char *input, int pos)
 		else if (input[pos] == '>')
 			return (print_syntax_error(">"));
 		else if (input[pos] == '<')
-		{
-			if (pos - 2 >= 0 && !ft_strncmp(&input[pos - 2], "<<", 2))
-				return (0);
 			return (print_syntax_error("<"));
-		}
 	}
 	return (0);
 }
@@ -39,7 +35,7 @@ static int  check_invalid_token(char *input, int pos)
 int handle_redirection(char *input, int *i, t_list **tokens)
 {
 	int	j;
-	int	is_append; 
+	int	is_append;
 	int	is_heredoc;
 
 	j = 1;
