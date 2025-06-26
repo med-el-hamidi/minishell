@@ -33,6 +33,7 @@ static t_ast	*parse_redirection(t_list **tokens, t_ast *command)
 		else if (redir_tok->type == TOKEN_REDIR_HEREDOC)
 			redir_node->redir_type = REDIR_HEREDOC;
 		command = redir_node;
+		set_herdoc_tmp_file(command);
 		advance_token(tokens);
 	}
 	return (command);
