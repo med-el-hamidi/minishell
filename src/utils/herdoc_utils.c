@@ -5,8 +5,8 @@ void	set_herdoc_tmp_file(t_ast	*ast)
 	char	*tmp_file;
 	char	*pid;
 	char	*input;
-	int		len;
 	int		fd;
+	size_t	len;
 
 	pid = _getpid();
 	tmp_file = ft_strjoin("/tmp/minishell_herdoc_", pid);
@@ -23,7 +23,7 @@ void	set_herdoc_tmp_file(t_ast	*ast)
 			printf("minishell: warning: here-document delimited by end-of-file (wanted '%s')\n", ast->redir_file);
 			break;
 		}
-		else if (!ft_strncmp(input, ast->redir_file, len))
+		else if (!ft_strncmp(input, ast->redir_file, len) && ft_strlen(input) == len)
 			break ;
 		ft_putendl_fd(input, fd);
 		free(input);
