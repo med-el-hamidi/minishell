@@ -1,14 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_redir.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/28 21:13:40 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/28 21:13:41 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-static int  print_syntax_error(const char *token)
+static int	print_syntax_error(const char *token)
 {
-    ft_putstr_fd("minishell: syntax error near unexpected token '", STDERR_FILENO);
-    ft_putstr_fd((char *)token, STDERR_FILENO);
-    ft_putstr_fd("'\n", STDERR_FILENO);
-    return (2);
+	ft_putstr_fd("minishell: syntax error near unexpected token '", \
+														STDERR_FILENO);
+	ft_putstr_fd((char *)token, STDERR_FILENO);
+	ft_putstr_fd("'\n", STDERR_FILENO);
+	return (2);
 }
 
-static int  check_invalid_token(char *input, int pos)
+static int	check_invalid_token(char *input, int pos)
 {
 	while (is_whitespace(input[pos]))
 		pos++;
@@ -32,7 +45,7 @@ static int  check_invalid_token(char *input, int pos)
 	return (0);
 }
 
-int handle_redirection(char *input, int *i, t_list **tokens)
+int	handle_redirection(char *input, int *i, t_list **tokens)
 {
 	int	j;
 	int	is_append;

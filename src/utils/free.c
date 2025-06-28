@@ -1,4 +1,16 @@
-# include "../../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/28 21:05:40 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/28 21:05:41 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/minishell.h"
 
 void	free_2d_array(char **arr)
 {
@@ -35,7 +47,7 @@ void	del_token(void *t)
 	free(ptr);
 }
 
-void free_ast(t_ast *node)
+void	free_ast(t_ast *node)
 {
 	if (!node)
 		return ;

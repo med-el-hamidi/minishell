@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/28 20:49:23 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/28 20:49:25 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 volatile sig_atomic_t	g_exit_status = 0;
 
-static void handle_sigint(int sig)
+static void	handle_sigint(int sig)
 {
 	(void)sig;
 	ft_putchar_fd('\n', STDOUT_FILENO);
@@ -24,5 +36,4 @@ void	setup_signals(void)
 	sa.sa_handler = handle_sigint;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 		perror("Minishell: SIGINT (Ctrl+C) handler failed");
-	// Handle EOF (Ctrl+D)
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/28 21:20:21 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/28 21:20:22 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef LEXER_H
 # define LEXER_H
 
@@ -6,7 +18,6 @@ void	add_token(t_list **tokens, t_token *token);
 int		is_whitespace(char c);
 int		is_special(char c);
 
-char	*_getpid();
 int		handle_redirection(char *input, int *i, t_list **tokens);
 char	*accumulate_token(t_shell *shell, char *input, int *i);
 

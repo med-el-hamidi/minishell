@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/28 21:09:43 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/28 21:09:45 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 t_ast	*new_ast_node(int type, char **args)
@@ -17,13 +29,13 @@ t_ast	*new_ast_node(int type, char **args)
 	return (node);
 }
 
-void    advance_token(t_list **tokens)
+void	advance_token(t_list **tokens)
 {
 	if (*tokens)
 		*tokens = (*tokens)->next;
 }
 
-int is_redirection(int type)
+int	is_redirection(int type)
 {
 	return (type == TOKEN_REDIR_OUT || type == TOKEN_REDIR_APPEND
 		|| type == TOKEN_REDIR_IN || type == TOKEN_REDIR_HEREDOC);

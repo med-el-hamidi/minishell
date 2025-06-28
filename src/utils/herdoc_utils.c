@@ -1,8 +1,8 @@
 #include "../../includes/minishell.h"
 
-static char *gen_tmp_file()
+static char	*gen_tmp_file(void )
 {
-	static	int	uniq_id = 0;
+	static int	uniq_id = 0;
 	char		*str;
 	char		*tmp;
 	char		*tmp_file;
@@ -29,14 +29,14 @@ void	set_herdoc_tmp_file(t_ast	*ast)
 	len = ft_strlen(ast->redir_file);
 	fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd == -1)
-		return (perror("minishell: herdoc"));
+		perror("minishell: herdoc");
 	while (1)
 	{
 		input = readline("> ");
 		if (!input)
 		{
 			printf("minishell: warning: here-document delimited by end-of-file (wanted '%s')\n", ast->redir_file);
-			break;
+			break ;
 		}
 		else if (!ft_strncmp(input, ast->redir_file, len) && ft_strlen(input) == len)
 			break ;

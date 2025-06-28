@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/28 21:20:08 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/28 21:20:10 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -31,12 +43,12 @@ void	init_history(t_shell *shell);
 void	init_termios(t_shell *shell);
 
 /* History functions*/
-char	*get_history_path(void );
+char	*get_history_path(t_shell *shell);
 void	load_history(t_shell *shell);
 void	add_to_history(t_shell *shell, char *input);
 void	save_history(t_shell *shell, char *path);
 int		load_recent_history(char *path, t_shell *shell, int histfile_lines_c);
-void	load_history_fd(t_shell *shell, int	histfile_lines_c, int *skip, int fd);
+void	load_history_fd(t_shell *shell, int histfile_lines_c, int *skip, int fd);
 int		get_histfile_lines_count(char *path, int oflag, int perm);
 
 /* Free functions */
@@ -45,5 +57,8 @@ void	del_env(void *v);
 void	del_token(void *t);
 void	free_ast(t_ast *node);
 
+/* Other utils */
 void	set_herdoc_tmp_file(t_ast	*ast);
+int		open_script(char *script);
+char	*_getpid(void );
 #endif

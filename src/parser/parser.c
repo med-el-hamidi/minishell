@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/28 21:08:38 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/28 21:08:39 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static int	syntax_error(t_list *tokens)
@@ -6,10 +18,11 @@ static int	syntax_error(t_list *tokens)
 		return (1);
 	if (((t_token *)tokens->content)->type == TOKEN_PIPE
 		|| ((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_PIPE)
-		{
-			ft_putendl_fd("minishell: syntax error near unexpected token '|'", STDERR_FILENO);
-			return (1);
-		}
+	{
+		ft_putendl_fd("minishell: syntax error near unexpected token '|'", \
+																STDERR_FILENO);
+		return (1);
+	}
 	while (tokens)
 	{
 		if (is_redirection(((t_token *)tokens->content)->type))

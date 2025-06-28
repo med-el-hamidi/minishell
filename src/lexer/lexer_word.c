@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-static char    *accumulate_word(char *input, int *i)
+static char	*accumulate_word(char *input, int *i)
 {
 	char	*result;
 	char	temp[2];
@@ -19,37 +19,13 @@ static char    *accumulate_word(char *input, int *i)
 	return (result);
 }
 
-char	*_getpid()
-{
-	char	buf[11];
-	ssize_t	bytes;
-	int		fd;
-
-	fd = open("/proc/self/stat", O_RDONLY);
-	if (fd == -1)
-	{
-		perror("minishell: getpid");
-		return (NULL);
-	}
-	bytes = read(fd, buf, 10);
-	close(fd);
-	if (bytes == -1)
-	{
-		perror("minishell: getpid");
-		return (NULL);
-	}
-	else if (!bytes)
-		return (NULL);
-	return (ft_itoa(ft_atoi(buf)));
-}
-
-static char *accumulate_dollar(t_shell *shell, char *input, int *i)
+static char	*accumulate_dollar(t_shell *shell, char *input, int *i)
 {
 	int		start;
 	char	*key;
 	char	*val;
 
-	(*i)++; // skip $
+	(*i)++;
 	if (input[*i] == '?')
 	{
 		(*i)++;
@@ -69,7 +45,7 @@ static char *accumulate_dollar(t_shell *shell, char *input, int *i)
 	val = expand_env(shell, key);
 	free(key);
 	if (val)
-		return ft_strdup(val);
+		return (ft_strdup(val));
 	return (ft_strdup(""));
 }
 
@@ -93,7 +69,7 @@ static int	check_unclosed_quotes(char *input, int i)
 	return (2);
 }
 
-static char *accumulate_quoted(t_shell *shell, char *input, int *i)
+static char	*accumulate_quoted(t_shell *shell, char *input, int *i)
 {
 	char	*result;
 	char	*chunk;

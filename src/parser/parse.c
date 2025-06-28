@@ -61,7 +61,7 @@ static char	**gather_arguments(t_list **tokens, t_ast	**redir_chain)
 	if (!args)
 		return (NULL);
 	i = 0;
-	while (*tokens &&  ((t_token *)(*tokens)->content)->type != TOKEN_PIPE)
+	while (*tokens && ((t_token *)(*tokens)->content)->type != TOKEN_PIPE)
 	{
 		if (((t_token *)(*tokens)->content)->type == TOKEN_WORD)
 		{
@@ -90,21 +90,18 @@ t_ast	*parse_command(t_list **tokens)
 
 	command = NULL;
 	redir_chain = NULL;
-	// Handle leading redirections
 	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
 	{
 		redir_chain = parse_redirection(tokens, redir_chain);
 		if (!redir_chain)
 			return (NULL);
 	}
-	// Check for actual command (WORD)
 	if (!*tokens || ((t_token *)(*tokens)->content)->type != TOKEN_WORD)
 	{
 		if (redir_chain)
 			return (redir_chain);
 		return (NULL);
 	}
-	// Gather command and arguments
 	args = gather_arguments(tokens, &redir_chain);
 	if (!args)
 		return (NULL);
@@ -114,9 +111,7 @@ t_ast	*parse_command(t_list **tokens)
 		free_2d_array(args);
 		return (NULL);
 	}
-	// Apply trailing redirections after command
 	command = parse_redirection(tokens, command);
-	// Link leading redirection chain (if any) to command
 	if (redir_chain)
 	{
 		last = redir_chain;

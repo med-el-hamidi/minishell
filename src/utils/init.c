@@ -1,4 +1,4 @@
-# include "../../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 static void	*cleanup_init_shell(t_list	**head_env)
 {
@@ -49,14 +49,6 @@ t_list	*init_env(char **envp)
 	return (head_env);
 }
 
-/*
-*
-* init_history: Initialize history of minishell
-*
-* 1. Read existing history
-* 2. Set history file for future writes
-*
-*/
 void	init_history(t_shell *shell)
 {
 	char	*path;
@@ -87,7 +79,7 @@ void	init_history(t_shell *shell)
 		return ;
 	}
 	ft_bzero(shell->history.entries, (shell->history.histfilesize + 1) * sizeof(char *));
-	path = get_history_path();
+	path = get_history_path(shell);
 	if (!path)
 		return ;
 	if (!access(path, F_OK | R_OK))
@@ -97,10 +89,7 @@ void	init_history(t_shell *shell)
 
 void	init_termios(t_shell *shell)
 {
-    // Backup original terminal settings
 	tcgetattr(STDIN_FILENO, &shell->orig_termios);
-
-    // Configure new settings (e.g., disable echo control chars)
 	shell->new_termios = shell->orig_termios;
 	shell->new_termios.c_lflag &= ~(ECHOCTL);
 	tcsetattr(STDIN_FILENO, TCSANOW, &shell->new_termios);
