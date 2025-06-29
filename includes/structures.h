@@ -103,6 +103,7 @@ typedef struct s_env
 typedef struct s_shell
 {
 	t_list			*env_list;
+	t_list			*vars;
 	int				exit_status;
 	struct termios	orig_termios;
 	struct termios	new_termios;
