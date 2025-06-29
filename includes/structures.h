@@ -20,6 +20,7 @@
 typedef struct s_history
 {
 	char	**entries;
+	char	*path;
 	int		count;
 	int		current;
 	int		histmem_lines_c;
@@ -84,7 +85,6 @@ typedef struct s_shell
 	struct termios	orig_termios;
 	struct termios	new_termios;
 	t_history		history;
-	t_token			*tokens;
 	int				is_interactive;
 	int				stdin_fd;
 	int				stdout_fd;

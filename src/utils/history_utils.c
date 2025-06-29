@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   history_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 16:24:01 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 16:24:02 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static int	count_lines_in_file(int fd)
@@ -27,7 +39,7 @@ static int	count_lines_in_file(int fd)
 	return (count);
 }
 
-int	get_histfile_lines_count(char *path, int oflag, int perm)
+int	get_histfile_lines_c(char *path, int oflag, int perm)
 {
 	int	fd;
 	int	histfile_lines_c;
@@ -46,10 +58,9 @@ int	get_histfile_lines_count(char *path, int oflag, int perm)
 	return (histfile_lines_c);
 }
 
-void	load_history_fd(t_shell *shell, int histfile_lines_c, int *skip, int fd)
+void	load_hist_fd(t_shell *shell, int histfile_lines_c, int *skip, int fd)
 {
 	char	*line;
-	size_t	len;
 	int		i;
 
 	i = -1;
@@ -60,15 +71,7 @@ void	load_history_fd(t_shell *shell, int histfile_lines_c, int *skip, int fd)
 			break ;
 		if (i >= skip[0])
 		{
-			len = ft_strlen(line);
-			if (len > 1 && line[len - 1] == '\n')
-			{
-				line[len - 1] = '\0';
-				if (i > skip[1] || !skip[1])
-					add_history(line);
-				shell->history.entries[shell->history.count++] = line;
-			}
-			else
+			if (!_add_history(shell, line, i, skip))
 				free(line);
 		}
 		else
@@ -76,7 +79,7 @@ void	load_history_fd(t_shell *shell, int histfile_lines_c, int *skip, int fd)
 	}
 }
 
-static void	get_recent_history_fd(t_shell *shell, int exceed, int histfile_lines_c, int *fd)
+static void	get_recent_hist_fd(t_shell *s, int e, int histfile_lines_c, int *fd)
 {
 	char	*line;
 	int		i;
@@ -89,12 +92,12 @@ static void	get_recent_history_fd(t_shell *shell, int exceed, int histfile_lines
 		line = get_next_line(*fd);
 		if (!line)
 			break ;
-		if (i >= exceed && j < shell->history.histfilesize)
+		if (i >= e && j < s->history.histfilesize)
 		{
-			if (shell->history.entries[j])
-				free(shell->history.entries[j]);
-			shell->history.entries[j++] = line;
-			shell->history.count++;
+			if (s->history.entries[j])
+				free(s->history.entries[j]);
+			s->history.entries[j++] = line;
+			s->history.count++;
 		}
 		else
 			free(line);
@@ -115,11 +118,13 @@ int	load_recent_history(char *path, t_shell *shell, int histfile_lines_c)
 	if (histfile_lines_c > shell->history.histfilesize)
 		start = histfile_lines_c - shell->history.histfilesize;
 	exceed = shell->history.histmem_lines_c + start;
-	if (shell->history.current != (shell->history.histfilesize - shell->history.histmem_lines_c))
-		ft_memmove(shell->history.entries + (shell->history.histfilesize - shell->history.histmem_lines_c),
+	if (shell->history.current != \
+		(shell->history.histfilesize - shell->history.histmem_lines_c))
+		ft_memmove(shell->history.entries + \
+			(shell->history.histfilesize - shell->history.histmem_lines_c),
 			shell->history.entries + shell->history.current,
 			shell->history.histmem_lines_c * sizeof(char *));
-	get_recent_history_fd(shell, exceed, histfile_lines_c, &fd);
+	get_recent_hist_fd(shell, exceed, histfile_lines_c, &fd);
 	close(fd);
 	return (histfile_lines_c - exceed);
 }

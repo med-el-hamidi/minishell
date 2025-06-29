@@ -1,9 +1,48 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 16:36:51 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 16:36:52 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
+
+static int	lexer_word(t_shell	*shell, t_list **tokens, char *input, int *i)
+{
+	char	*word;
+
+	word = accumulate_token(shell, input, i);
+	if (word)
+		add_token(tokens, create_token(TOKEN_WORD, word));
+	else
+	{
+		free(word);
+		ft_lstclear(tokens, del_token);
+		return (0);
+	}
+	free(word);
+	return (1);
+}
+
+static int	lexer_redir(t_shell	*shell, t_list **tokens, char *input, int *i)
+{
+	shell->exit_status = handle_redirection(input, i, tokens);
+	if (shell->exit_status)
+	{
+		ft_lstclear(tokens, del_token);
+		return (0);
+	}
+	return (1);
+}
 
 t_list	*lexer(t_shell *shell, char *input)
 {
 	t_list	*tokens;
-	char	*word;
 	int		i;
 
 	tokens = NULL;
@@ -19,26 +58,11 @@ t_list	*lexer(t_shell *shell, char *input)
 		}
 		else if (input[i] == '<' || input[i] == '>')
 		{
-			shell->exit_status = handle_redirection(input, &i, &tokens);
-			if (shell->exit_status)
-			{
-				ft_lstclear(&tokens, del_token);
+			if (!lexer_redir(shell, &tokens, input, &i))
 				return (NULL);
-			}
 		}
-		else
-		{
-			word = accumulate_token(shell, input, &i);
-			if (word)
-				add_token(&tokens, create_token(TOKEN_WORD, word));
-			else
-			{
-				free(word);
-				ft_lstclear(&tokens, del_token);
-				return (NULL);
-			}
-			free(word);
-		}
+		else if (!lexer_word(shell, &tokens, input, &i))
+			return (NULL);
 	}
 	return (tokens);
 }

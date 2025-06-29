@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   herdoc_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 15:48:23 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 15:48:24 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static char	*gen_tmp_file(void )
@@ -20,30 +32,29 @@ static char	*gen_tmp_file(void )
 
 void	set_herdoc_tmp_file(t_ast	*ast)
 {
-	char		*tmp_file;
-	char		*input;
-	int			fd;
-	size_t		len;
+	char			*tmp_file;
+	char			*s;
+	int				fd;
+	const size_t	l = ft_strlen(ast->redir_file);
 
 	tmp_file = gen_tmp_file();
-	len = ft_strlen(ast->redir_file);
 	fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd == -1)
-		perror("minishell: herdoc");
+		return (perror("minishell: herdoc"));
 	while (1)
 	{
-		input = readline("> ");
-		if (!input)
+		s = readline("> ");
+		if (!s || (!ft_strncmp(s, ast->redir_file, l) && ft_strlen(s) == l))
 		{
-			printf("minishell: warning: here-document delimited by end-of-file (wanted '%s')\n", ast->redir_file);
+			if (!s)
+				printf("minishell: warning: here-document delimited by end-of-file \
+(wanted '%s')\n", ast->redir_file);
 			break ;
 		}
-		else if (!ft_strncmp(input, ast->redir_file, len) && ft_strlen(input) == len)
-			break ;
-		ft_putendl_fd(input, fd);
-		free(input);
+		ft_putendl_fd(s, fd);
+		free(s);
 	}
 	free(ast->redir_file);
 	ast->redir_file = tmp_file;
-	ast->redir_fd = fd;
+	close (fd);
 }

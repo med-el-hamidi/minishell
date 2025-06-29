@@ -1,25 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   lexer_word_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/28 21:20:28 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/06/28 21:20:30 by mel-hami         ###   ########.fr       */
+/*   Created: 2025/06/29 18:01:54 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 18:01:55 by mel-hami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_H
-# define PARSER_H
+#include "../../includes/minishell.h"
 
-t_ast	*new_ast_node(int type, char **args);
-void	advance_token(t_list **tokens);
-int		is_redirection(int type);
+char	*ft_strjoin_in_s1(char *s1, char *s2)
+{
+	char	*tmp;
 
-t_ast	*parse_redirection(t_list **tokens, t_ast *command);
-t_ast	*parse_command(t_list **tokens);
+	tmp = s1;
+	s1 = ft_strjoin(s1, s2);
+	free(tmp);
+	free(s2);
+	return (s1);
+}
 
-t_ast	*parser(t_list *tokens);
+char	*gethome(t_shell	*shell)
+{
+	char	*home;
+	char	*tmp;
 
-#endif
+	tmp = _getenv(shell, "HOME");
+	if (tmp)
+		home = ft_strdup(tmp);
+	else
+		home = ft_strdup("");
+	return (home);
+}

@@ -27,6 +27,7 @@
 # include "structures.h"
 # include "lexer.h"
 # include "parser.h"
+//# include "exec.h"
 
 /* Main Functions */
 void	init_shell(t_shell *shell, char **envp);
@@ -43,13 +44,12 @@ void	init_history(t_shell *shell);
 void	init_termios(t_shell *shell);
 
 /* History functions*/
-char	*get_history_path(t_shell *shell);
 void	load_history(t_shell *shell);
 void	add_to_history(t_shell *shell, char *input);
 void	save_history(t_shell *shell, char *path);
 int		load_recent_history(char *path, t_shell *shell, int histfile_lines_c);
-void	load_history_fd(t_shell *shell, int histfile_lines_c, int *skip, int fd);
-int		get_histfile_lines_count(char *path, int oflag, int perm);
+void	load_hist_fd(t_shell *shell, int histfile_lines_c, int *skip, int fd);
+int		get_histfile_lines_c(char *path, int oflag, int perm);
 
 /* Free functions */
 void	free_2d_array(char **arr);
@@ -60,5 +60,11 @@ void	free_ast(t_ast *node);
 /* Other utils */
 void	set_herdoc_tmp_file(t_ast	*ast);
 int		open_script(char *script);
+char	*_getenv(t_shell *shell, const char *name);
 char	*_getpid(void );
+int		_add_history(t_shell *shell, char *line, int i, int *skip);
+
+/*Tests functions*/
+void	print_ast(t_ast *node, int depth);
+
 #endif

@@ -1,51 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 19:09:09 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 19:09:11 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-static t_ast	*parse_redirection(t_list **tokens, t_ast *command)
+static int	_count_args(t_list **tokens)
 {
-	t_token	*redir_tok;
-	t_token	*file_tok;
-	t_ast	*redir_node;
-
-	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
-	{
-		redir_tok = (t_token *)(*tokens)->content;
-		advance_token(tokens);
-		if (!*tokens || ((t_token *)(*tokens)->content)->type != TOKEN_WORD)
-			return (NULL);
-		file_tok = (t_token *)(*tokens)->content;
-		redir_node = new_ast_node(AST_REDIR, NULL);
-		if (!redir_node)
-			return (NULL);
-		redir_node->left = command;
-		redir_node->redir_file = ft_strdup(file_tok->value);
-		if (!redir_node->redir_file)
-		{
-			free(redir_node);
-			return (NULL);
-		}
-		redir_node->redir_fd = -1;
-		if (redir_tok->type == TOKEN_REDIR_IN)
-			redir_node->redir_type = REDIR_INPUT;
-		else if (redir_tok->type == TOKEN_REDIR_OUT)
-			redir_node->redir_type = REDIR_OUTPUT;
-		else if (redir_tok->type == TOKEN_REDIR_APPEND)
-			redir_node->redir_type = REDIR_APPEND;
-		else if (redir_tok->type == TOKEN_REDIR_HEREDOC)
-			redir_node->redir_type = REDIR_HEREDOC;
-		command = redir_node;
-		if (command->redir_type == REDIR_HEREDOC)
-			set_herdoc_tmp_file(command);
-		advance_token(tokens);
-	}
-	return (command);
-}
-
-static char	**gather_arguments(t_list **tokens, t_ast	**redir_chain)
-{
-	char	**args;
-	size_t	count;
+	int		count;
 	t_list	*tmp;
-	size_t	i;
 
 	count = 0;
 	tmp = *tokens;
@@ -57,7 +27,15 @@ static char	**gather_arguments(t_list **tokens, t_ast	**redir_chain)
 			tmp = tmp->next;
 		tmp = tmp->next;
 	}
-	args = malloc(sizeof(char *) * (count + 1));
+	return (count);
+}
+
+static char	**gather_args(t_list **tokens, t_ast	**redir_chain)
+{
+	char	**args;
+	size_t	i;
+
+	args = malloc(sizeof(char *) * (_count_args(tokens) + 1));
 	if (!args)
 		return (NULL);
 	i = 0;
@@ -67,10 +45,7 @@ static char	**gather_arguments(t_list **tokens, t_ast	**redir_chain)
 		{
 			args[i] = ft_strdup(((t_token *)(*tokens)->content)->value);
 			if (!args[i])
-			{
-				free_2d_array(args);
-				return (NULL);
-			}
+				return (free_2d_array(args), NULL);
 			i++;
 			advance_token(tokens);
 		}
@@ -81,11 +56,25 @@ static char	**gather_arguments(t_list **tokens, t_ast	**redir_chain)
 	return (args);
 }
 
+static t_ast	*_link_leading_redir_to_cmd(t_ast *redir_chain, t_ast *command)
+{
+	t_ast	*last;
+
+	if (redir_chain)
+	{
+		last = redir_chain;
+		while (last->left)
+			last = last->left;
+		last->left = command;
+		return (redir_chain);
+	}
+	return (command);
+}
+
 t_ast	*parse_command(t_list **tokens)
 {
 	t_ast	*command;
 	t_ast	*redir_chain;
-	t_ast	*last;
 	char	**args;
 
 	command = NULL;
@@ -102,23 +91,11 @@ t_ast	*parse_command(t_list **tokens)
 			return (redir_chain);
 		return (NULL);
 	}
-	args = gather_arguments(tokens, &redir_chain);
+	args = gather_args(tokens, &redir_chain);
 	if (!args)
 		return (NULL);
 	command = new_ast_node(AST_CMD, args);
 	if (!command)
-	{
-		free_2d_array(args);
-		return (NULL);
-	}
-	command = parse_redirection(tokens, command);
-	if (redir_chain)
-	{
-		last = redir_chain;
-		while (last->left)
-			last = last->left;
-		last->left = command;
-		return (redir_chain);
-	}
-	return (command);
+		return (free_2d_array(args), NULL);
+	return (_link_leading_redir_to_cmd(redir_chain, command));
 }

@@ -20,18 +20,20 @@ LIBFT		:= libft/libft.a
 INCLUDES	:=	libft/libft.h \
 				includes/minishell.h \
 				includes/structures.h \
-				includes/lexer.h
+				includes/lexer.h \
+				includes/exec.h
 
 # Source directories
 SRC_DIR		:= src
 LEX_DIR		:= $(SRC_DIR)/lexer
 PAR_DIR		:= $(SRC_DIR)/parser
 EXE_DIR		:= $(SRC_DIR)/executor
-BLT_DIR		:= $(SRC_DIR)/builtins
+BLT_DIR		:= $(EXE_DIR)/builtins
 UTL_DIR		:= $(SRC_DIR)/utils
 
 # Source files
 SRCS		:= $(SRC_DIR)/main.c \
+			$(SRC_DIR)/test_parser.c \
 			$(UTL_DIR)/utils.c \
 			$(UTL_DIR)/herdoc_utils.c \
 			$(UTL_DIR)/init.c \
@@ -41,12 +43,23 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(UTL_DIR)/history_utils.c \
 			$(UTL_DIR)/history.c \
 			$(LEX_DIR)/lexer_word.c \
+			$(LEX_DIR)/lexer_word_utils.c \
 			$(LEX_DIR)/lexer_redir.c \
 			$(LEX_DIR)/lexer_utils.c \
 			$(LEX_DIR)/lexer.c \
 			$(PAR_DIR)/parse.c \
+			$(PAR_DIR)/parse_redir.c \
 			$(PAR_DIR)/parser_utils.c \
-			$(PAR_DIR)/parser.c
+			$(PAR_DIR)/parser.c \
+			# $(BLT_DIR)/cd.c \
+			# $(BLT_DIR)/echo.c \
+			# $(BLT_DIR)/env.c \
+			# $(BLT_DIR)/pwd.c \
+			# $(BLT_DIR)/unset.c \
+			# $(BLT_DIR)/export.c \
+			# $(EXE_DIR)/exec_cmd.c \
+			# $(EXE_DIR)/exec_utils.c \
+			# $(EXE_DIR)/executor.c
 
 
 # Object files

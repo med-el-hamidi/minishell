@@ -41,29 +41,3 @@ int	is_special(char c)
 	return (c == '|' || c == '<' || c == '>'
 		|| c == '"' || c == '\'' || c == '$');
 }
-
-char	*expand_env(t_shell *shell, const char *name)
-{
-	t_list	*ptr;
-	t_env	*env;
-	size_t	len;
-
-	len = ft_strlen(name);
-	ptr = shell->env_list;
-	while (ptr)
-	{
-		env = ptr->content;
-		if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
-			return (env->value);
-		ptr = ptr->next;
-	}
-	ptr = shell->vars;
-	while (ptr)
-	{
-		env = ptr->content;
-		if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
-			return (env->value);
-		ptr = ptr->next;
-	}
-	return (NULL);
-}

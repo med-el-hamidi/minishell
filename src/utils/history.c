@@ -1,26 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   history.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 15:56:39 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 15:56:40 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
-
-char	*get_history_path(t_shell *shell)
-{
-	char	*home;
-
-	home = expand_env(shell, "HOME");
-	if (!home)
-		return (NULL);
-	return (ft_strjoin(home, HISTFILE));
-}
 
 void	load_history(t_shell *shell)
 {
-	char	*path;
 	int		fd;
 	int		histfile_lines_c;
 	int		skip[2];
 
-	path = get_history_path(shell);
-	if (!path)
-		return ;
-	histfile_lines_c = get_histfile_lines_count(path, O_RDONLY, 0);
+	histfile_lines_c = get_histfile_lines_c(shell->history.path, O_RDONLY, 0);
 	if (histfile_lines_c == -1)
 		return ;
 	skip[0] = histfile_lines_c - shell->history.histfilesize;
@@ -29,11 +27,10 @@ void	load_history(t_shell *shell)
 	skip[1] = histfile_lines_c - shell->history.histsize;
 	if (skip[1] <= 0)
 		skip[1] = 0;
-	fd = open(path, O_RDONLY);
-	free(path);
+	fd = open(shell->history.path, O_RDONLY);
 	if (fd == -1)
 		return ;
-	load_history_fd(shell, histfile_lines_c, skip, fd);
+	load_hist_fd(shell, histfile_lines_c, skip, fd);
 	if (shell->history.count)
 		shell->history.current = shell->history.count;
 	close(fd);
@@ -64,22 +61,23 @@ void	save_history_oflag(char *path, int oflag, t_shell *shell, int skip)
 
 void	save_history(t_shell *shell, char *path)
 {
-	int		histfile_lines_c;
-	int		skip;
+	int			histfile_lines_c;
+	int			skip;
+	const int	histmem_lines_c = shell->history.count - shell->history.current;
 
 	if (!shell || !shell->history.entries || !path)
 		return ;
-	shell->history.histmem_lines_c = shell->history.count - shell->history.current;
+	shell->history.histmem_lines_c = histmem_lines_c;
 	if (!shell->history.histmem_lines_c)
 		return ;
 	histfile_lines_c = 0;
 	if (shell->history.histmem_lines_c != shell->history.histfilesize)
-		histfile_lines_c = get_histfile_lines_count(path, O_CREAT | O_RDONLY, 0600);
+		histfile_lines_c = get_histfile_lines_c(path, O_CREAT | O_RDONLY, 0600);
 	if (histfile_lines_c == -1)
 		return ;
 	if (shell->history.histmem_lines_c == shell->history.histfilesize)
 		save_history_oflag(path, O_CREAT | O_WRONLY | O_TRUNC, shell, 0);
-	else if (shell->history.histmem_lines_c + histfile_lines_c < shell->history.histfilesize)
+	else if (histmem_lines_c + histfile_lines_c < shell->history.histfilesize)
 		save_history_oflag(path, O_CREAT | O_WRONLY | O_APPEND, shell, 0);
 	else if (!access(path, R_OK))
 	{
@@ -96,8 +94,8 @@ void	add_to_history(t_shell *shell, char *input)
 
 	if (!input || (input && !*input))
 		return ;
-	else if (shell->history.histsize - (shell->history.histfilesize - shell->history.count)
-		== shell->history.histsize)
+	else if (shell->history.histsize - (shell->history.histfilesize - \
+		shell->history.count) == shell->history.histsize)
 	{
 		rl_clear_history();
 		free(shell->history.entries[0]);

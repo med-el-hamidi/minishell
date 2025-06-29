@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_word.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 18:01:48 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 18:01:50 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static char	*accumulate_word(char *input, int *i)
@@ -25,8 +37,7 @@ static char	*accumulate_dollar(t_shell *shell, char *input, int *i)
 	char	*key;
 	char	*val;
 
-	(*i)++;
-	if (input[*i] == '?')
+	if (input[++(*i)] == '?')
 	{
 		(*i)++;
 		return (ft_itoa(shell->exit_status));
@@ -42,7 +53,7 @@ static char	*accumulate_dollar(t_shell *shell, char *input, int *i)
 	while (ft_isalnum(input[*i]) || input[*i] == '_')
 		(*i)++;
 	key = ft_substr(input, start, *i - start);
-	val = expand_env(shell, key);
+	val = _getenv(shell, key);
 	free(key);
 	if (val)
 		return (ft_strdup(val));
@@ -74,7 +85,6 @@ static char	*accumulate_quoted(t_shell *shell, char *input, int *i)
 	char	*result;
 	char	*chunk;
 	char	temp[2];
-	char	*tmp;
 	char	quote;
 
 	if (check_unclosed_quotes(input, *i))
@@ -93,13 +103,9 @@ static char	*accumulate_quoted(t_shell *shell, char *input, int *i)
 			chunk = ft_strdup(temp);
 			(*i)++;
 		}
-		tmp = result;
-		result = ft_strjoin(result, chunk);
-		free(tmp);
-		free(chunk);
+		result = ft_strjoin_in_s1(result, chunk);
 	}
-	if (input[*i] == quote)
-		(*i)++;
+	(*i)++;
 	return (result);
 }
 
@@ -107,10 +113,10 @@ char	*accumulate_token(t_shell *shell, char *input, int *i)
 {
 	char	*result;
 	char	*chunk;
-	char	*tmp;
 
 	result = ft_strdup("");
-	while (input[*i] && !is_whitespace(input[*i]) && !ft_strchr("|<>", input[*i]))
+	while (input[*i] && !is_whitespace(input[*i])
+		&& !ft_strchr("|<>", input[*i]))
 	{
 		chunk = NULL;
 		if (input[*i] == '"' || input[*i] == '\'')
@@ -121,23 +127,13 @@ char	*accumulate_token(t_shell *shell, char *input, int *i)
 				|| is_whitespace(input[*i + 1])))
 		{
 			(*i)++;
-			tmp = expand_env(shell, "HOME");
-			if (tmp)
-				chunk = ft_strdup(tmp);
-			else
-				chunk = ft_strdup("");
+			chunk = gethome(shell);
 		}
 		else
 			chunk = accumulate_word(input, i);
 		if (!chunk)
-		{
-			free(result);
-			return (NULL);
-		}
-		tmp = result;
-		result = ft_strjoin(result, chunk);
-		free(tmp);
-		free(chunk);
+			return (free(result), NULL);
+		result = ft_strjoin_in_s1(result, chunk);
 	}
 	return (result);
 }

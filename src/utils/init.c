@@ -1,10 +1,16 @@
-#include "../../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 19:38:36 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 19:38:38 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static void	*cleanup_init_shell(t_list	**head_env)
-{
-	ft_lstclear(head_env, del_env);
-	return (NULL);
-}
+#include "../../includes/minishell.h"
 
 static t_env	*create_env_v(char *str)
 {
@@ -38,10 +44,10 @@ t_list	*init_env(char **envp)
 	{
 		v = create_env_v(envp[i]);
 		if (!v)
-			cleanup_init_shell(&head_env);
+			return (ft_lstclear(&head_env, del_env), NULL);
 		node_env = ft_lstnew(v);
 		if (!node_env)
-			cleanup_init_shell(&head_env);
+			return (ft_lstclear(&head_env, del_env), NULL);
 		ft_lstadd_back(&head_env, node_env);
 	}
 	// Increment SHLVL if it exists
@@ -49,42 +55,53 @@ t_list	*init_env(char **envp)
 	return (head_env);
 }
 
-void	init_history(t_shell *shell)
+static void	_set_history_sizes(t_shell *shell)
 {
-	char	*path;
 	char	*val;
 	int		n;
 
-	shell->history.count = 0;
-	shell->history.current = 0;
-	shell->history.histmem_lines_c = 0;
 	n = 0;
 	val = getenv("HISTSIZE");
 	if (val)
 		n = ft_atoi(val);
 	if (n <= 0)
+	{
 		n = HISTSIZE;
+		//export HISTSIZE=n
+	}
 	shell->history.histsize = n;
 	n = 0;
 	val = getenv("HISTFILESIZE");
 	if (val)
 		n = ft_atoi(val);
 	if (n <= 0)
+	{
 		n = HISTFILESIZE;
+		//export HISTFILESIZE=n
+	}
 	shell->history.histfilesize = n;
-	shell->history.entries = malloc((shell->history.histfilesize + 1) * sizeof(char *));
+}
+
+void	init_history(t_shell *shell)
+{
+	shell->history.count = 0;
+	shell->history.current = 0;
+	shell->history.histmem_lines_c = 0;
+	_set_history_sizes(shell);
+	shell->history.entries = malloc((shell->history.histfilesize + 1) \
+														* sizeof(char *));
 	if (!shell->history.entries)
 	{
 		perror("minishell: history is not initialized!");
 		return ;
 	}
-	ft_bzero(shell->history.entries, (shell->history.histfilesize + 1) * sizeof(char *));
-	path = get_history_path(shell);
-	if (!path)
+	ft_bzero(shell->history.entries, (shell->history.histfilesize + 1) * \
+															sizeof(char *));
+	shell->history.path = ft_strjoin(getenv("HOME"), HISTFILE);
+	if (!shell->history.path)
 		return ;
-	if (!access(path, F_OK | R_OK))
+	if (!access(shell->history.path, F_OK | R_OK))
 		load_history(shell);
-	free(path);
 }
 
 void	init_termios(t_shell *shell)

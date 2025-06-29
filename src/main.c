@@ -51,7 +51,8 @@ void	script_shell_loop(t_shell *shell, char *script)
 			ast = parser(tokens);
 			if (ast)
 			{
-				shell->exit_status = 0; //executor(ast, shell);
+				print_ast(ast, 0);//test
+				shell->exit_status = 0;//executor(ast, shell);
 				free_ast(ast);
 			}
 			ft_lstclear(&tokens, del_token);
@@ -80,7 +81,8 @@ void	shell_loop(t_shell *shell)
 			ast = parser(tokens);
 			if (ast)
 			{
-				shell->exit_status = 0; //executor(ast, shell);
+				print_ast(ast, 0);//test
+				shell->exit_status = 0;//executor(ast, shell);
 				free_ast(ast);
 			}
 			ft_lstclear(&tokens, del_token);
@@ -91,14 +93,11 @@ void	shell_loop(t_shell *shell)
 
 void	cleanup_shell(t_shell *shell)
 {
-	char	*path;
-
 	if (shell->is_interactive)
 	{
-		path = get_history_path(shell);
-		if (path && (shell->history.count - shell->history.current) > 0)
-			save_history(shell, path);
-		free(path);
+		if (shell->history.path && (shell->history.count - shell->history.current) > 0)
+			save_history(shell, shell->history.path);
+		free(shell->history.path);
 		free_2d_array(shell->history.entries);
 		rl_clear_history();
 	}
@@ -106,6 +105,8 @@ void	cleanup_shell(t_shell *shell)
 	ft_lstclear(&shell->vars, del_env);
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
+	if (shell->is_interactive)
+		printf("exit\n");
 }
 
 int	main(int argc, char **argv, char **envp)
