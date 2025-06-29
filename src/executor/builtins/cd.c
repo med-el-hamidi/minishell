@@ -1,19 +1,12 @@
 #include "../../../includes/minishell.h"
 
-int	builtin_cd(char **argv)
+int	builtin_cd(char **argv, t_shell *shell)
 {
 	char	*path;
 
 	path = NULL;
-	if (!argv[1] || ft_strcmp(argv[1], "~") == 0)
-	{
-		path = getenv("HOME");
-		if (path == NULL)
-		{
-			ft_putendl_fd("Minishell: cd: HOME not set", STDERR_FILENO);
-			return (1);
-		}
-	}
+	if (!argv[1])
+		path = expand_env(shell,"HOME");
 	else if (argv[1][0] == '\0')
 		return (0);
 	else

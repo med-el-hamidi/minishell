@@ -1,18 +1,15 @@
 #include "../../../includes/minishell.h"
 
-int	builtin_unset(char **argv, t_list *env_list)
+int	builtin_unset(char **argv, t_list **env_list)
 {
 	t_list	*current;
-	t_list	*to_delet;
 	t_list	*prev;
 	int		i;
-	int		argv_count;
 
-	if (!argv || !env_list)
+	if (!argv || !*env_list)
 		return (0);
-	argv_count = ft_argv_count(argv) - 1;
 	prev = NULL;
-	current = env_list;
+	current = *env_list;
 	while (current)
 	{
 		i = 0;
@@ -20,25 +17,32 @@ int	builtin_unset(char **argv, t_list *env_list)
 		{
 			if (!ft_strcmp(((t_env *)current->content)->key, argv[i]))
 			{
-				argv_count--;
-				to_delet = current;
-				
-				if (!prev)
-				{
-					env_list = current->next;
-					prev = env_list;
-				}
-				else
-					prev->next = current->next;
-				current = prev;
-				ft_lstdelone(to_delet, del_env);
-				break;
+				unset_node(env_list, &current, &prev);
+				break ;
 			}
 		}
-		if (!argv_count)
-			break ;
-		prev = current;
-		current = current->next;
+		if (!argv[i])
+			update_iterators(&prev, &current);
 	}
 	return (0);
+}
+
+void	unset_node(t_list **env_list, t_list **current, t_list **prev)
+{
+	t_list	*to_delet;
+
+	to_delet = *current;
+	if (!*prev)
+		*env_list = (*current)->next;
+	else
+		(*prev)->next = (*current)->next;
+	*current = (*current)->next;
+	
+	ft_lstdelone(to_delet, del_env);
+}
+
+void	update_iterators(t_list **prev, t_list **current)
+{
+	*prev = *current;
+	*current = (*current)->next;
 }
