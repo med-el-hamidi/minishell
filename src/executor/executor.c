@@ -15,8 +15,7 @@ int	executor(t_ast *node, t_shell *shell)
 		if (is_builtin(node->args[0]))
 			return (exec_builtins(node, shell));
 		else
-			return (0);
-			// return (exec_external(node, shell));
+			return (exec_external(node, shell));
 	}
 	else if (node->type == AST_PIPE)
 		return (0);// return (exec_pipe(node, shell));
