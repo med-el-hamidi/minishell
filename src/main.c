@@ -77,10 +77,12 @@ void shell_loop(t_shell *shell)
 				if (ast)
 				{
 					ast->type = AST_CMD;
-					printf("Testing...unset\n");
+					ast->args = NULL;
+
+					printf("Testing...\n");
 					builtin_env(shell->env_list);
 					printf("-------------------------------\n");
-					ast->args = ft_split("export,HOME=oussama,NVM_INC=oussama,okkkkk=okkkkk", ',');
+					ast->args = ft_split("cd,HOME,HOME,NVM_INC,LESS", ',');
 					shell->exit_status = executor(ast, shell);
 					// sleep(3);
 					builtin_env(shell->env_list);
