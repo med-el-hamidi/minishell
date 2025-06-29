@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structures.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 21:20:15 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/06/28 21:20:16 by mel-hami         ###   ########.fr       */
+/*   Updated: 2025/06/29 21:31:47 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct s_shell
 	struct termios	orig_termios;
 	struct termios	new_termios;
 	t_history		history;
+	t_list			*tokens;
 	int				is_interactive;
 	int				stdin_fd;
 	int				stdout_fd;

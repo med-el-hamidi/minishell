@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 20:47:02 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/06/28 20:47:06 by mel-hami         ###   ########.fr       */
+/*   Updated: 2025/06/29 21:35:02 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ void	script_shell_loop(t_shell *shell, char *script)
 		if (!input)
 			break ;
 		tokens = lexer(shell, input);
+		free(input);
+		shell->tokens = tokens;
 		if (tokens)
 		{
 			shell->exit_status = 0;
@@ -57,7 +59,6 @@ void	script_shell_loop(t_shell *shell, char *script)
 			}
 			ft_lstclear(&tokens, del_token);
 		}
-		free(input);
 	}
 	close(fd);
 }
@@ -75,6 +76,8 @@ void	shell_loop(t_shell *shell)
 			break ;
 		add_to_history(shell, input);
 		tokens = lexer(shell, input);
+		free(input);
+		shell->tokens = tokens;
 		if (tokens)
 		{
 			shell->exit_status = 0;
@@ -87,7 +90,6 @@ void	shell_loop(t_shell *shell)
 			}
 			ft_lstclear(&tokens, del_token);
 		}
-		free(input);
 	}
 }
 
