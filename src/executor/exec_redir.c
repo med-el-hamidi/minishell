@@ -17,10 +17,10 @@ int	exec_redirection(t_ast *node, t_shell *shell)
 		perror("redirection open");
 		return (1);
 	}
-	if (node->type == REDIR_INPUT || node->type == REDIR_HEREDOC)
-		dup2(fd, STDIN_FILNO);
+	if (node->redir_type == REDIR_INPUT || node->redir_type == REDIR_HEREDOC)
+		dup2(fd, STDIN_FILENO);
 	else
 		dup2(fd, STDOUT_FILENO);
-	clode (fd);
+	close (fd);
 	return (executor(node->left, shell));
 }

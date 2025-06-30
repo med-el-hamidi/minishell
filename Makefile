@@ -60,6 +60,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(EXE_DIR)/exec_cmd.c \
 			$(EXE_DIR)/exec_utils.c \
 			$(EXE_DIR)/external_cmd.c \
+			$(EXE_DIR)/exec_redir.c \
 			$(EXE_DIR)/executor.c
 
 

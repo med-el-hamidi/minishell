@@ -25,6 +25,7 @@ void	unset_node(t_list **env_list, t_list **current, t_list **prev);
 t_list	*find_env_var(t_list *env_list, char *name);
 
 /* executor main functions */
+int		exec_redirection(t_ast *node, t_shell *shell);
 int		exec_builtins(t_ast *node, t_shell *shell);
 int		exec_external(t_ast *node, t_shell *shell);
 int		executor(t_ast *node, t_shell *shell);
