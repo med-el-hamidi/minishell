@@ -46,7 +46,7 @@ void	script_shell_loop(t_shell *shell, char *script)
 			break ;
 		tokens = lexer(shell, input);
 		free(input);
-		shell->tokens = tokens;
+		shell->tokens = &tokens;
 		if (tokens)
 		{
 			shell->exit_status = 0;
@@ -77,7 +77,7 @@ void	shell_loop(t_shell *shell)
 		add_to_history(shell, input);
 		tokens = lexer(shell, input);
 		free(input);
-		shell->tokens = tokens;
+		shell->tokens = &tokens;
 		if (tokens)
 		{
 			shell->exit_status = 0;
