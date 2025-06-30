@@ -3,14 +3,23 @@
 int	builtin_echo(char **argv)
 {
 	int	i;
+	int	j;
 	int	new_line;
 
 	i = 1;
 	new_line = 1;
-	while (argv[i] && ft_strcmp(argv[i], "-n") == 0)
+	while (argv[i] && ft_strncmp(argv[i], "-n", 2) == 0)
 	{
-		new_line = 0;
-		i++;
+		j = 2;
+		while (argv[i][j] == 'n')
+			j++;
+		if (!argv[i][j])
+		{
+			new_line = 0;
+			i++;
+		}
+		else
+			break ;
 	}
 	while (argv[i])
 	{
