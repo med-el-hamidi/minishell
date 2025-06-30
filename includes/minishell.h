@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/28 21:20:08 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 21:19:12 by obensarj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -10,8 +22,11 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <termios.h>
+# include <sys/stat.h>
 # include "../libft/libft.h"
 # include "structures.h"
+# include "lexer.h"
+# include "parser.h"
 # include "exec.h"
 
 /* Main Functions */
@@ -31,12 +46,25 @@ void	init_termios(t_shell *shell);
 /* History functions*/
 void	load_history(t_shell *shell);
 void	add_to_history(t_shell *shell, char *input);
-void	save_history(t_shell *shell);
-void	load_recent_history(char *path, t_shell *shell, int histmem_lines_c, int histfile_lines_c);
-void	load_history_fd(t_shell *shell, int	histfile_lines_c, int *skip, int fd);
-int		get_histfile_lines_count(char *path, int oflag, int perm);
+void	save_history(t_shell *shell, char *path);
+int		load_recent_history(char *path, t_shell *shell, int histfile_lines_c);
+void	load_hist_fd(t_shell *shell, int histfile_lines_c, int *skip, int fd);
+int		get_histfile_lines_c(char *path, int oflag, int perm);
 
 /* Free functions */
 void	free_2d_array(char **arr);
 void	del_env(void *v);
+void	del_token(void *t);
+void	free_ast(t_ast *node);
+
+/* Other utils */
+void	set_herdoc_tmp_file(t_ast	*ast);
+int		open_script(char *script);
+char	*_getenv(t_shell *shell, const char *name);
+char	*_getpid(void );
+int		_add_history(t_shell *shell, char *line, int i, int *skip);
+
+/*Tests functions*/
+void	print_ast(t_ast *node, int depth);
+
 #endif

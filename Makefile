@@ -20,6 +20,7 @@ LIBFT		:= libft/libft.a
 INCLUDES	:=	libft/libft.h \
 				includes/minishell.h \
 				includes/structures.h \
+				includes/lexer.h \
 				includes/exec.h
 
 # Source directories
@@ -32,12 +33,24 @@ UTL_DIR		:= $(SRC_DIR)/utils
 
 # Source files
 SRCS		:= $(SRC_DIR)/main.c \
+			$(SRC_DIR)/test_parser.c \
+			$(UTL_DIR)/utils.c \
+			$(UTL_DIR)/herdoc_utils.c \
 			$(UTL_DIR)/init.c \
 			$(UTL_DIR)/signal.c \
 			$(UTL_DIR)/error.c \
 			$(UTL_DIR)/free.c \
 			$(UTL_DIR)/history_utils.c \
 			$(UTL_DIR)/history.c \
+			$(LEX_DIR)/lexer_word.c \
+			$(LEX_DIR)/lexer_word_utils.c \
+			$(LEX_DIR)/lexer_redir.c \
+			$(LEX_DIR)/lexer_utils.c \
+			$(LEX_DIR)/lexer.c \
+			$(PAR_DIR)/parse.c \
+			$(PAR_DIR)/parse_redir.c \
+			$(PAR_DIR)/parser_utils.c \
+			$(PAR_DIR)/parser.c \
 			$(BLT_DIR)/cd.c \
 			$(BLT_DIR)/echo.c \
 			$(BLT_DIR)/env.c \
@@ -47,7 +60,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(EXE_DIR)/exec_cmd.c \
 			$(EXE_DIR)/exec_utils.c \
 			$(EXE_DIR)/external_cmd.c \
-			$(EXE_DIR)/executor.c 
+			$(EXE_DIR)/executor.c
 
 
 # Object files
