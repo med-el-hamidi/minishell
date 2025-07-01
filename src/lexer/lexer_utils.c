@@ -35,9 +35,3 @@ int	is_whitespace(char c)
 {
 	return ((c >= 9 && c <= 13) || c == ' ');
 }
-
-int	is_special(char c)
-{
-	return (c == '|' || c == '<' || c == '>'
-		|| c == '"' || c == '\'' || c == '$');
-}

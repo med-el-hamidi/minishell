@@ -24,3 +24,12 @@ void	exit_error(char *msg, const int sys_error)
 	ft_putchar_fd('\n', STDERR_FILENO);
 	exit(EXIT_FAILURE);
 }
+
+int	print_syntax_error(const char *token)
+{
+	ft_putstr_fd("minishell: syntax error near unexpected token '", \
+														STDERR_FILENO);
+	ft_putstr_fd((char *)token, STDERR_FILENO);
+	ft_putstr_fd("'\n", STDERR_FILENO);
+	return (2);
+}

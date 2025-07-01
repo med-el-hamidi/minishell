@@ -25,12 +25,9 @@ static int	syntax_error(t_list *tokens)
 	}
 	while (tokens)
 	{
-		if (is_redirection(((t_token *)tokens->content)->type))
-		{
-			if (!tokens->next
-				|| ((t_token *)tokens->next->content)->type != TOKEN_WORD)
-				return (1);
-		}
+		if (is_redirection(((t_token *)tokens->content)->type)
+			&& !((t_token *)tokens->content)->value)
+			return (1);
 		tokens = tokens->next;
 	}
 	return (0);

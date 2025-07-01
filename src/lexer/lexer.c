@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static int	lexer_word(t_shell	*shell, t_list **tokens, char *input, int *i)
+static int	lexer_word(t_shell	*shell, t_list **tokens, char *input, size_t *i)
 {
 	char	*word;
 
@@ -29,9 +29,9 @@ static int	lexer_word(t_shell	*shell, t_list **tokens, char *input, int *i)
 	return (1);
 }
 
-static int	lexer_redir(t_shell	*shell, t_list **tokens, char *input, int *i)
+static int	lexer_redir(t_shell	*shell, t_list **tokens, char *input, size_t *i)
 {
-	shell->exit_status = handle_redirection(input, i, tokens);
+	shell->exit_status = handle_redirection(shell, tokens, input, i);
 	if (shell->exit_status)
 	{
 		ft_lstclear(tokens, del_token);
@@ -43,7 +43,7 @@ static int	lexer_redir(t_shell	*shell, t_list **tokens, char *input, int *i)
 t_list	*lexer(t_shell *shell, char *input)
 {
 	t_list	*tokens;
-	int		i;
+	size_t	i;
 
 	tokens = NULL;
 	i = 0;

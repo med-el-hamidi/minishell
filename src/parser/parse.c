@@ -23,8 +23,6 @@ static int	_count_args(t_list **tokens)
 	{
 		if (((t_token *)tmp->content)->type == TOKEN_WORD)
 			count++;
-		else if (is_redirection(((t_token *)tmp->content)->type))
-			tmp = tmp->next;
 		tmp = tmp->next;
 	}
 	return (count);

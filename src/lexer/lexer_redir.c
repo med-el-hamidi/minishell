@@ -12,16 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static int	print_syntax_error(const char *token)
-{
-	ft_putstr_fd("minishell: syntax error near unexpected token '", \
-														STDERR_FILENO);
-	ft_putstr_fd((char *)token, STDERR_FILENO);
-	ft_putstr_fd("'\n", STDERR_FILENO);
-	return (2);
-}
-
-static int	check_invalid_token(char *input, int pos)
+static int	check_invalid_token(char *input, size_t pos)
 {
 	while (is_whitespace(input[pos]))
 		pos++;
@@ -45,31 +36,74 @@ static int	check_invalid_token(char *input, int pos)
 	return (0);
 }
 
-int	handle_redirection(char *input, int *i, t_list **tokens)
+static char	*get_delimiter(char *input, size_t *i)
 {
-	int	j;
-	int	is_append;
-	int	is_heredoc;
+	char	*result;
+	int		f;
 
-	j = 1;
-	is_append = 0;
-	is_heredoc = 0;
+	f = 0;
+	result = ft_strdup("");
+	while (input[*i] && !ft_strchr("|<>", input[*i]))
+	{
+		if (!f && is_whitespace(input[*i]))
+			break ;
+		else if ((input[*i] == '"' || input[*i] == '\''))
+		{
+			if (!f && check_unclosed_quotes(input, *i))
+				return (free(result), NULL);
+			if (!f)
+				f = 1;
+			else
+				f = 0;
+			(*i)++;
+		}
+		else
+			result = ft_strjoin_char_to_s1(result, input[(*i)++]);
+	}
+	return (result);
+}
+
+static int	get_redirection_type(char *input, size_t *i)
+{
+	int	type;
+
+	type = TOKEN_REDIR_IN;
 	if (input[*i] == '>' && input[*i + 1] == '>')
-		is_append = 1;
-	if ((input[*i] == '<' && input[*i + 1] == '<'))
-		is_heredoc = 1;
-	if (is_append || is_heredoc)
-		j++;
-	if (check_invalid_token(input, *i + j))
-		return (2);
-	else if (is_append)
-		add_token(tokens, create_token(TOKEN_REDIR_APPEND, ">>"));
-	else if (is_heredoc)
-		add_token(tokens, create_token(TOKEN_REDIR_HEREDOC, "<<"));
+		type = TOKEN_REDIR_APPEND;
+	else if ((input[*i] == '<' && input[*i + 1] == '<'))
+		type = TOKEN_REDIR_HEREDOC;
 	else if (input[*i] == '>')
-		add_token(tokens, create_token(TOKEN_REDIR_OUT, ">"));
+		type = TOKEN_REDIR_OUT;
+	if (type == TOKEN_REDIR_APPEND || type == TOKEN_REDIR_HEREDOC)
+		*i += 1;
+	*i += 1;
+	return (type);
+}
+
+int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
+{
+	int		type;
+	char	*str;
+
+	type = get_redirection_type(input, i);
+	if (check_invalid_token(input, *i))
+		return (2);
+	while (is_whitespace(input[*i]))
+		(*i)++;
+	if (type == TOKEN_REDIR_HEREDOC)
+		str = get_delimiter(input, i);
 	else
-		add_token(tokens, create_token(TOKEN_REDIR_IN, "<"));
-	*i += j;
-	return (0);
+		str = accumulate_token(shell, input, i);
+	if (!str)
+		return (2);
+	if (type == TOKEN_REDIR_APPEND)
+		add_token(tokens, create_token(TOKEN_REDIR_APPEND, str));
+	else if (type == TOKEN_REDIR_HEREDOC)
+		(set_herdoc_tmp_file(shell, &str), \
+		add_token(tokens, create_token(TOKEN_REDIR_HEREDOC, str)));
+	else if (type == TOKEN_REDIR_OUT)
+		add_token(tokens, create_token(TOKEN_REDIR_OUT, str));
+	else
+		add_token(tokens, create_token(TOKEN_REDIR_IN, str));
+	return (free(str), 0);
 }

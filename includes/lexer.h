@@ -16,13 +16,16 @@
 t_token	*create_token(t_token_type type, char *value);
 void	add_token(t_list **tokens, t_token *token);
 int		is_whitespace(char c);
-int		is_special(char c);
 
-char	*ft_strjoin_in_s1(char *s1, char *s2);
+int		check_unclosed_quotes(char *input, size_t i);
+char	*ft_strjoin_to_s1(char *s1, char *s2);
+char	*ft_strjoin_char_to_s1(char *s1, char c);
 char	*gethome(t_shell	*shell);
 
-int		handle_redirection(char *input, int *i, t_list **tokens);
-char	*accumulate_token(t_shell *shell, char *input, int *i);
+char	*accumulate_dollar(t_shell *shell, char *input, size_t *i);
+int		handle_redirection(t_shell *shell, t_list **tokens, char *input, \
+																size_t *i);
+char	*accumulate_token(t_shell *shell, char *input, size_t *i);
 
 t_list	*lexer(t_shell *shell, char *input);
 

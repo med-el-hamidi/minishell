@@ -36,6 +36,7 @@ void	cleanup_shell(t_shell *shell);
 
 /* Error functions*/
 void	exit_error(char *msg, const int sys_error);
+int		print_syntax_error(const char *token);
 
 /* Init functions*/
 t_list	*init_env(char **envp);
@@ -58,7 +59,7 @@ void	del_token(void *t);
 void	free_ast(t_ast *node);
 
 /* Other utils */
-void	set_herdoc_tmp_file(t_ast	*ast);
+void	set_herdoc_tmp_file(t_shell *shell, char **delimiter);
 int		open_script(char *script);
 char	*_getenv(t_shell *shell, const char *name);
 char	*_getpid(void );

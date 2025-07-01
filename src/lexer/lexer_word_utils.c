@@ -12,7 +12,27 @@
 
 #include "../../includes/minishell.h"
 
-char	*ft_strjoin_in_s1(char *s1, char *s2)
+int	check_unclosed_quotes(char *input, size_t i)
+{
+	if (input[i++] == '\'')
+	{
+		while (input[i] && input[i] != '\'')
+			i++;
+		if (input[i] == '\'')
+			return (0);
+	}
+	else
+	{
+		while (input[i] && input[i] != '"')
+			i++;
+		if (input[i] == '"')
+			return (0);
+	}
+	ft_putstr_fd("minishell: syntax error: unclosed quotes!\n", STDERR_FILENO);
+	return (2);
+}
+
+char	*ft_strjoin_to_s1(char *s1, char *s2)
 {
 	char	*tmp;
 
@@ -20,6 +40,17 @@ char	*ft_strjoin_in_s1(char *s1, char *s2)
 	s1 = ft_strjoin(s1, s2);
 	free(tmp);
 	free(s2);
+	return (s1);
+}
+
+char	*ft_strjoin_char_to_s1(char *s1, char c)
+{
+	const char	arr[2] = {c, 0};
+	char		*tmp;
+
+	tmp = s1;
+	s1 = ft_strjoin(s1, arr);
+	free(tmp);
 	return (s1);
 }
 
