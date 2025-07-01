@@ -2,25 +2,32 @@
 
 int	exec_redirection(t_ast *node, t_shell *shell)
 {
-	int	fd = -1;
+	int saved_stdin;
+	int saved_stdout;
+	int ret;
 
-	if (!node || node->type != AST_REDIR || !node->redir_file)
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	if (!node || !node->redir_file)
 		return (1);
 	if (node->redir_type == REDIR_INPUT || node->redir_type == REDIR_HEREDOC)
-		fd = open(node->redir_file, O_RDONLY);
+		node->redir_fd = open(node->redir_file, O_RDONLY);
 	else if (node->redir_type == REDIR_OUTPUT)
-		fd = open(node->redir_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		node->redir_fd = open(node->redir_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (node->redir_type == REDIR_APPEND)
-		fd = open(node->redir_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (fd == -1)
-	{
-		perror("redirection open");
-		return (1);
-	}
+		node->redir_fd = open(node->redir_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (node->redir_fd == -1)
+		return (perror("redirection open"),1);
 	if (node->redir_type == REDIR_INPUT || node->redir_type == REDIR_HEREDOC)
-		dup2(fd, STDIN_FILENO);
+		dup2(node->redir_fd, STDIN_FILENO);
 	else
-		dup2(fd, STDOUT_FILENO);
-	close (fd);
-	return (executor(node->left, shell));
+		dup2(node->redir_fd, STDOUT_FILENO);
+	close (node->redir_fd);
+	ret = executor(node->left, shell);
+
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+	return (ret);
 }
