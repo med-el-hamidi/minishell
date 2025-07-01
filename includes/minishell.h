@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 21:20:08 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/06/29 21:19:12 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/01 21:19:23 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	cleanup_shell(t_shell *shell);
 
 /* Error functions*/
 void	exit_error(char *msg, const int sys_error);
+int		print_syntax_error(const char *token);
 
 /* Init functions*/
 t_list	*init_env(char **envp);
@@ -58,7 +59,7 @@ void	del_token(void *t);
 void	free_ast(t_ast *node);
 
 /* Other utils */
-void	set_herdoc_tmp_file(t_ast	*ast);
+void	set_herdoc_tmp_file(t_shell *shell, char **delimiter);
 int		open_script(char *script);
 char	*_getenv(t_shell *shell, const char *name);
 char	*_getpid(void );

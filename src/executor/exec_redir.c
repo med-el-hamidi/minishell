@@ -17,7 +17,7 @@ int	exec_redirection(t_ast *node, t_shell *shell)
 	else if (node->redir_type == REDIR_APPEND)
 		node->redir_fd = open(node->redir_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (node->redir_fd == -1)
-		return (perror("redirection open"),1);
+		return (perror("minishell: redirection open"),1);
 	if (node->redir_type == REDIR_INPUT || node->redir_type == REDIR_HEREDOC)
 		dup2(node->redir_fd, STDIN_FILENO);
 	else
