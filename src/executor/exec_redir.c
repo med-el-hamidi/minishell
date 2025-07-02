@@ -1,33 +1,45 @@
 #include "../../includes/minishell.h"
 
-int	exec_redirection(t_ast *node, t_shell *shell)
+static int    open_redir_file(t_ast *node)
 {
-	int saved_stdin;
-	int saved_stdout;
-	int ret;
+    if (!node || !node->redir_file)
+        return (2);
+    if (node->redir_type == REDIR_INPUT || node->redir_type == REDIR_HEREDOC)
+        node->redir_fd = open(node->redir_file, O_RDONLY);
+    else if (node->redir_type == REDIR_OUTPUT)
+        node->redir_fd = open(node->redir_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    else if (node->redir_type == REDIR_APPEND)
+        node->redir_fd = open(node->redir_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (node->redir_fd == -1)
+        return (ft_putstr_fd("minishell: ", STDERR_FILENO), perror(node->redir_file),1);
+    return (0);
+}
 
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
-	if (!node || !node->redir_file)
-		return (1);
-	if (node->redir_type == REDIR_INPUT || node->redir_type == REDIR_HEREDOC)
-		node->redir_fd = open(node->redir_file, O_RDONLY);
-	else if (node->redir_type == REDIR_OUTPUT)
-		node->redir_fd = open(node->redir_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else if (node->redir_type == REDIR_APPEND)
-		node->redir_fd = open(node->redir_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (node->redir_fd == -1)
-		return (perror("minishell: redirection open"),1);
-	if (node->redir_type == REDIR_INPUT || node->redir_type == REDIR_HEREDOC)
-		dup2(node->redir_fd, STDIN_FILENO);
-	else
-		dup2(node->redir_fd, STDOUT_FILENO);
-	close (node->redir_fd);
-	ret = executor(node->left, shell);
+int    exec_redirection(t_ast *node, t_shell *shell)
+{
+    int    exit_status;
+    int    f;
 
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
-	return (ret);
+    f = 0;
+    while (node && node->type == AST_REDIR)
+    {
+        exit_status = open_redir_file(node);
+        if (exit_status)
+            break ;
+        if (!f)
+        {
+            if (node->redir_type == REDIR_INPUT || node->redir_type == REDIR_HEREDOC)
+                dup2(node->redir_fd, STDIN_FILENO);
+            else
+                dup2(node->redir_fd, STDOUT_FILENO);
+            f = 1;
+        }
+        close(node->redir_fd);
+        node = node->left;
+    }
+    if (!exit_status)
+        exit_status = executor(node, shell);
+    dup2(shell->stdin_fd, STDIN_FILENO);
+    dup2(shell->stdout_fd, STDOUT_FILENO);
+    return (exit_status);
 }
