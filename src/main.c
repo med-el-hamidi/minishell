@@ -19,7 +19,8 @@ void	init_shell(t_shell *shell, char **envp)
 	if (!shell->env_list)
 		exit_error("Failed to initialize the environment\n", 1);
 	shell->exit_status = 0;
-	shell->is_interactive = isatty(STDIN_FILENO);
+	shell->is_interactive = (shell->is_interactive && isatty(STDIN_FILENO));
+	printf("\n\nshell->is_interactive %d\n\n", shell->is_interactive);
 	shell->stdin_fd = dup(STDIN_FILENO);
 	shell->stdout_fd = dup(STDOUT_FILENO);
 	if (shell->stdin_fd == -1 || shell->stdout_fd == -1)
@@ -46,7 +47,7 @@ void	script_shell_loop(t_shell *shell, char *script)
 			break ;
 		tokens = lexer(shell, input);
 		free(input);
-		shell->tokens = &tokens;
+		shell->tokens = tokens;
 		if (tokens)
 		{
 			shell->exit_status = 0;
@@ -54,7 +55,7 @@ void	script_shell_loop(t_shell *shell, char *script)
 			if (ast)
 			{
 				print_ast(ast, 0);//test
-				shell->exit_status = 0;//executor(ast, shell);
+				shell->exit_status = executor(ast, shell);
 				free_ast(ast);
 			}
 			ft_lstclear(&tokens, del_token);
@@ -77,7 +78,7 @@ void	shell_loop(t_shell *shell)
 		add_to_history(shell, input);
 		tokens = lexer(shell, input);
 		free(input);
-		shell->tokens = &tokens;
+		shell->tokens = tokens;
 		if (tokens)
 		{
 			shell->exit_status = 0;
@@ -85,7 +86,7 @@ void	shell_loop(t_shell *shell)
 			if (ast)
 			{
 				print_ast(ast, 0);//test
-				shell->exit_status = 0;//executor(ast, shell);
+				shell->exit_status = executor(ast, shell);
 				free_ast(ast);
 			}
 			ft_lstclear(&tokens, del_token);
@@ -97,7 +98,8 @@ void	cleanup_shell(t_shell *shell)
 {
 	if (shell->is_interactive)
 	{
-		if (shell->history.path && (shell->history.count - shell->history.current) > 0)
+		if (shell->history.path
+			&& (shell->history.count - shell->history.current) > 0)
 			save_history(shell, shell->history.path);
 		free(shell->history.path);
 		free_2d_array(shell->history.entries);
@@ -116,8 +118,11 @@ int	main(int argc, char **argv, char **envp)
 	t_shell	shell;
 
 	(void)argc;
-	init_shell(&shell, envp);
+	shell.is_interactive = 1;
 	if (argv[1])
+		shell.is_interactive = 0;
+	init_shell(&shell, envp);
+	if (!shell.is_interactive)
 		script_shell_loop(&shell, argv[1]);
 	else
 		shell_loop(&shell);
