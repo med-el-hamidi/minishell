@@ -7,7 +7,7 @@ int	executor(t_ast *node, t_shell *shell)
 	if (node->type == AST_REDIR)
 		return (exec_redirection(node, shell));
 	else if (node->type == AST_PIPE)
-		return (0);// return (exec_pipe(node, shell));
+		return (exec_pipe(node, shell));
 	else if (node->type == AST_CMD && node->args)
 	{
 		if (is_builtin(node->args[0]))
