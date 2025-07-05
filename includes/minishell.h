@@ -29,6 +29,8 @@
 # include "parser.h"
 # include "exec.h"
 
+extern volatile sig_atomic_t	g_exit_status;
+
 /* Main Functions */
 void	init_shell(t_shell *shell, char **envp);
 void	shell_loop(t_shell *shell);
