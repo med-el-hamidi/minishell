@@ -15,8 +15,8 @@
 void	init_shell(t_shell *shell, char **envp)
 {
 	shell->vars = NULL;
-	shell->env_list = init_env(envp);
-	if (!shell->env_list)
+	shell->vars = init_env(envp);
+	if (!shell->vars)
 		exit_error("Failed to initialize the environment\n", 1);
 	shell->exit_status = 0;
 	shell->is_interactive = (shell->is_interactive && isatty(STDIN_FILENO));
@@ -47,7 +47,7 @@ void	script_shell_loop(t_shell *shell, char *script)
 			break ;
 		tokens = lexer(shell, input);
 		free(input);
-		shell->tokens = tokens;
+		shell->tokens = &tokens;
 		if (tokens)
 		{
 			shell->exit_status = 0;
@@ -78,7 +78,7 @@ void	shell_loop(t_shell *shell)
 		add_to_history(shell, input);
 		tokens = lexer(shell, input);
 		free(input);
-		shell->tokens = tokens;
+		shell->tokens = &tokens;
 		if (tokens)
 		{
 			shell->exit_status = 0;
@@ -105,7 +105,7 @@ void	cleanup_shell(t_shell *shell)
 		free_2d_array(shell->history.entries);
 		rl_clear_history();
 	}
-	ft_lstclear(&shell->env_list, del_env);
+	ft_lstclear(&shell->vars, del_env);
 	ft_lstclear(&shell->vars, del_env);
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
