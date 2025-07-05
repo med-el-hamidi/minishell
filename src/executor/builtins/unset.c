@@ -1,23 +1,23 @@
 #include "../../../includes/minishell.h"
 
-int	builtin_unset(char **argv, t_list **env_list)
+int	builtin_unset(char **argv, t_list **vars)
 {
 	t_list	*current;
 	t_list	*prev;
 	int		i;
 
-	if (!argv || !*env_list)
+	if (!argv || !*vars)
 		return (0);
 	prev = NULL;
-	current = *env_list;
+	current = *vars;
 	while (current)
 	{
 		i = 0;
 		while (argv[++i])
 		{
-			if (!ft_strcmp(((t_env *)current->content)->key, argv[i]))
+			if (!ft_strcmp(((t_var *)current->content)->key, argv[i]))
 			{
-				unset_node(env_list, &current, &prev);
+				unset_node(vars, &current, &prev);
 				break ;
 			}
 		}
@@ -27,13 +27,13 @@ int	builtin_unset(char **argv, t_list **env_list)
 	return (0);
 }
 
-void	unset_node(t_list **env_list, t_list **current, t_list **prev)
+void	unset_node(t_list **vars, t_list **current, t_list **prev)
 {
 	t_list	*to_delet;
 
 	to_delet = *current;
 	if (!*prev)
-		*env_list = (*current)->next;
+		*vars = (*current)->next;
 	else
 		(*prev)->next = (*current)->next;
 	*current = (*current)->next;

@@ -6,7 +6,7 @@ int	builtin_cd(char **argv, t_shell *shell)
 
 	path = NULL;
 	if (!argv[1])
-		path = expand_env(shell,"HOME");
+		path = expand_env(shell->vars,"HOME");
 	else if (argv[1][0] == '\0')
 		return (0);
 	else
