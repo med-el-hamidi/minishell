@@ -27,7 +27,7 @@
 # include "structures.h"
 # include "lexer.h"
 # include "parser.h"
-//# include "exec.h"
+# include "exec.h"
 
 /* Main Functions */
 void	init_shell(t_shell *shell, char **envp);

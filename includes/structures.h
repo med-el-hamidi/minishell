@@ -35,7 +35,6 @@ typedef enum e_token_type {
 	TOKEN_REDIR_OUT,
 	TOKEN_REDIR_APPEND,
 	TOKEN_REDIR_HEREDOC,
-	TOKEN_EOF
 }	t_token_type;
 
 typedef struct s_token
@@ -71,16 +70,23 @@ typedef struct s_ast
 	t_redir_type	redir_type;
 }	t_ast;
 
-typedef struct s_env
+typedef enum e_var_type
 {
-	char	*key;
-	char	*value;
-}	t_env;
+	VAR_LOCAL,
+	VAR_EXPORTED,
+	VAR_ENV
+}	t_var_type;
+
+typedef struct s_var
+{
+	char		*key;
+	char		*value;
+	t_var_type	flag;
+}	t_var;
 
 typedef struct s_shell
 {
 	t_list			*vars;
-	t_list			*env_list;
 	int				exit_status;
 	struct termios	orig_termios;
 	struct termios	new_termios;
