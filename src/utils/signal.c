@@ -12,8 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-volatile sig_atomic_t	g_exit_status = 0;
-
 static void	handle_sigint(int sig)
 {
 	(void)sig;

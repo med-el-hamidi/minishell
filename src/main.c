@@ -12,6 +12,8 @@
 
 #include "../includes/minishell.h"
 
+volatile sig_atomic_t g_exit_status = 0;
+
 void	init_shell(t_shell *shell, char **envp)
 {
 	shell->vars = NULL;
@@ -20,7 +22,6 @@ void	init_shell(t_shell *shell, char **envp)
 		exit_error("Failed to initialize the environment\n", 1);
 	shell->exit_status = 0;
 	shell->is_interactive = (shell->is_interactive && isatty(STDIN_FILENO));
-	printf("\n\nshell->is_interactive %d\n\n", shell->is_interactive);
 	shell->stdin_fd = dup(STDIN_FILENO);
 	shell->stdout_fd = dup(STDOUT_FILENO);
 	if (shell->stdin_fd == -1 || shell->stdout_fd == -1)
@@ -76,11 +77,13 @@ void	shell_loop(t_shell *shell)
 		if (!input)
 			break ;
 		add_to_history(shell, input);
+		shell->exit_status = g_exit_status;
 		tokens = lexer(shell, input);
 		free(input);
 		shell->tokens = &tokens;
 		if (tokens)
 		{
+			g_exit_status = 0;
 			shell->exit_status = 0;
 			ast = parser(tokens);
 			if (ast)
@@ -127,5 +130,8 @@ int	main(int argc, char **argv, char **envp)
 	else
 		shell_loop(&shell);
 	cleanup_shell(&shell);
-	return (shell.exit_status);
+	if (g_exit_status)
+		return (g_exit_status);
+	else
+		return (shell.exit_status);
 }
