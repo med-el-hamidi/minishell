@@ -44,14 +44,6 @@ char	*_getenv(t_shell *shell, const char *name)
 			return (env->value);
 		ptr = ptr->next;
 	}
-	ptr = shell->vars;
-	while (ptr)
-	{
-		env = ptr->content;
-		if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
-			return (env->value);
-		ptr = ptr->next;
-	}
 	return (NULL);
 }
 
