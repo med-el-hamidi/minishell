@@ -1,23 +1,23 @@
 #include "../../includes/minishell.h"
 
-char **env_list_to_envp(t_list *env_list)
+char **env_list_to_envp(t_list *vars)
 {
 	t_list *ptr;
-	t_env	*env;
+	t_var	*env;
 	int		i;
 	int		len;
 	char	**envp;
 
 	i = 0;
-	len  = ft_lstsize(env_list);
+	len  = ft_lstsize(vars);
 	envp = malloc(sizeof(char *) * (len + 1));
 	if (!envp)
 		return (NULL);
-	ptr = env_list;
+	ptr = vars;
 	while (ptr)
 	{
-		env = (t_env *)ptr->content;
-		if (env->key && env->value)
+		env = (t_var *)ptr->content;
+		if (env)
 		{
 			if (!(envp[i++] = join_3(env->key, "=", env->value)))
 			{
@@ -39,17 +39,17 @@ char **env_list_to_envp(t_list *env_list)
 	return (envp);
 }
 
-char *join_3(const char *s1, char *c, const char *s2)
+char *join_3(const char *s1, char *s2, const char *s3)
 {
-	char *tmp;
-	char *path;
+	char	*res;
+	char	*tmp;
 
-	tmp = ft_strjoin(s1, c);
+	tmp = ft_strjoin(s1, s2);
 	if (!tmp)
 		return (NULL);
-	path = ft_strjoin(tmp, s2);
+	res = ft_strjoin(tmp, s3);
 	free(tmp);
-	return (path);
+	return (res);
 }
 
 char    *get_cmd_path(char *cmd, t_shell *shell)
@@ -59,7 +59,7 @@ char    *get_cmd_path(char *cmd, t_shell *shell)
     int        i;
     char    *env;
 
-	env	= expand_env(shell, "PATH");
+	env	= expand_env(shell->vars, "PATH");
     i = 0;
 	if (!cmd || ft_strchr(cmd, '/'))
         return (ft_strdup(cmd));
@@ -90,12 +90,12 @@ int	exec_external(t_ast *node, t_shell *shell)
 	char	**envp;
 
 	path = get_cmd_path(node->args[0], shell);
-	if (!path)
+	if (!path)//check
 	{
 		perror("command not found");
 		return (127);
 	}
-	envp = env_list_to_envp(shell->env_list);
+	envp = env_list_to_envp(shell->vars);
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 1);

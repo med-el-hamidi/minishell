@@ -24,14 +24,14 @@ int ft_argv_count(char **argv)
 	return (i);
 }
 
-t_list	*find_env_var(t_list *env_list, char *name)
+t_list	*find_env_var(t_list *vars, char *name)
 {
 	t_list	*ptr;
 
-	ptr = env_list;
+	ptr = vars;
 	while (ptr)
 	{
-		if (!(ft_strcmp(((t_env *)ptr->content)->key, name)))
+		if (!(ft_strcmp(((t_var *)ptr->content)->key, name)))
 			return (ptr);
 		ptr = ptr->next;
 	}
@@ -57,23 +57,15 @@ int	ft_strisnum(char *s)
 
 /* parser utils removed after merging */
 
-char	*expand_env(t_shell *shell, const char *name)
+char	*expand_env(t_list *vars, const char *name)
 {
 	t_list	*ptr;
-	t_env	*env;
+	t_var	*env;
     size_t	len;
 
 	len = ft_strlen(name);
-	ptr = shell->env_list;
+	ptr = vars;
     while (ptr)
-    {
-        env = ptr->content;
-        if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
-            return (env->value);
-		ptr = ptr->next;
-    }
-	ptr = shell->vars;
-	while (ptr)
     {
         env = ptr->content;
         if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)

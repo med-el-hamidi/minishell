@@ -17,7 +17,7 @@ int	exec_pipe(t_ast *node, t_shell *sh)
 		return (EXIT_FAILURE);
 
 	if (pipe(pipefd) == -1)
-		error_exit("pipe");
+		return (perror("pipe: "),1);
 	child_pid[0] = fork();
 	if (child_pid[0] == -1)
 		error_exit("fork");
