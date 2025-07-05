@@ -2,7 +2,7 @@
 
 static int print_error(char *arg)
 {
-	ft_putstr_fd("miqnishell: export: '", STDERR_FILENO);
+	ft_putstr_fd("minishell: export: '", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
 	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
     return (1);
@@ -48,7 +48,7 @@ static int	add_to_env(char *arg, t_list **vars)
 	{
 		add_env_var_node = malloc(sizeof(t_var));
 		if (!add_env_var_node)
-			return (errno = ENOMEM, perror("malloc export add_node failed"), 1);
+			return (errno = ENOMEM, perror("minishell: malloc export add_node"), 1);
 		add_env_var_node->key = ft_strdup(arg);
 		add_env_var_node->value = ft_strdup(value);
 		ft_lstadd_back(vars, ft_lstnew(add_env_var_node));
