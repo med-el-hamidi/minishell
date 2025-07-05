@@ -32,11 +32,11 @@ int	open_script(char *script)
 char	*_getenv(t_shell *shell, const char *name)
 {
 	t_list	*ptr;
-	t_env	*env;
+	t_var	*env;
 	size_t	len;
 
 	len = ft_strlen(name);
-	ptr = shell->env_list;
+	ptr = shell->vars;
 	while (ptr)
 	{
 		env = ptr->content;

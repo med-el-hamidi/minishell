@@ -26,11 +26,11 @@ void	free_2d_array(char **arr)
 
 void	del_env(void *v)
 {
-	t_env	*ptr;
+	t_var	*ptr;
 
 	if (!v)
 		return ;
-	ptr = (t_env *)v;
+	ptr = (t_var *)v;
 	free(ptr->key);
 	free(ptr->value);
 	free(ptr);

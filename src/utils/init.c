@@ -12,13 +12,13 @@
 
 #include "../../includes/minishell.h"
 
-static t_env	*create_env_v(char *str)
+static t_var	*create_env_v(char *str)
 {
-	t_env	*v;
+	t_var	*v;
 
 	if (!str)
 		return (NULL);
-	v = malloc(sizeof(t_env));
+	v = malloc(sizeof(t_var));
 	if (!v)
 		return (NULL);
 	v->key = ft_substr(str, 0, ft_strchr(str, '=') - str);
@@ -26,6 +26,7 @@ static t_env	*create_env_v(char *str)
 		v->value = ft_strdup(ft_strchr(str, '=') + 1);
 	else
 		v->value = NULL;
+	v->flag = VAR_ENV;
 	return (v);
 }
 
@@ -33,7 +34,7 @@ t_list	*init_env(char **envp)
 {
 	t_list	*head_env;
 	t_list	*node_env;
-	t_env	*v;
+	t_var	*v;
 	int		i;
 
 	if (!envp || !*envp)
