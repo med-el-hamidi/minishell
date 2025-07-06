@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 21:20:15 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/06/29 21:31:47 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/04 19:39:47 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,21 +71,28 @@ typedef struct s_ast
 	t_redir_type	redir_type;
 }	t_ast;
 
-typedef struct s_env
+typedef enum e_var_type
 {
-	char	*key;
-	char	*value;
-}	t_env;
+	VAR_LOCAL,
+	VAR_EXPORTED,
+	VAR_ENV
+}	t_var_type;
+
+typedef struct s_var
+{
+	char		*key;
+	char		*value;
+	t_var_type	flag;
+}	t_var;
 
 typedef struct s_shell
 {
 	t_list			*vars;
-	t_list			*env_list;
 	int				exit_status;
 	struct termios	orig_termios;
 	struct termios	new_termios;
 	t_history		history;
-	t_list			*tokens;
+	t_list			**tokens;
 	int				is_interactive;
 	int				stdin_fd;
 	int				stdout_fd;
