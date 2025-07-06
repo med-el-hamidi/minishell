@@ -26,60 +26,59 @@ static int is_valid_identifier(const char *arg)
     return (1);
 }
 
-static int	add_to_env(char *arg, t_list **vars)
+static void	_handle_arg(t_list **vars, char *arg)
 {
-	t_list	*existing;
-	t_var	*add_env_var_node;
-	char	*equal_pos;
+	t_list	*node;
+	char	*assign;
 	char	*value;
 
-	equal_pos = ft_strchr(arg, '=');
-	if (!equal_pos)
-		return (1);//return (add_to_exported_list(arg));
-	*equal_pos = '\0';
-	value = equal_pos + 1;
-	existing = find_env_var(*vars, arg);
-	if (existing)
+	assign = ft_strchr(arg, '=');
+	if (!assign)
 	{
-		free(((t_var *)existing->content)->value);
-		((t_var *)existing->content)->value = ft_strdup(value);
+		node = find_shell_var(*vars, arg);
+		if (node)
+		{
+			if (((t_var *)node->content)->flag == VAR_LOCAL)
+				((t_var *)node->content)->flag = VAR_ENV;
+		}
+		else
+			create_shell_var(vars, arg, NULL, VAR_EXPORTED);
 	}
 	else
 	{
-		add_env_var_node = malloc(sizeof(t_var));
-		if (!add_env_var_node)
-			return (errno = ENOMEM, perror("minishell: malloc export add_node"), 1);
-		add_env_var_node->key = ft_strdup(arg);
-		add_env_var_node->value = ft_strdup(value);
-		ft_lstadd_back(vars, ft_lstnew(add_env_var_node));
+		*assign = '\0';
+		value = assign + 1;
+		node = find_shell_var(*vars, arg);
+		if (node)
+			update_shell_var(node, value, VAR_ENV);
+		else
+			create_shell_var(vars, arg, value, VAR_ENV);
 	}
-	return (0);
 }
 
-static int main_export(char **arg, t_list **vars)
+static int _export_var(char **arg, t_list **vars)
 {
-    int i;
-    int j;
-    char **invalid_args;
-    int invalid_count;
-    int arg_counter;
+    int		i;
+    char	**invalid_args;
+    int		invalid_count;
+    int		arg_counter;
 
-	invalid_count= 0;
 	arg_counter = ft_argv_count(arg);
     invalid_args = malloc(sizeof(char *) * arg_counter);
-	i = 0;
     if (!invalid_args)
-    	return ((errno = ENOMEM), perror("malloc export failed"), 1);
-    while ( arg[++i])
+		return ((errno = ENOMEM), perror("malloc export failed"), 1);
+	invalid_count = 0;
+	i = 0;
+    while (arg[++i])
     {
         if (!is_valid_identifier(arg[i]))
             invalid_args[invalid_count++] = arg[i];
         else
-			add_to_env(arg[i], vars);
+			_handle_arg(vars, arg[i]);
     }
-	j = -1;
-    while (++j < invalid_count)
-        print_error(invalid_args[j]);
+	i = -1;
+    while (++i < invalid_count)
+        print_error(invalid_args[i]);
     free(invalid_args);
     return (invalid_count > 0);
 }
@@ -90,7 +89,7 @@ int	builtin_export(char **argv, t_list **vars)
 		return (1);
 	if (!argv[1])
 		return (_export(*vars));
-	if (main_export(argv, vars))
+	if (_export_var(argv, vars))
 		return (1);
 	return (0);
 }

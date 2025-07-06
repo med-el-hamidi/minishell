@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 15:27:21 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/05 15:27:22 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/06 17:59:56 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,15 @@ char    *get_cmd_path(char *cmd, t_shell *shell);
 char	**env_list_to_envp(t_list *vars);
 void	update_iterators(t_list **prev, t_list **current);
 void	unset_node(t_list **vars, t_list **current, t_list **prev);
-t_list	*find_env_var(t_list *vars, char *name);
+t_list	*find_shell_var(t_list *vars, char *key);
 int		_export(t_list *vars);
+void	update_shell_var(t_list *node, char *value, t_var_type flag);
+void	create_shell_var(t_list **vars, char *key, char *value, t_var_type flag);
 
 /* executor main functions */
 int		exec_redirection(t_ast *node, t_shell *shell);
 int		exec_pipe(t_ast *node, t_shell *shell);
+int		exec_local_vars(char **args, t_list **vars);
 int		exec_builtins(t_ast *node, t_shell *shell);
 int		exec_external(t_ast *node, t_shell *shell);
 int		executor(t_ast *node, t_shell *shell);

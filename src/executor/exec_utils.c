@@ -24,14 +24,14 @@ int ft_argv_count(char **argv)
 	return (i);
 }
 
-t_list	*find_env_var(t_list *vars, char *name)
+t_list	*find_shell_var(t_list *vars, char *key)
 {
 	t_list	*ptr;
 
 	ptr = vars;
 	while (ptr)
 	{
-		if (!(ft_strcmp(((t_var *)ptr->content)->key, name)))
+		if (!(ft_strcmp(((t_var *)ptr->content)->key, key)))
 			return (ptr);
 		ptr = ptr->next;
 	}
