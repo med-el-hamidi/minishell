@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 22:33:49 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/06 23:51:14 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/06 23:54:45 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	cd_prepar_path(t_list *vars, char **arg, char **path)
 int	builtin_cd(char **argv, t_shell *shell)
 {
 	char	*path;
-	char	pwd_oldpwd[2];
+	char	*pwd_oldpwd[2];
 	int		ret;
 
 	path = NULL;
@@ -38,7 +38,7 @@ int	builtin_cd(char **argv, t_shell *shell)
 			STDERR_FILENO), 1);
 	if (!ret)
 		return (0);
-	pwd_oldpwd[1] = (NULL, 0);
+	pwd_oldpwd[1] = getcwd(NULL, 0);
 	if (pwd_oldpwd[1])
 		update_shell_var(find_shell_var(shell->vars, "OLDPWD"), \
 			pwd_oldpwd[1], VAR_ENV);
@@ -50,5 +50,5 @@ int	builtin_cd(char **argv, t_shell *shell)
 	if (pwd_oldpwd[0])
 		update_shell_var(find_shell_var(shell->vars, "PWD"), \
 			pwd_oldpwd[0], VAR_ENV);
-	return (free(pwd_oldpwd[1]), free(pwd_oldpwd[0]), 0);
+	return (free(pwd_oldpwd[0]), free(pwd_oldpwd[1]), 0);
 }
