@@ -1,35 +1,54 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/06 22:33:49 by obensarj          #+#    #+#             */
+/*   Updated: 2025/07/06 23:51:14 by obensarj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../includes/minishell.h"
+
+static int	cd_prepar_path(t_list *vars, char **arg, char **path)
+{
+	if (!arg[1])
+		*path = expand_env(vars, "HOME");
+	else if (arg[1] && arg[2])
+		return (1);
+	else if (arg[1][0] == '\0' || !ft_strcmp(arg[1], "."))
+		return (0);
+	else
+		*path = arg[1];
+	return (4);
+}
 
 int	builtin_cd(char **argv, t_shell *shell)
 {
 	char	*path;
-	char	*pwd;
-	char	*oldpwd;
+	char	pwd_oldpwd[2];
+	int		ret;
 
 	path = NULL;
-
-	if (!argv[1])
-		path = expand_env(shell->vars,"HOME");
-	else if (argv[1] && argv[2])
-		return (ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO), 1);
-	else if (argv[1][0] == '\0' || !ft_strcmp(argv[1], "."))
+	ret = cd_prepar_path(shell->vars, argv, &path);
+	if (ret == 1)
+		return (ft_putendl_fd("minishell: cd: too many arguments", \
+			STDERR_FILENO), 1);
+	if (!ret)
 		return (0);
-	else
-		path = argv[1];
-	oldpwd = getcwd(NULL, 0);
-	if (oldpwd)
-		update_shell_var(find_shell_var(shell->vars, "OLDPWD") , oldpwd, VAR_ENV);
+	pwd_oldpwd[1] = (NULL, 0);
+	if (pwd_oldpwd[1])
+		update_shell_var(find_shell_var(shell->vars, "OLDPWD"), \
+			pwd_oldpwd[1], VAR_ENV);
 	else
 		perror("cd: error retrieving current directory");
 	if (chdir(path) == -1)
-	{
-		free(oldpwd);
-		return (perror(path), 1);
-	}
-	pwd = getcwd(NULL, 0);
-	if (pwd)
-		update_shell_var(find_shell_var(shell->vars, "PWD"), pwd, VAR_ENV);
-	free(oldpwd);
-	free(pwd);
-	return (0);
+		return (free(pwd_oldpwd[1]), perror(path), 1);
+	pwd_oldpwd[0] = getcwd(NULL, 0);
+	if (pwd_oldpwd[0])
+		update_shell_var(find_shell_var(shell->vars, "PWD"), \
+			pwd_oldpwd[0], VAR_ENV);
+	return (free(pwd_oldpwd[1]), free(pwd_oldpwd[0]), 0);
 }
