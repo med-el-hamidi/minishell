@@ -59,9 +59,10 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(BLT_DIR)/export.c \
 			$(BLT_DIR)/export_utils.c \
 			$(EXE_DIR)/exec_cmd.c \
-			$(EXE_DIR)/exec_utils.c \
+			$(EXE_DIR)/exec_utils_0.c \
+			$(EXE_DIR)/exec_utils_1.c \
 			$(EXE_DIR)/external_cmd.c \
-			$(EXE_DIR)//exec_local_vars.c \
+			$(EXE_DIR)/exec_local_vars.c \
 			$(EXE_DIR)/exec_redir.c \
 			$(EXE_DIR)/exec_pipe.c \
 			$(EXE_DIR)/executor.c

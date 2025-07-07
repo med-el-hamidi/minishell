@@ -20,23 +20,16 @@ char **env_list_to_envp(t_list *vars)
 		if (env)
 		{
 			if (!(envp[i++] = join_3(env->key, "=", env->value)))
-			{
-				free_2d_array(envp);
-				return (NULL);
-			}
+				return (free_2d_array(envp), NULL);
 		}
 		else if (env->key)
 		{
 			if (!(envp[i++] = ft_strdup(env->key)))
-			{
-				free_2d_array(envp);
-				return (NULL);
-			}
+				return (free_2d_array(envp), NULL);
 		}
 		ptr = ptr->next;
 	}
-	envp[i] = NULL;
-	return (envp);
+	return (envp[i] = NULL, envp);
 }
 
 char *join_3(const char *s1, char *s2, const char *s3)
@@ -58,13 +51,15 @@ char    *get_cmd_path(char *cmd, t_shell *shell)
     char    *full_path;
     int        i;
     char    *env;
+	char	*backup_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
 
 	env	= expand_env(shell->vars, "PATH");
     i = 0;
 	if (!cmd || ft_strchr(cmd, '/'))
         return (ft_strdup(cmd));
     if (!env)
-        return (NULL);
+		env = backup_path;
+        // return (NULL);
 
     paths = ft_split(env, ':');
     while (paths && paths[i])
@@ -92,7 +87,7 @@ int	exec_external(t_ast *node, t_shell *shell)
 	path = get_cmd_path(node->args[0], shell);
 	if (!path)//check
 	{
-		perror("command not found");
+		perror("Minishell: command not found");
 		return (127);
 	}
 	envp = env_list_to_envp(shell->vars);
