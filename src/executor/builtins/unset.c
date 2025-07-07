@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/07 22:28:33 by obensarj          #+#    #+#             */
+/*   Updated: 2025/07/07 22:29:47 by obensarj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../../includes/minishell.h"
 
 int	builtin_unset(char **argv, t_list **vars)
@@ -37,7 +49,6 @@ void	unset_node(t_list **vars, t_list **current, t_list **prev)
 	else
 		(*prev)->next = (*current)->next;
 	*current = (*current)->next;
-	
 	ft_lstdelone(to_delet, del_env);
 }
 
