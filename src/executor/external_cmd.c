@@ -1,15 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   external_cmd.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
+/*   Updated: 2025/07/07 22:47:18 by obensarj         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-char **env_list_to_envp(t_list *vars)
+static int	print_error(char *arg)
 {
-	t_list *ptr;
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
+	ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	return (1);
+}
+
+char	**env_list_to_envp(t_list *vars)
+{
+	t_list	*ptr;
 	t_var	*env;
 	int		i;
 	int		len;
 	char	**envp;
 
 	i = 0;
-	len  = ft_lstsize(vars);
+	len = ft_lstsize(vars);
 	envp = malloc(sizeof(char *) * (len + 1));
 	if (!envp)
 		return (NULL);
@@ -32,7 +52,7 @@ char **env_list_to_envp(t_list *vars)
 	return (envp[i] = NULL, envp);
 }
 
-char *join_3(const char *s1, char *s2, const char *s3)
+char	*join_3(const char *s1, char *s2, const char *s3)
 {
 	char	*res;
 	char	*tmp;
@@ -45,36 +65,30 @@ char *join_3(const char *s1, char *s2, const char *s3)
 	return (res);
 }
 
-char    *get_cmd_path(char *cmd, t_shell *shell)
+char	*get_cmd_path(char *cmd, t_shell *shell)
 {
-    char    **paths;
-    char    *full_path;
-    int        i;
-    char    *env;
-	char	*backup_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin";
+	char	**paths;
+	char	*full_path;
+	int		i;
+	char	*env;
 
-	env	= expand_env(shell->vars, "PATH");
-    i = 0;
+	env = expand_env(shell->vars, "PATH");
+	i = 0;
 	if (!cmd || ft_strchr(cmd, '/'))
-        return (ft_strdup(cmd));
-    if (!env)
-		env = backup_path;
-        // return (NULL);
-
-    paths = ft_split(env, ':');
-    while (paths && paths[i])
-    {
-        full_path = join_3(paths[i], "/", cmd);
-        if (access(full_path, X_OK) == 0)
-        {
-            free_2d_array(paths);
-            return (full_path);
-        }
-        free(full_path);
-        i++;
-    }
-    free_2d_array(paths);
-    return (NULL);
+		return (ft_strdup(cmd));
+	if (!env)
+		return (NULL);
+	paths = ft_split(env, ':');
+	while (paths && paths[i])
+	{
+		full_path = join_3(paths[i], "/", cmd);
+		if (access(full_path, X_OK) == 0)
+			return (free_2d_array(paths), full_path);
+		free(full_path);
+		i++;
+	}
+	free_2d_array(paths);
+	return (NULL);
 }
 
 int	exec_external(t_ast *node, t_shell *shell)
@@ -85,11 +99,8 @@ int	exec_external(t_ast *node, t_shell *shell)
 	char	**envp;
 
 	path = get_cmd_path(node->args[0], shell);
-	if (!path)//check
-	{
-		perror("Minishell: command not found");
-		return (127);
-	}
+	if (!path)
+		return (print_error(node->args[0]), 127);
 	envp = env_list_to_envp(shell->vars);
 	pid = fork();
 	if (pid == -1)
