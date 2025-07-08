@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 15:27:21 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/07 17:21:27 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/08 12:02:44 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 /* built-ins functions*/
 int		builtin_echo(char **argv);
 int		builtin_cd(char **argv, t_shell *shell);
-int		builtin_exit(char **argv);
+int		builtin_exit(char **argv, t_shell *sh);
 int		builtin_env(t_list *vars);
 int		builtin_unset(char **argv, t_list **vars);
 int		builtin_pwd(void);

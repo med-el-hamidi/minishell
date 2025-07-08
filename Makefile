@@ -54,10 +54,12 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(BLT_DIR)/cd.c \
 			$(BLT_DIR)/echo.c \
 			$(BLT_DIR)/env.c \
+			$(BLT_DIR)/exit.c \
 			$(BLT_DIR)/pwd.c \
 			$(BLT_DIR)/unset.c \
 			$(BLT_DIR)/export.c \
-			$(BLT_DIR)/export_utils.c \
+			$(BLT_DIR)/export_utils_0.c \
+			$(BLT_DIR)/export_utils_1.c \
 			$(EXE_DIR)/exec_cmd.c \
 			$(EXE_DIR)/exec_utils_0.c \
 			$(EXE_DIR)/exec_utils_1.c \
