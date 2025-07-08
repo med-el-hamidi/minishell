@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/07 22:47:18 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/08 17:59:19 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,49 +20,43 @@ static int	print_error(char *arg)
 	return (1);
 }
 
+static int	_envp_helper(t_var *env, char **envp, int *i)
+{
+	if (env)
+	{
+		envp[*i] = join_3(env->key, "=", env->value);
+		if (!envp[(*i)++])
+			return (free_2d_array(envp), 1);
+	}
+	else if (env->key)
+	{
+		envp[*i] = ft_strdup(env->key);
+		if (!envp[(*i)++])
+			return (free_2d_array(envp), 1);
+	}
+	return (0);
+}
+
 char	**env_list_to_envp(t_list *vars)
 {
 	t_list	*ptr;
 	t_var	*env;
 	int		i;
-	int		len;
 	char	**envp;
 
 	i = 0;
-	len = ft_lstsize(vars);
-	envp = malloc(sizeof(char *) * (len + 1));
+	envp = malloc(sizeof(char *) * (ft_lstsize(vars) + 1));
 	if (!envp)
 		return (NULL);
 	ptr = vars;
 	while (ptr)
 	{
 		env = (t_var *)ptr->content;
-		if (env)
-		{
-			if (!(envp[i++] = join_3(env->key, "=", env->value)))
-				return (free_2d_array(envp), NULL);
-		}
-		else if (env->key)
-		{
-			if (!(envp[i++] = ft_strdup(env->key)))
-				return (free_2d_array(envp), NULL);
-		}
+		if (_envp_helper(env, envp, &i))
+			return (NULL);
 		ptr = ptr->next;
 	}
 	return (envp[i] = NULL, envp);
-}
-
-char	*join_3(const char *s1, char *s2, const char *s3)
-{
-	char	*res;
-	char	*tmp;
-
-	tmp = ft_strjoin(s1, s2);
-	if (!tmp)
-		return (NULL);
-	res = ft_strjoin(tmp, s3);
-	free(tmp);
-	return (res);
 }
 
 char	*get_cmd_path(char *cmd, t_shell *shell)
@@ -116,7 +110,5 @@ int	exec_external(t_ast *node, t_shell *shell)
 		waitpid(pid, &status, 0);
 		shell->exit_status = WEXITSTATUS(status);
 	}
-	free(path);
-	free_2d_array(envp);
-	return (shell->exit_status);
+	return (free(path), free_2d_array(envp), shell->exit_status);
 }

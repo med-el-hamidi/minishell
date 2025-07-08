@@ -6,11 +6,24 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:14:50 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/07 22:39:33 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/08 17:50:58 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+char	*join_3(const char *s1, char *s2, const char *s3)
+{
+	char	*res;
+	char	*tmp;
+
+	tmp = ft_strjoin(s1, s2);
+	if (!tmp)
+		return (NULL);
+	res = ft_strjoin(tmp, s3);
+	free(tmp);
+	return (res);
+}
 
 static int	_is_valid_local_var(const char *cmd)
 {
@@ -32,11 +45,32 @@ static int	_is_valid_local_var(const char *cmd)
 	return (0);
 }
 
+static void	_is_local_vars_helper(char **args, size_t *i, size_t *j)
+{
+	size_t	count;
+
+	if (*i)
+	{
+		count = ft_argv_count(args);
+		*j = 0;
+		while (*j + *i < count)
+		{
+			free(args[*j]);
+			args[*j] = ft_strdup(args[*j + *i]);
+			j++;
+		}
+		while (*j < count)
+		{
+			free(args[*j]);
+			args[(*j)++] = NULL;
+		}
+	}
+}
+
 int	_is_local_vars(char **args)
 {
 	size_t	i;
 	size_t	j;
-	size_t	count;
 
 	if (!args)
 		return (0);
@@ -47,22 +81,7 @@ int	_is_local_vars(char **args)
 			i++;
 		else
 		{
-			if (i)
-			{
-				count = ft_argv_count(args);
-				j = 0;
-				while (j + i < count)
-				{
-					free(args[j]);
-					args[j] = ft_strdup(args[j + i]);
-					j++;
-				}
-				while (j < count)
-				{
-					free(args[j]);
-					args[j++] = NULL;
-				}
-			}
+			_is_local_vars_helper(args, &i, &j);
 			return (0);
 		}
 	}
