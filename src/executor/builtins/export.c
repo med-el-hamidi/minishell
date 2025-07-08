@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:30:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/07 22:32:41 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/08 09:20:31 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ static void	_handle_arg(t_list **vars, char *arg)
 {
 	t_list	*node;
 	char	*assign;
-	char	*value;
 
 	assign = ft_strchr(arg, '=');
 	if (!assign)
