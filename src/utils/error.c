@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	exit_error(char *msg, const int sys_error)
+void	_print_error(char *msg, const int sys_error)
 {
 	ft_putstr_fd("minishell: error: ", STDERR_FILENO);
 	ft_putstr_fd(msg, STDERR_FILENO);
@@ -22,7 +22,6 @@ void	exit_error(char *msg, const int sys_error)
 		ft_putstr_fd(strerror(errno), STDERR_FILENO);
 	}
 	ft_putchar_fd('\n', STDERR_FILENO);
-	exit(EXIT_FAILURE);
 }
 
 int	print_syntax_error(const char *token)

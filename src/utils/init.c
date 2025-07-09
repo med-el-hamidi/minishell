@@ -37,19 +37,20 @@ t_list	*init_env(char **envp)
 	t_var	*v;
 	int		i;
 
-	if (!envp || !*envp)
-		return (NULL);
-	head_env = NULL;
-	i = -1;
-	while (envp[++i])
+	if (envp)
 	{
-		v = create_env_v(envp[i]);
-		if (!v)
-			return (ft_lstclear(&head_env, del_env), NULL);
-		node_env = ft_lstnew(v);
-		if (!node_env)
-			return (ft_lstclear(&head_env, del_env), NULL);
-		ft_lstadd_back(&head_env, node_env);
+		head_env = NULL;
+		i = -1;
+		while (envp[++i])
+		{
+			v = create_env_v(envp[i]);
+			if (!v)
+				return (ft_lstclear(&head_env, del_env), NULL);
+			node_env = ft_lstnew(v);
+			if (!node_env)
+				return (ft_lstclear(&head_env, del_env), NULL);
+			ft_lstadd_back(&head_env, node_env);
+		}
 	}
 	if (!getenv("PATH"))
 		create_shell_var(&head_env, "PATH", \
