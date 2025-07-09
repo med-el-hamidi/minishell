@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 21:20:08 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/07/01 21:19:23 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/06/28 21:20:10 by mel-hami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # include "lexer.h"
 # include "parser.h"
 # include "exec.h"
+
+extern volatile sig_atomic_t	g_exit_status;
 
 /* Main Functions */
 void	init_shell(t_shell *shell, char **envp);

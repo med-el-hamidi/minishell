@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:14:50 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/08 17:50:58 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/09 01:27:10 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,36 +34,33 @@ static int	_is_valid_local_var(const char *cmd)
 		return (0);
 	else
 		i++;
-	while (cmd[i] && cmd[i] != '=')
+	while (cmd[i])
 	{
+		if (cmd[i] == '=' || ((cmd[i] == '+' && cmd[i + 1] == '=')))
+			return (1);
 		if (!ft_isalnum(cmd[i]) && cmd[i] != '_')
 			return (0);
 		i++;
 	}
-	if (cmd[i] == '=')
-		return (1);
 	return (0);
 }
 
-static void	_is_local_vars_helper(char **args, size_t *i, size_t *j)
+static void	_set_new_args(char **args, size_t *i, size_t *j)
 {
 	size_t	count;
 
-	if (*i)
+	count = ft_argv_count(args);
+	*j = 0;
+	while (*j + *i < count)
 	{
-		count = ft_argv_count(args);
-		*j = 0;
-		while (*j + *i < count)
-		{
-			free(args[*j]);
-			args[*j] = ft_strdup(args[*j + *i]);
-			j++;
-		}
-		while (*j < count)
-		{
-			free(args[*j]);
-			args[(*j)++] = NULL;
-		}
+		free(args[*j]);
+		args[*j] = ft_strdup(args[*j + *i]);
+		j++;
+	}
+	while (*j < count)
+	{
+		free(args[*j]);
+		args[(*j)++] = NULL;
 	}
 }
 
@@ -81,7 +78,8 @@ int	_is_local_vars(char **args)
 			i++;
 		else
 		{
-			_is_local_vars_helper(args, &i, &j);
+			if (i)
+				_set_new_args(args, &i, &j);
 			return (0);
 		}
 	}

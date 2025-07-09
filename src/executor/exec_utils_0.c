@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:33:26 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/07 17:33:27 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/09 18:25:25 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	ft_strisnum(char *s)
 		return (0);
 	while (*s)
 	{
-		if (ft_isdigit(*s) == 0)
+		if (!ft_isdigit(*s))
 			return (0);
 		s++;
 	}

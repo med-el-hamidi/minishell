@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:30:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/08 09:59:53 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:51:32 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	print_error(char *arg)
 {
-	ft_putstr_fd("minishell: export: '", STDERR_FILENO);
+	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
 	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 	return (1);
@@ -29,8 +29,10 @@ static int	is_valid_identifier(const char *arg)
 		return (0);
 	else
 		i++;
-	while (arg[i] && arg[i] != '=')
+	while (arg[i])
 	{
+		if (arg[i] == '=' || (arg[i] == '+' && arg[i + 1] == '='))
+			return (1);
 		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 			return (0);
 		i++;
@@ -42,7 +44,10 @@ static void	_handle_arg(t_list **vars, char *arg)
 {
 	t_list	*node;
 	char	*assign;
+	char	*value;
+	char	*alloc_value;
 
+	alloc_value = NULL;
 	assign = ft_strchr(arg, '=');
 	if (!assign)
 	{
@@ -58,12 +63,30 @@ static void	_handle_arg(t_list **vars, char *arg)
 	else
 	{
 		*assign = '\0';
+		///
+		if (ft_strchr(arg, '+'))
+		{
+			*(assign - 1) = '\0';
+			value = expand_env(*vars, arg);
+			if (value)
+			{
+				alloc_value = ft_strjoin(value,  assign + 1);
+				value = alloc_value;
+			}
+			else
+				value = assign + 1;
+		}
+		else
+			value = assign + 1;
+		///
 		node = find_shell_var(*vars, arg);
 		if (node)
-			update_shell_var(node, (assign + 1), VAR_ENV);
+			update_shell_var(node, value, VAR_ENV);
 		else
-			create_shell_var(vars, arg, (assign + 1), VAR_ENV);
+			create_shell_var(vars, arg, value, VAR_ENV);
 	}
+	if (alloc_value)
+		free(alloc_value);
 }
 
 static int	_export_var(char **arg, t_list **vars)

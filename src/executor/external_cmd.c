@@ -6,17 +6,20 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/08 17:59:19 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:22:29 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	print_error(char *arg)
+static int	print_error(char *arg, int fg)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
-	ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	if (fg == 1)
+		ft_putendl_fd(": command not found", STDERR_FILENO);
+	if (fg == 2)
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
 	return (1);
 }
 
@@ -71,7 +74,7 @@ char	*get_cmd_path(char *cmd, t_shell *shell)
 	if (!cmd || ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
 	if (!env)
-		return (NULL);
+		return (print_error(cmd, 2), NULL);
 	paths = ft_split(env, ':');
 	while (paths && paths[i])
 	{
@@ -82,7 +85,7 @@ char	*get_cmd_path(char *cmd, t_shell *shell)
 		i++;
 	}
 	free_2d_array(paths);
-	return (NULL);
+	return (print_error(cmd, 1), NULL);
 }
 
 int	exec_external(t_ast *node, t_shell *shell)
@@ -94,7 +97,7 @@ int	exec_external(t_ast *node, t_shell *shell)
 
 	path = get_cmd_path(node->args[0], shell);
 	if (!path)
-		return (print_error(node->args[0]), 127);
+		return (127);
 	envp = env_list_to_envp(shell->vars);
 	pid = fork();
 	if (pid == -1)

@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:46:27 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/07 17:46:28 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/09 19:33:51 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,28 +33,32 @@ static int	open_redir_file(t_ast *node)
 int	exec_redirection(t_ast *node, t_shell *shell)
 {
 	int	exit_status;
-	int	f;
+	int	f_stdin;
+	int	f_stdout;
 
-	f = 0;
+	f_stdin = 0;
+	f_stdout = 0;
 	while (node && node->type == AST_REDIR)
 	{
 		exit_status = open_redir_file(node);
 		if (exit_status)
 			break ;
-		if (!f)
-		{
-			if (node->redir_type == REDIR_INPUT || \
-				node->redir_type == REDIR_HEREDOC)
+		if (!f_stdin && (node->redir_type == REDIR_INPUT || \
+			node->redir_type == REDIR_HEREDOC))
+			{
 				dup2(node->redir_fd, STDIN_FILENO);
-			else
-				dup2(node->redir_fd, STDOUT_FILENO);
-			f = 1;
+				f_stdin = 1;
+			}
+		else if (!f_stdout)
+		{
+			dup2(node->redir_fd, STDOUT_FILENO);
+			f_stdout = 1;
 		}
 		close(node->redir_fd);
 		node = node->left;
 	}
 	if (!exit_status)
 		exit_status = executor(node, shell);
-	dup2(shell->stdin_fd, STDIN_FILENO);
-	return (dup2(shell->stdout_fd, STDOUT_FILENO), exit_status);
+	(dup2(shell->stdin_fd, STDIN_FILENO), dup2(shell->stdout_fd, STDOUT_FILENO));
+	return (exit_status);
 }

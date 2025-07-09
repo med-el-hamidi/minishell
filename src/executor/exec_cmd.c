@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:39:50 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/08 12:03:07 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/09 17:35:59 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	exec_builtins(t_ast *node, t_shell *shell)
 	if (!ft_strcmp(node->args[0], "cd"))
 		return (builtin_cd(node->args, shell));
 	if (!ft_strcmp(node->args[0], "exit"))
-		return (builtin_exit(node->args, shell));
+		builtin_exit(node, shell);//
 	if (!ft_strcmp(node->args[0], "unset"))
 		return (builtin_unset(node->args, &shell->vars));
 	if (!ft_strcmp(node->args[0], "env"))
