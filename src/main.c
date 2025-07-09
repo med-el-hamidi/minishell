@@ -19,13 +19,13 @@ void	init_shell(t_shell *shell, char **envp)
 	shell->vars = NULL;
 	shell->vars = init_env(envp);
 	if (!shell->vars)
-		exit_error("Failed to initialize the environment\n", 1);
+		_print_error("Failed to initialize the environment\n", 0);
 	shell->exit_status = 0;
 	shell->is_interactive = (shell->is_interactive && isatty(STDIN_FILENO));
 	shell->stdin_fd = dup(STDIN_FILENO);
 	shell->stdout_fd = dup(STDOUT_FILENO);
 	if (shell->stdin_fd == -1 || shell->stdout_fd == -1)
-		exit_error("Failed to backup std file descriptors", 0);
+		_print_error("Failed to backup std file descriptors", 0);
 	setup_signals();
 	if (shell->is_interactive)
 	{
