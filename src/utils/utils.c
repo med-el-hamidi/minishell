@@ -29,20 +29,18 @@ int	open_script(char *script)
 	return (fd);
 }
 
-char	*_getenv(t_shell *shell, const char *name)
+char	*_getenv(t_list *vars, const char *name)
 {
-	t_list	*ptr;
 	t_var	*env;
 	size_t	len;
 
 	len = ft_strlen(name);
-	ptr = shell->vars;
-	while (ptr)
+	while (vars)
 	{
-		env = ptr->content;
+		env = vars->content;
 		if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
 			return (env->value);
-		ptr = ptr->next;
+		vars = vars->next;
 	}
 	return (NULL);
 }
@@ -60,6 +58,7 @@ char	*_getpid(void )
 		return (NULL);
 	}
 	bytes = read(fd, buf, 10);
+	printf("bytes:%ld", bytes);
 	close(fd);
 	if (bytes == -1)
 	{
@@ -68,6 +67,7 @@ char	*_getpid(void )
 	}
 	else if (!bytes)
 		return (NULL);
+	buf[bytes] = '\0';
 	return (ft_itoa(ft_atoi(buf)));
 }
 

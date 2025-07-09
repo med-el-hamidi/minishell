@@ -51,14 +51,17 @@ t_list	*init_env(char **envp)
 			return (ft_lstclear(&head_env, del_env), NULL);
 		ft_lstadd_back(&head_env, node_env);
 	}
-	// Increment SHLVL if it exists
-	//increment_shell_level(head_env);
+	if (!getenv("PATH"))
+		create_shell_var(&head_env, "PATH", \
+"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", VAR_LOCAL);
+	increment_shell_level(&head_env);
 	return (head_env);
 }
 
 static void	_set_history_sizes(t_shell *shell)
 {
 	char	*val;
+	char	*nbr;
 	int		n;
 
 	n = 0;
@@ -68,7 +71,9 @@ static void	_set_history_sizes(t_shell *shell)
 	if (n <= 0)
 	{
 		n = HISTSIZE;
-		//export HISTSIZE=n
+		nbr = ft_itoa(n);
+		create_shell_var(&shell->vars, "HISTSIZE", nbr, VAR_LOCAL);
+		free(nbr);
 	}
 	shell->history.histsize = n;
 	n = 0;
@@ -78,7 +83,9 @@ static void	_set_history_sizes(t_shell *shell)
 	if (n <= 0)
 	{
 		n = HISTFILESIZE;
-		//export HISTFILESIZE=n
+		nbr = ft_itoa(n);
+		create_shell_var(&shell->vars, "HISTFILESIZE", nbr, VAR_LOCAL);
+		free(nbr);
 	}
 	shell->history.histfilesize = n;
 }
@@ -98,8 +105,8 @@ void	init_history(t_shell *shell)
 	}
 	ft_bzero(shell->history.entries, (shell->history.histfilesize + 1) * \
 															sizeof(char *));
-	shell->history.path = ft_strjoin(getenv("HOME"), HISTFILE);
-	if (!shell->history.path)
+	set_histfile(shell);
+	if (!shell->history.path || !*shell->history.path)
 		return ;
 	if (!access(shell->history.path, F_OK | R_OK))
 		load_history(shell);

@@ -90,12 +90,11 @@ void	save_history(t_shell *shell, char *path)
 
 void	add_to_history(t_shell *shell, char *input)
 {
-	int		i;
+	int	i;
 
 	if (!input || (input && !*input))
 		return ;
-	else if (shell->history.histsize - (shell->history.histfilesize - \
-		shell->history.count) == shell->history.histsize)
+	else if (shell->history.histfilesize == shell->history.count)
 	{
 		rl_clear_history();
 		free(shell->history.entries[0]);
@@ -106,7 +105,7 @@ void	add_to_history(t_shell *shell, char *input)
 		if (shell->history.current)
 			shell->history.current--;
 		i = 0;
-		while (i < shell->history.count)
+		while (i < shell->history.count && i < (shell->history.histsize - 1))
 			add_history(shell->history.entries[i++]);
 	}
 	add_history(input);
