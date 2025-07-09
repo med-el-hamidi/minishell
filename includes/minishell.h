@@ -23,6 +23,7 @@
 # include <readline/history.h>
 # include <termios.h>
 # include <sys/stat.h>
+# include <dirent.h>
 # include "../libft/libft.h"
 # include "structures.h"
 # include "lexer.h"
@@ -42,11 +43,13 @@ int		print_syntax_error(const char *token);
 
 /* Init functions*/
 t_list	*init_env(char **envp);
+void	increment_shell_level(t_list **vars);
 void	setup_signals(void);
 void	init_history(t_shell *shell);
 void	init_termios(t_shell *shell);
 
 /* History functions*/
+void	set_histfile(t_shell *shell);
 void	load_history(t_shell *shell);
 void	add_to_history(t_shell *shell, char *input);
 void	save_history(t_shell *shell, char *path);
@@ -63,7 +66,7 @@ void	free_ast(t_ast *node);
 /* Other utils */
 void	set_herdoc_tmp_file(t_shell *shell, char **delimiter);
 int		open_script(char *script);
-char	*_getenv(t_shell *shell, const char *name);
+char	*_getenv(t_list *vars, const char *name);
 char	*_getpid(void );
 int		_add_history(t_shell *shell, char *line, int i, int *skip);
 

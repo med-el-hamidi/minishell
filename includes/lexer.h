@@ -20,7 +20,7 @@ int		is_whitespace(char c);
 int		check_unclosed_quotes(char *input, size_t i);
 char	*ft_strjoin_to_s1(char *s1, char *s2);
 char	*ft_strjoin_char_to_s1(char *s1, char c);
-char	*gethome(t_shell	*shell);
+char	*gethome(t_list	*vars);
 
 char	*accumulate_dollar(t_shell *shell, char *input, size_t *i);
 int		handle_redirection(t_shell *shell, t_list **tokens, char *input, \
