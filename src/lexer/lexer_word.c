@@ -48,7 +48,7 @@ char	*accumulate_dollar(t_shell *shell, char *input, size_t *i)
 	while (ft_isalnum(input[*i]) || input[*i] == '_')
 		(*i)++;
 	key = ft_substr(input, start, *i - start);
-	val = _getenv(shell, key);
+	val = _getenv(shell->vars, key);
 	free(key);
 	if (val)
 		return (ft_strdup(val));
@@ -95,7 +95,7 @@ char	*accumulate_token(t_shell *shell, char *input, size_t *i)
 				|| is_whitespace(input[*i + 1])))
 		{
 			(*i)++;
-			chunk = gethome(shell);
+			chunk = gethome(shell->vars);
 		}
 		else
 			chunk = accumulate_word(input, i);

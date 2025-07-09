@@ -54,12 +54,12 @@ char	*ft_strjoin_char_to_s1(char *s1, char c)
 	return (s1);
 }
 
-char	*gethome(t_shell	*shell)
+char	*gethome(t_list	*vars)
 {
 	char	*home;
 	char	*tmp;
 
-	tmp = _getenv(shell, "HOME");
+	tmp = _getenv(vars, "HOME");
 	if (tmp)
 		home = ft_strdup(tmp);
 	else
