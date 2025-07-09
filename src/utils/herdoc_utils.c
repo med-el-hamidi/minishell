@@ -40,37 +40,60 @@ static char	*parse_herdoc_input(t_shell *shell, char *input)
 	while (input[i])
 	{
 		if (input[i] == '$' && input[i + 1] != '"' && input[i + 1] != '\'')
-			result = ft_strjoin_to_s1(result, accumulate_dollar(shell, input, &i));
+			result = \
+				ft_strjoin_to_s1(result, accumulate_dollar(shell, input, &i));
 		else
 			result = ft_strjoin_char_to_s1(result, input[i++]);
 	}
 	return (free(input), result);
 }
 
+static void	herdoc_loop(t_shell *shell, char *delimiter, int fd)
+{
+	const size_t	len = ft_strlen(delimiter);
+	char			*input;
+
+	while (1)
+	{
+		input = readline("> ");
+		if (!input || (!ft_strncmp(input, delimiter, len)
+				&& ft_strlen(input) == len))
+		{
+			if (!input)
+				printf("minishell: warning: here-document delimited by end-of-file \
+(wanted '%s')\n", delimiter);
+			break ;
+		}
+		input = parse_herdoc_input(shell, input);
+		ft_putendl_fd(input, fd);
+		free(input);
+	}
+}
+
 void	set_herdoc_tmp_file(t_shell *shell, char **delimiter)
 {
 	char			*tmp_file;
-	char			*s;
 	int				fd;
-	const size_t	l = ft_strlen(*delimiter);
+	pid_t			pid;
+	int				status;
 
 	tmp_file = gen_tmp_file();
 	fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd == -1)
 		return (perror("minishell: herdoc"));
-	while (1)
+	pid = fork();
+	if (!pid)
 	{
-		s = readline("> ");
-		if (!s || (!ft_strncmp(s, *delimiter, l) && ft_strlen(s) == l))
-		{
-			if (!s)
-				printf("minishell: warning: here-document delimited by end-of-file \
-(wanted '%s')\n", *delimiter);
-			break ;
-		}
-		s = parse_herdoc_input(shell, s);
-		ft_putendl_fd(s, fd);
-		free(s);
+		signal(SIGINT, SIG_DFL);
+		(herdoc_loop(shell, *delimiter, fd), exit(EXIT_SUCCESS));
+	}
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status) && WTERMSIG(status))
+	{
+		close (fd);
+		fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
+		if (fd == -1)
+			return (perror("minishell: herdoc"));
 	}
 	(free(*delimiter), close (fd));
 	*delimiter = tmp_file;
