@@ -38,7 +38,7 @@ void	shell_loop(t_shell *shell);
 void	cleanup_shell(t_shell *shell);
 
 /* Error functions*/
-void	exit_error(char *msg, const int sys_error);
+void	_print_error(char *msg, const int sys_error);
 int		print_syntax_error(const char *token);
 
 /* Init functions*/
