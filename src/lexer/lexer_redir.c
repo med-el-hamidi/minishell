@@ -80,6 +80,30 @@ static int	get_redirection_type(char *input, size_t *i)
 	return (type);
 }
 
+static char	*_get_redir_value(t_shell *shell, char *input, size_t *i, int type)
+{
+	char	*str;
+	char	*amb;
+
+	if (type == TOKEN_REDIR_HEREDOC)
+		str = get_delimiter(input, i);
+	else
+	{
+		amb = is_ambiguous_redirect(shell, input, *i);
+		if (!amb)
+			str = accumulate_token(shell, input, i);
+		else
+		{
+			ft_putstr_fd("minishell: ", STDERR_FILENO);
+			ft_putstr_fd(amb, STDERR_FILENO);
+			ft_putstr_fd(": ambiguous redirect\n", STDERR_FILENO);
+			free(amb);
+			return (NULL);
+		}
+	}
+	return (str);
+}
+
 int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 {
 	int		type;
@@ -90,12 +114,9 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 		return (2);
 	while (is_whitespace(input[*i]))
 		(*i)++;
-	if (type == TOKEN_REDIR_HEREDOC)
-		str = get_delimiter(input, i);
-	else
-		str = accumulate_token(shell, input, i);
+	str = _get_redir_value(shell, input, i, type);
 	if (!str)
-		return (2);
+		return (1);
 	if (type == TOKEN_REDIR_APPEND)
 		add_token(tokens, create_token(TOKEN_REDIR_APPEND, str));
 	else if (type == TOKEN_REDIR_HEREDOC)

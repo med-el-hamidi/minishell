@@ -16,6 +16,7 @@
 t_token	*create_token(t_token_type type, char *value);
 void	add_token(t_list **tokens, t_token *token);
 int		is_whitespace(char c);
+char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i);
 
 int		check_unclosed_quotes(char *input, size_t i);
 char	*ft_strjoin_to_s1(char *s1, char *s2);

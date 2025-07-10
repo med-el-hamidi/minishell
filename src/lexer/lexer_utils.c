@@ -20,7 +20,10 @@ t_token	*create_token(t_token_type type, char *value)
 	if (!token)
 		return (NULL);
 	token->type = type;
-	token->value = ft_strdup(value);
+	if (value)
+		token->value = ft_strdup(value);
+	else
+		token->value = NULL;
 	return (token);
 }
 
@@ -34,4 +37,30 @@ void	add_token(t_list **tokens, t_token *token)
 int	is_whitespace(char c)
 {
 	return ((c >= 9 && c <= 13) || c == ' ');
+}
+
+char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
+{
+	size_t	j;
+	char	*str;
+
+	while (input[i] && !is_whitespace(input[i])
+		&& !ft_strchr("|<>", input[i]))
+	{
+		if (input[i] == '$')
+		{
+			j = i;
+			str = accumulate_dollar(shell, input, &j);
+			if (str && !*str)
+			{
+				free(str);
+				return (ft_substr(input, i, j));
+			}
+			free(str);
+			i = j;
+		}
+		else
+			i++;
+	}
+	return (NULL);
 }
