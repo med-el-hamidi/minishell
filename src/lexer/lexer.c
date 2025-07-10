@@ -32,6 +32,8 @@ static int	lexer_word(t_shell	*shell, t_list **tokens, char *input, size_t *i)
 static int	lexer_redir(t_shell	*shell, t_list **tokens, char *input, size_t *i)
 {
 	shell->exit_status = handle_redirection(shell, tokens, input, i);
+	if (shell->exit_status == 130)
+		g_exit_status = 130;
 	if (shell->exit_status)
 	{
 		ft_lstclear(tokens, del_token);

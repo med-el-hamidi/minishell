@@ -36,6 +36,23 @@ static int	check_invalid_token(char *input, size_t pos)
 	return (0);
 }
 
+static int	get_redirection_type(char *input, size_t *i)
+{
+	int	type;
+
+	type = TOKEN_REDIR_IN;
+	if (input[*i] == '>' && input[*i + 1] == '>')
+		type = TOKEN_REDIR_APPEND;
+	else if ((input[*i] == '<' && input[*i + 1] == '<'))
+		type = TOKEN_REDIR_HEREDOC;
+	else if (input[*i] == '>')
+		type = TOKEN_REDIR_OUT;
+	if (type == TOKEN_REDIR_APPEND || type == TOKEN_REDIR_HEREDOC)
+		*i += 1;
+	*i += 1;
+	return (type);
+}
+
 static char	*get_delimiter(char *input, size_t *i)
 {
 	char	*result;
@@ -63,23 +80,6 @@ static char	*get_delimiter(char *input, size_t *i)
 	return (result);
 }
 
-static int	get_redirection_type(char *input, size_t *i)
-{
-	int	type;
-
-	type = TOKEN_REDIR_IN;
-	if (input[*i] == '>' && input[*i + 1] == '>')
-		type = TOKEN_REDIR_APPEND;
-	else if ((input[*i] == '<' && input[*i + 1] == '<'))
-		type = TOKEN_REDIR_HEREDOC;
-	else if (input[*i] == '>')
-		type = TOKEN_REDIR_OUT;
-	if (type == TOKEN_REDIR_APPEND || type == TOKEN_REDIR_HEREDOC)
-		*i += 1;
-	*i += 1;
-	return (type);
-}
-
 static char	*_get_redir_value(t_shell *shell, char *input, size_t *i, int type)
 {
 	char	*str;
@@ -94,9 +94,7 @@ static char	*_get_redir_value(t_shell *shell, char *input, size_t *i, int type)
 			str = accumulate_token(shell, input, i);
 		else
 		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);
-			ft_putstr_fd(amb, STDERR_FILENO);
-			ft_putstr_fd(": ambiguous redirect\n", STDERR_FILENO);
+			printf("minishell: %s: ambiguous redirect\n", amb);
 			free(amb);
 			return (NULL);
 		}
@@ -106,22 +104,26 @@ static char	*_get_redir_value(t_shell *shell, char *input, size_t *i, int type)
 
 int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 {
-	int		type;
 	char	*str;
+	int		type;
+	int		flag;
+	size_t	bkp;
 
 	type = get_redirection_type(input, i);
 	if (check_invalid_token(input, *i))
 		return (2);
-	while (is_whitespace(input[*i]))
-		(*i)++;
+	bkp = skip_whitespace(input, i);
 	str = _get_redir_value(shell, input, i, type);
 	if (!str)
 		return (1);
-	if (type == TOKEN_REDIR_APPEND)
+	if (type == TOKEN_REDIR_HEREDOC)
+	{
+		flag = set_herdoc_tmp_file(shell, &str, input, bkp);
+		add_token(tokens, create_token(TOKEN_REDIR_HEREDOC, str));
+		return (free(str), flag);
+	}
+	else if (type == TOKEN_REDIR_APPEND)
 		add_token(tokens, create_token(TOKEN_REDIR_APPEND, str));
-	else if (type == TOKEN_REDIR_HEREDOC)
-		(set_herdoc_tmp_file(shell, &str), \
-		add_token(tokens, create_token(TOKEN_REDIR_HEREDOC, str)));
 	else if (type == TOKEN_REDIR_OUT)
 		add_token(tokens, create_token(TOKEN_REDIR_OUT, str));
 	else

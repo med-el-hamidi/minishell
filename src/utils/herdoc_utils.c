@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static char	*gen_tmp_file(void )
+static char	*_gen_tmp_file(void )
 {
 	static int	uniq_id = 0;
 	char		*str;
@@ -30,7 +30,33 @@ static char	*gen_tmp_file(void )
 	return (tmp_file);
 }
 
-static char	*parse_herdoc_input(t_shell *shell, char *input)
+static int	_should_parse_dollar(char *input, size_t i)
+{
+	int		parse;
+	int		f;
+
+	parse = 1;
+	f = 0;
+	while (input[i] && !ft_strchr("|<>", input[i]))
+	{
+		if (!f && is_whitespace(input[i]))
+			break ;
+		else if ((input[i] == '"' || input[i] == '\''))
+		{
+			parse = 0;
+			if (!f)
+				f = 1;
+			else
+				f = 0;
+			i++;
+		}
+		else
+			i++;
+	}
+	return (parse);
+}
+
+static char	*_parse_herdoc_input(t_shell *shell, char *input, int f)
 {
 	char	*result;
 	size_t	i;
@@ -39,7 +65,7 @@ static char	*parse_herdoc_input(t_shell *shell, char *input)
 	i = 0;
 	while (input[i])
 	{
-		if (input[i] == '$' && input[i + 1] != '"' && input[i + 1] != '\'')
+		if (f && input[i] == '$' && input[i + 1] != '"' && input[i + 1] != '\'')
 			result = \
 				ft_strjoin_to_s1(result, accumulate_dollar(shell, input, &i));
 		else
@@ -48,11 +74,12 @@ static char	*parse_herdoc_input(t_shell *shell, char *input)
 	return (free(input), result);
 }
 
-static void	herdoc_loop(t_shell *shell, char *delimiter, int fd)
+static void	_herdoc_loop(t_shell *shell, char *delimiter, int fd, int f)
 {
 	const size_t	len = ft_strlen(delimiter);
 	char			*input;
 
+	signal(SIGINT, SIG_DFL);
 	while (1)
 	{
 		input = readline("> ");
@@ -64,37 +91,38 @@ static void	herdoc_loop(t_shell *shell, char *delimiter, int fd)
 (wanted '%s')\n", delimiter);
 			break ;
 		}
-		input = parse_herdoc_input(shell, input);
+		input = _parse_herdoc_input(shell, input, f);
 		ft_putendl_fd(input, fd);
 		free(input);
 	}
+	exit(0);
 }
 
-void	set_herdoc_tmp_file(t_shell *shell, char **delimiter)
+int	set_herdoc_tmp_file(t_shell *shell, char **delimiter, char *input, size_t i)
 {
-	char			*tmp_file;
-	int				fd;
-	pid_t			pid;
-	int				status;
+	char	*tmp_file;
+	int		fd;
+	pid_t	pid;
+	int		status;
+	int		ret;
 
-	tmp_file = gen_tmp_file();
+	ret = 0;
+	tmp_file = _gen_tmp_file();
 	fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd == -1)
-		return (perror("minishell: herdoc"));
+		return (perror("minishell: herdoc"), 1);
 	pid = fork();
 	if (!pid)
-	{
-		signal(SIGINT, SIG_DFL);
-		(herdoc_loop(shell, *delimiter, fd), exit(EXIT_SUCCESS));
-	}
+		_herdoc_loop(shell, *delimiter, fd, _should_parse_dollar(input, i));
 	waitpid(pid, &status, 0);
 	if (WIFSIGNALED(status) && WTERMSIG(status))
 	{
+		ret = 130;
 		close (fd);
 		fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 		if (fd == -1)
-			return (perror("minishell: herdoc"));
+			return (perror("minishell: herdoc"), 1);
 	}
 	(free(*delimiter), close (fd));
-	*delimiter = tmp_file;
+	return ((*delimiter = tmp_file), ret);
 }
