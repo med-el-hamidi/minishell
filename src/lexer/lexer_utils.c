@@ -39,6 +39,22 @@ int	is_whitespace(char c)
 	return ((c >= 9 && c <= 13) || c == ' ');
 }
 
+static int	has_whitespace(char *str)
+{
+	size_t	k;
+
+	if (!str || !*str)
+		return (1);
+	k = 0;
+	while (str[k])
+	{
+		if (is_whitespace(str[k]))
+			return (1);
+		k++;
+	}
+	return (0);
+}
+
 char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 {
 	size_t	j;
@@ -51,7 +67,7 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 		{
 			j = i;
 			str = accumulate_dollar(shell, input, &j);
-			if (str && !*str)
+			if (str && (!*str || has_whitespace(str)))
 			{
 				free(str);
 				return (ft_substr(input, i, j));
