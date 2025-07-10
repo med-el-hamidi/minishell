@@ -43,7 +43,7 @@ int		print_syntax_error(const char *token);
 
 /* Init functions*/
 t_list	*init_env(char **envp);
-void	increment_shell_level(t_list **vars);
+void	init_shell_vars(t_list **vars);
 void	setup_signals(void);
 void	init_history(t_shell *shell);
 void	init_termios(t_shell *shell);
