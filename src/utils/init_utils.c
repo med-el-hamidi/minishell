@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	increment_shell_level(t_list **vars)
+static void	increment_shell_level(t_list **vars)
 {
 	t_list	*shlvl;
 	char	*str_lvl;
@@ -28,6 +28,25 @@ void	increment_shell_level(t_list **vars)
 		update_shell_var(shlvl, str_lvl, ((t_var *)shlvl->content)->flag);
 		free(str_lvl);
 	}
+}
+
+void	init_shell_vars(t_list **vars)
+{
+	char	*cwd;
+
+	if (!getenv("PATH"))
+		create_shell_var(vars, "PATH", \
+"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", VAR_LOCAL);
+	if (!getenv("PWD"))
+	{
+		cwd = getcwd(NULL, 0);
+		if (cwd)
+		{
+			create_shell_var(vars, "PWD", cwd, VAR_ENV);
+			free(cwd);
+		}
+	}
+	increment_shell_level(vars);
 }
 
 static int	_getuid(void )

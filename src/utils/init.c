@@ -37,9 +37,9 @@ t_list	*init_env(char **envp)
 	t_var	*v;
 	int		i;
 
+	head_env = NULL;
 	if (envp)
 	{
-		head_env = NULL;
 		i = -1;
 		while (envp[++i])
 		{
@@ -52,10 +52,7 @@ t_list	*init_env(char **envp)
 			ft_lstadd_back(&head_env, node_env);
 		}
 	}
-	if (!getenv("PATH"))
-		create_shell_var(&head_env, "PATH", \
-"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", VAR_LOCAL);
-	increment_shell_level(&head_env);
+	init_shell_vars(&head_env);
 	return (head_env);
 }
 
