@@ -43,8 +43,9 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(UTL_DIR)/free.c \
 			$(UTL_DIR)/history_utils.c \
 			$(UTL_DIR)/history.c \
-			$(LEX_DIR)/lexer_word.c \
 			$(LEX_DIR)/lexer_word_utils.c \
+			$(LEX_DIR)/lexer_word.c \
+			$(LEX_DIR)/lexer_redir_utils.c \
 			$(LEX_DIR)/lexer_redir.c \
 			$(LEX_DIR)/lexer_utils.c \
 			$(LEX_DIR)/lexer.c \
