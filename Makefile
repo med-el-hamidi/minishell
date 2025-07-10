@@ -36,6 +36,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(SRC_DIR)/test_parser.c \
 			$(UTL_DIR)/utils.c \
 			$(UTL_DIR)/herdoc_utils.c \
+			$(UTL_DIR)/init_utils.c \
 			$(UTL_DIR)/init.c \
 			$(UTL_DIR)/signal.c \
 			$(UTL_DIR)/error.c \
@@ -51,15 +52,23 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(PAR_DIR)/parse_redir.c \
 			$(PAR_DIR)/parser_utils.c \
 			$(PAR_DIR)/parser.c \
-			# $(BLT_DIR)/cd.c \
-			# $(BLT_DIR)/echo.c \
-			# $(BLT_DIR)/env.c \
-			# $(BLT_DIR)/pwd.c \
-			# $(BLT_DIR)/unset.c \
-			# $(BLT_DIR)/export.c \
-			# $(EXE_DIR)/exec_cmd.c \
-			# $(EXE_DIR)/exec_utils.c \
-			# $(EXE_DIR)/executor.c
+			$(BLT_DIR)/cd.c \
+			$(BLT_DIR)/exit.c \
+			$(BLT_DIR)/echo.c \
+			$(BLT_DIR)/env.c \
+			$(BLT_DIR)/pwd.c \
+			$(BLT_DIR)/unset.c \
+			$(BLT_DIR)/export_utils_0.c \
+			$(BLT_DIR)/export_utils_1.c \
+			$(BLT_DIR)/export.c \
+			$(EXE_DIR)/exec_cmd.c \
+			$(EXE_DIR)/exec_pipe.c \
+			$(EXE_DIR)/exec_redir.c \
+			$(EXE_DIR)/exec_utils_0.c \
+			$(EXE_DIR)/exec_utils_1.c \
+			$(EXE_DIR)/exec_local_vars.c \
+			$(EXE_DIR)/external_cmd.c \
+			$(EXE_DIR)/executor.c
 
 
 # Object files
