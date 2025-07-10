@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-volatile sig_atomic_t g_exit_status = 0;
+volatile sig_atomic_t	g_exit_status = 0;
 
 void	init_shell(t_shell *shell, char **envp)
 {
@@ -77,7 +77,8 @@ void	shell_loop(t_shell *shell)
 		if (!input)
 			break ;
 		add_to_history(shell, input);
-		shell->exit_status = g_exit_status;
+		if (g_exit_status)
+			shell->exit_status = g_exit_status;
 		tokens = lexer(shell, input);
 		free(input);
 		shell->tokens = &tokens;
@@ -113,8 +114,6 @@ void	cleanup_shell(t_shell *shell)
 	ft_lstclear(&shell->vars, del_env);
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
-	if (shell->is_interactive)
-		printf("exit\n");
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -131,6 +130,8 @@ int	main(int argc, char **argv, char **envp)
 	else
 		shell_loop(&shell);
 	cleanup_shell(&shell);
+	if (shell.is_interactive)
+		printf("exit\n");
 	if (g_exit_status)
 		return (g_exit_status);
 	else
