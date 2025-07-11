@@ -6,11 +6,30 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 22:33:49 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/10 15:53:43 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/11 20:16:30 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
+
+static char	*_fall_back_path(char *current_path)
+{
+	char	*last_slash_pos;
+	int		new_path_lenght;
+	char	*new_path;
+
+	if (!current_path || !*current_path)
+		return (NULL);
+	last_slash_pos = ft_strrchr(current_path, '/');
+	if (!last_slash_pos || last_slash_pos == current_path)
+		return (ft_strdup("/"));
+	new_path_lenght = last_slash_pos - current_path;
+	new_path = malloc(new_path_lenght + 1);
+	if (!new_path)
+		return(NULL);
+	ft_strlcpy(new_path, current_path, new_path_lenght + 1);
+	return (new_path);	
+}
 
 static int	cd_prepar_path(t_list *vars, char **arg, char **path)
 {
@@ -49,9 +68,27 @@ int	builtin_cd(char **argv, t_shell *shell)
 		update_shell_var(find_shell_var(shell->vars, "OLDPWD"), \
 			pwd_oldpwd[1], VAR_ENV);
 	else
-		perror(CD_RETRIV);
+	{
+		if (!ft_strcmp(argv[1], ".."))
+		{
+			ft_putstr_fd(CD_RETRIV": ", STDERR_FILENO);
+			perror("getcwd: cannot access parent directories");
+		}
+		else
+			perror(CD_RETRIV);
+	}
 	if (chdir(path) == -1)
-		return (free(pwd_oldpwd[1]), perror(path), 1);
+	{
+		if (!ft_strcmp(argv[1], ".."))
+		{
+			path = _fall_back_path(pwd_oldpwd[1]);
+			if (chdir(path) == -1)
+				return (free(pwd_oldpwd[1]), free(path), perror(path), 1);
+			free (path);
+		}
+		else
+			return (free(pwd_oldpwd[1]), perror(path), 1);
+	}
 	pwd_oldpwd[0] = getcwd(NULL, 0);
 	if (pwd_oldpwd[0])
 		update_shell_var(find_shell_var(shell->vars, "PWD"), \
