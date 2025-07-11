@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:27:46 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/08 11:51:38 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:29:41 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,30 +41,31 @@ static t_var	*find_max(t_list *vars)
 	while (ptr)
 	{
 		var = (t_var *)ptr->content;
-		if (ft_strcmp(max_var->key, var->key) < 0)
+		if ((var->flag == VAR_ENV || var->flag == VAR_EXPORTED)
+			&& ft_strcmp(max_var->key, var->key) < 0)
 			max_var = var;
 		ptr = ptr->next;
 	}
 	return (max_var);
 }
 
-static void	find_min(t_list *vars, t_var **min_var, char **min_keys)
+static void	find_min(t_list *vars, t_var **min_var, \
+	t_var *max_var, char **min_keys)
 {
 	t_list	*ptr;
 	t_var	*var;
-	t_var	*tmp;
 
-	tmp = find_max(vars);
+	*min_var = max_var;
 	ptr = vars;
 	while (ptr)
 	{
 		var = (t_var *)ptr->content;
-		if (!_is_exist(min_keys, var->key) \
-			&& ft_strcmp(tmp->key, var->key) > 0)
-			tmp = var;
+		if ((var->flag == VAR_ENV || var->flag == VAR_EXPORTED)
+			&& !_is_exist(min_keys, var->key)
+			&& ft_strcmp((*min_var)->key, var->key) > 0)
+			*min_var = var;
 		ptr = ptr->next;
 	}
-	*min_var = tmp;
 }
 
 static void	put_out_exported(t_list *vars, t_var *min_var)
@@ -79,28 +80,28 @@ static void	put_out_exported(t_list *vars, t_var *min_var)
 int	_export(t_list *vars)
 {
 	t_var	*min_var;
-	char	**printed;
+	t_var	*max_var;
+	char	**min_keys;
 	int		len;
 	int		i;
 
+	max_var = find_max(vars);
 	len = ft_lstsize(vars);
-	printed = malloc(sizeof(char *) * (len + 1));
-	if (!printed)
-		return ((errno = ENOMEM), perror("malloc export_utils failed"), 1);
-	printed[0] = NULL;
+	min_keys = malloc(sizeof(char *) * (len + 1));
+	if (!min_keys)
+		return (perror("failed to malloc min_keys at _export"), 1);
+	min_keys[0] = NULL;
 	i = 0;
 	while (len--)
 	{
-		find_min(vars, &min_var, printed);
-		if (min_var && !_is_exist(printed, min_var->key) \
+		find_min(vars, &min_var, max_var, min_keys);
+		if (min_var && !_is_exist(min_keys, min_var->key) \
 			&& (min_var->flag == VAR_ENV || min_var->flag == VAR_EXPORTED))
 		{
 			put_out_exported(vars, min_var);
-			printed[i++] = ft_strdup(min_var->key);
-			if (!printed[i - 1])
-				return (free_2d_array(printed), (errno = ENOMEM), 1);
-			printed[i] = NULL;
+			min_keys[i++] = ft_strdup(min_var->key);
+			min_keys[i] = NULL;
 		}
 	}
-	return (free_2d_array(printed), 0);
+	return (free_2d_array(min_keys), 0);
 }
