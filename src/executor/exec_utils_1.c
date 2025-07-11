@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:14:50 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/10 22:05:31 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/11 16:50:51 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ static void	_set_new_args(t_ast	*node, size_t *i)
 	size_t	count;
 
 	count = count_2d_array(node->args);
-	printf("*i=%zu, count:%zu\n",*i, count);
 	j = 0;
 	while (j + *i < count)
 		j++;
@@ -89,6 +88,8 @@ int	_is_local_vars(t_ast *node)
 	while (node->args[i])
 	{
 		if (_is_valid_local_var(node->args[i]))
+			i++;
+		else if (*node->args[i] == '\0')
 			i++;
 		else
 		{
