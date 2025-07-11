@@ -38,8 +38,10 @@ char	*ft_strjoin_to_s1(char *s1, char *s2)
 
 	tmp = s1;
 	s1 = ft_strjoin(s1, s2);
-	free(tmp);
-	free(s2);
+	if (tmp)
+		free(tmp);
+	if (s2)
+		free(s2);
 	return (s1);
 }
 
@@ -50,7 +52,8 @@ char	*ft_strjoin_char_to_s1(char *s1, char c)
 
 	tmp = s1;
 	s1 = ft_strjoin(s1, arr);
-	free(tmp);
+	if (tmp)
+		free(tmp);
 	return (s1);
 }
 
@@ -61,7 +64,10 @@ char	*gethome(t_list	*vars)
 
 	tmp = _getenv(vars, "HOME");
 	if (tmp)
+	{
 		home = ft_strdup(tmp);
+		free(tmp);
+	}
 	else
 		home = ft_strdup("");
 	return (home);

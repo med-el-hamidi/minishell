@@ -15,6 +15,8 @@
 
 t_token	*create_token(t_token_type type, char *value);
 void	add_token(t_list **tokens, t_token *token);
+
+int		check_invalid_token(char *input, size_t pos);
 int		is_whitespace(char c);
 size_t	skip_whitespace(char *input, size_t *i);
 char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i);

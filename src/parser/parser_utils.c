@@ -38,5 +38,6 @@ void	advance_token(t_list **tokens)
 int	is_redirection(int type)
 {
 	return (type == TOKEN_REDIR_OUT || type == TOKEN_REDIR_APPEND
-		|| type == TOKEN_REDIR_IN || type == TOKEN_REDIR_HEREDOC);
+		|| type == TOKEN_REDIR_IN || type == TOKEN_REDIR_HEREDOC
+		|| type == TOKEN_AMB_REDIR);
 }

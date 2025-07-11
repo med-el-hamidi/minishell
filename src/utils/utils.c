@@ -29,20 +29,45 @@ int	open_script(char *script)
 	return (fd);
 }
 
+
+static char	*_getenv_helper(char *value)
+{
+	char	**content;
+	size_t	i;
+
+	content = ft_split(value, ' ');
+	if (!content)
+		return (NULL);
+	value = NULL;
+	i = 0;
+	while (content[i])
+	{
+		value = ft_strjoin_to_s1(value, content[i]);
+		value = ft_strjoin_char_to_s1(value, ' ');
+		i++;
+	}
+	free(content);
+	return (value);
+}
+
 char	*_getenv(t_list *vars, const char *name)
 {
+	char	*value;
 	t_var	*env;
 	size_t	len;
 
+	value = NULL;
 	len = ft_strlen(name);
 	while (vars)
 	{
 		env = vars->content;
 		if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
-			return (env->value);
+			value = env->value;
 		vars = vars->next;
 	}
-	return (NULL);
+	if (!value)
+		return (NULL);
+	return (_getenv_helper(value));
 }
 
 char	*_getpid(void )

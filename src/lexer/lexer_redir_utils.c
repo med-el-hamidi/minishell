@@ -12,6 +12,30 @@
 
 #include "../../includes/minishell.h"
 
+int	check_invalid_token(char *input, size_t pos)
+{
+	while (is_whitespace(input[pos]))
+		pos++;
+	if (!ft_isprint(input[pos]))
+		return (print_syntax_error("newline"));
+	if (input[pos] == '>' || input[pos] == '<')
+	{
+		if (!ft_strncmp(&input[pos], ">>>", 3))
+			return (print_syntax_error(">>>"));
+		else if (!ft_strncmp(&input[pos], ">>", 2))
+			return (print_syntax_error(">>"));
+		else if (!ft_strncmp(&input[pos], "<<<", 3))
+			return (print_syntax_error("<<<"));
+		else if (!ft_strncmp(&input[pos], "<<", 2))
+			return (print_syntax_error("<<"));
+		else if (input[pos] == '>')
+			return (print_syntax_error(">"));
+		else if (input[pos] == '<')
+			return (print_syntax_error("<"));
+	}
+	return (0);
+}
+
 size_t	skip_whitespace(char *input, size_t *i)
 {
 	while (is_whitespace(input[*i]))

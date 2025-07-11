@@ -12,30 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-static int	check_invalid_token(char *input, size_t pos)
-{
-	while (is_whitespace(input[pos]))
-		pos++;
-	if (!ft_isprint(input[pos]))
-		return (print_syntax_error("newline"));
-	if (input[pos] == '>' || input[pos] == '<')
-	{
-		if (!ft_strncmp(&input[pos], ">>>", 3))
-			return (print_syntax_error(">>>"));
-		else if (!ft_strncmp(&input[pos], ">>", 2))
-			return (print_syntax_error(">>"));
-		else if (!ft_strncmp(&input[pos], "<<<", 3))
-			return (print_syntax_error("<<<"));
-		else if (!ft_strncmp(&input[pos], "<<", 2))
-			return (print_syntax_error("<<"));
-		else if (input[pos] == '>')
-			return (print_syntax_error(">"));
-		else if (input[pos] == '<')
-			return (print_syntax_error("<"));
-	}
-	return (0);
-}
-
 static int	get_redirection_type(char *input, size_t *i)
 {
 	int	type;
@@ -80,12 +56,12 @@ static char	*get_delimiter(char *input, size_t *i)
 	return (result);
 }
 
-static char	*_get_redir_value(t_shell *shell, char *input, size_t *i, int type)
+static char	*get_redir_value(t_shell *shell, char *input, size_t *i, int *type)
 {
 	char	*str;
 	char	*amb;
 
-	if (type == TOKEN_REDIR_HEREDOC)
+	if (*type == TOKEN_REDIR_HEREDOC)
 		str = get_delimiter(input, i);
 	else
 	{
@@ -94,12 +70,23 @@ static char	*_get_redir_value(t_shell *shell, char *input, size_t *i, int type)
 			str = accumulate_token(shell, input, i);
 		else
 		{
-			printf("minishell: %s: ambiguous redirect\n", amb);
-			free(amb);
-			return (NULL);
+			*type = TOKEN_AMB_REDIR;
+			return (amb);
 		}
 	}
 	return (str);
+}
+
+static void	add_redir_token(t_list **tokens, char *str, int type)
+{
+	if (type == TOKEN_REDIR_APPEND)
+		add_token(tokens, create_token(TOKEN_REDIR_APPEND, str));
+	else if (type == TOKEN_REDIR_OUT)
+		add_token(tokens, create_token(TOKEN_REDIR_OUT, str));
+	else if (type == TOKEN_REDIR_IN)
+		add_token(tokens, create_token(TOKEN_REDIR_IN, str));
+	else
+		add_token(tokens, create_token(TOKEN_AMB_REDIR, str));
 }
 
 int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
@@ -113,7 +100,7 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 	if (check_invalid_token(input, *i))
 		return (2);
 	bkp = skip_whitespace(input, i);
-	str = _get_redir_value(shell, input, i, type);
+	str = get_redir_value(shell, input, i, &type);
 	if (!str)
 		return (1);
 	if (type == TOKEN_REDIR_HEREDOC)
@@ -122,11 +109,6 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 		add_token(tokens, create_token(TOKEN_REDIR_HEREDOC, str));
 		return (free(str), flag);
 	}
-	else if (type == TOKEN_REDIR_APPEND)
-		add_token(tokens, create_token(TOKEN_REDIR_APPEND, str));
-	else if (type == TOKEN_REDIR_OUT)
-		add_token(tokens, create_token(TOKEN_REDIR_OUT, str));
-	else
-		add_token(tokens, create_token(TOKEN_REDIR_IN, str));
+	add_redir_token(tokens, str, type);
 	return (free(str), 0);
 }

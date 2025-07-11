@@ -51,7 +51,7 @@ char	*accumulate_dollar(t_shell *shell, char *input, size_t *i)
 	val = _getenv(shell->vars, key);
 	free(key);
 	if (val)
-		return (ft_strdup(val));
+		return (val);
 	return (ft_strdup(""));
 }
 
