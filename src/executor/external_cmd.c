@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/11 00:04:24 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/11 18:20:16 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ int	exec_external(t_ast *node, t_shell *shell)
 	int		status;
 	char	*path;
 	char	**envp;
+	char	*sh_argv[3];
 
 	if (id_directory(node->args[0]))
 		return (print_error(node->args[0], 4), 126);
@@ -102,12 +103,27 @@ int	exec_external(t_ast *node, t_shell *shell)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		execve(path, node->args, envp);
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		if (execve(path, node->args, envp) == -1)
+		{
+			if (errno == ENOEXEC)
+			{
+				sh_argv[0] = "/bin/sh";
+				sh_argv[1] = path;
+				sh_argv[2] = NULL;
+				execve("/bin/sh", sh_argv, envp);
+			}
+		}
+		ft_putstr_fd("minishell: execve ", STDERR_FILENO);
 		perror(node->args[0]);
 		exit (126);
 	}
 	waitpid(pid, &status, 0);
-	shell->exit_status = WEXITSTATUS(status);
+	if (WIFEXITED(status))
+	{
+		shell->exit_status = WEXITSTATUS(status);
+		printf("exit -->%d\n", shell->exit_status);
+	}
+	else if (WIFSIGNALED(status))
+			shell->exit_status = 128 + WTERMSIG(status);
 	return (free(path), free_2d_array(envp), shell->exit_status);
 }
