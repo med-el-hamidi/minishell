@@ -6,19 +6,11 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:30:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/10 23:04:36 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/11 23:25:48 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
-
-static int	print_error(char *arg)
-{
-	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-	ft_putstr_fd(arg, STDERR_FILENO);
-	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-	return (1);
-}
 
 static int	is_valid_identifier(const char *arg)
 {
@@ -40,11 +32,39 @@ static int	is_valid_identifier(const char *arg)
 	return (1);
 }
 
-static void	_handle_arg(t_list **vars, char *arg)
+static void	_add_or_update_var(t_list **vars, char *arg, char **alloc_value)
 {
 	t_list	*node;
 	char	*assign;
 	char	*value;
+
+	assign = ft_strchr(arg, '=');
+	*assign = '\0';
+	if (ft_strchr(arg, '+'))
+	{
+		*(assign - 1) = '\0';
+		value = expand_env(*vars, arg);
+		if (value)
+		{
+			*alloc_value = ft_strjoin(value, assign + 1);
+			value = *alloc_value;
+		}
+		else
+			value = assign + 1;
+	}
+	else
+		value = assign + 1;
+	node = find_shell_var(*vars, arg);
+	if (node)
+		update_shell_var(node, value, VAR_ENV);
+	else
+		create_shell_var(vars, arg, value, VAR_ENV);
+}
+
+static void	_handle_arg(t_list **vars, char *arg)
+{
+	t_list	*node;
+	char	*assign;
 	char	*alloc_value;
 
 	alloc_value = NULL;
@@ -62,28 +82,7 @@ static void	_handle_arg(t_list **vars, char *arg)
 	}
 	else
 	{
-		*assign = '\0';
-		///
-		if (ft_strchr(arg, '+'))
-		{
-			*(assign - 1) = '\0';
-			value = expand_env(*vars, arg);
-			if (value)
-			{
-				alloc_value = ft_strjoin(value,  assign + 1);
-				value = alloc_value;
-			}
-			else
-				value = assign + 1;
-		}
-		else
-			value = assign + 1;
-		///
-		node = find_shell_var(*vars, arg);
-		if (node)
-			update_shell_var(node, value, VAR_ENV);
-		else
-			create_shell_var(vars, arg, value, VAR_ENV);
+		_add_or_update_var(vars, arg, &alloc_value);
 	}
 	if (alloc_value)
 		free(alloc_value);
