@@ -36,6 +36,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(SRC_DIR)/test_parser.c \
 			$(UTL_DIR)/utils.c \
 			$(UTL_DIR)/herdoc_utils.c \
+			$(UTL_DIR)/init_utils.c \
 			$(UTL_DIR)/init.c \
 			$(UTL_DIR)/signal.c \
 			$(UTL_DIR)/error.c \
@@ -44,6 +45,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(UTL_DIR)/history.c \
 			$(LEX_DIR)/lexer_word.c \
 			$(LEX_DIR)/lexer_word_utils.c \
+			$(LEX_DIR)/lexer_redir_utils.c \
 			$(LEX_DIR)/lexer_redir.c \
 			$(LEX_DIR)/lexer_utils.c \
 			$(LEX_DIR)/lexer.c \
