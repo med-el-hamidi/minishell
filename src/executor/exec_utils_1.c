@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:14:50 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/09 01:27:10 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/10 22:05:31 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,15 @@ char	*join_3(const char *s1, char *s2, const char *s3)
 	res = ft_strjoin(tmp, s3);
 	free(tmp);
 	return (res);
+}
+
+int	id_directory(char *path)
+{
+	struct stat path_stat;
+
+	if (stat(path, &path_stat) != 0)
+		return (0);
+	return (S_ISDIR(path_stat.st_mode));
 }
 
 static int	_is_valid_local_var(const char *cmd)
@@ -45,41 +54,46 @@ static int	_is_valid_local_var(const char *cmd)
 	return (0);
 }
 
-static void	_set_new_args(char **args, size_t *i, size_t *j)
+static void	_set_new_args(t_ast	*node, size_t *i)
 {
+	char	**new_args;
+	size_t	j;
 	size_t	count;
 
-	count = ft_argv_count(args);
-	*j = 0;
-	while (*j + *i < count)
+	count = count_2d_array(node->args);
+	printf("*i=%zu, count:%zu\n",*i, count);
+	j = 0;
+	while (j + *i < count)
+		j++;
+	new_args = malloc((j + 1) * sizeof(char *));
+	if (!new_args)
+		return ;
+	j = 0;
+	while (j + *i < count)
 	{
-		free(args[*j]);
-		args[*j] = ft_strdup(args[*j + *i]);
+		new_args[j] = ft_strdup(node->args[j + *i]);
 		j++;
 	}
-	while (*j < count)
-	{
-		free(args[*j]);
-		args[(*j)++] = NULL;
-	}
+	new_args[j] = NULL;
+	free_2d_array(node->args);
+	node->args = new_args;
 }
 
-int	_is_local_vars(char **args)
+int	_is_local_vars(t_ast *node)
 {
 	size_t	i;
-	size_t	j;
 
-	if (!args)
+	if (!node->args)
 		return (0);
 	i = 0;
-	while (args[i])
+	while (node->args[i])
 	{
-		if (_is_valid_local_var(args[i]))
+		if (_is_valid_local_var(node->args[i]))
 			i++;
 		else
 		{
 			if (i)
-				_set_new_args(args, &i, &j);
+				_set_new_args(node, &i);
 			return (0);
 		}
 	}
