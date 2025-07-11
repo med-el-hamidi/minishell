@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:30:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/09 16:51:32 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/10 23:04:36 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,10 @@ static int	_export_var(char **arg, t_list **vars)
 	int		invalid_count;
 	int		arg_counter;
 
-	arg_counter = ft_argv_count(arg);
+	arg_counter = count_2d_array(arg);
 	invalid_args = malloc(sizeof(char *) * arg_counter);
 	if (!invalid_args)
-		return ((errno = ENOMEM), perror("malloc export failed"), 1);
+		return (perror("malloc export failed"), 1);
 	invalid_count = 0;
 	i = 0;
 	while (arg[++i])
