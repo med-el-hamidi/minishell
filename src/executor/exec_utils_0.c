@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:33:26 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/09 18:25:25 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/10 01:36:50 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,14 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (0);
 }
 
-int	ft_argv_count(char **argv)
+size_t	count_2d_array(char **arr)
 {
-	int	i;
+	size_t	i;
 
+	if (!arr)
+		return (0);
 	i = 0;
-	while (argv[i])
+	while (arr[i])
 		i++;
 	return (i);
 }
