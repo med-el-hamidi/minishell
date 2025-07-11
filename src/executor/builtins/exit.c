@@ -6,13 +6,13 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:33:03 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/09 18:35:21 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/10 15:55:20 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
-static long	test_ft_atoi(const char *str)
+static t_int_f	custom_ft_atoi(const char *str)
 {
 	long	nbr;
 	long	tmp;
@@ -33,14 +33,14 @@ static long	test_ft_atoi(const char *str)
 		tmp = nbr;
 		nbr = (nbr * 10) + (*str++ - '0');
 		if ((nbr / 10) != tmp && sign == 1)
-			return (-1);
+			return ((t_int_f){-1, 1});
 		else if ((nbr / 10) != tmp && sign == -1)
-			return (0);
+			return ((t_int_f){0, 1});
 	}
-	return (nbr * sign);
+	return ((t_int_f){nbr * sign, 0});
 }
 
-void	_print_error(t_shell *sh, char *arg)
+static void	_exit_print_error(t_shell *sh, char *arg)
 {
 	sh->exit_status = 2;
 	ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
@@ -50,9 +50,8 @@ void	_print_error(t_shell *sh, char *arg)
 
 static int	_finish_exit(char **argv, t_shell *sh)
 {
-	int	should_exit;
-	long	n;
-	int		nbr;
+	int		should_exit;
+	t_int_f	exit_nbr;
 
 	should_exit = 1;
 	sh->exit_status = 0;
@@ -65,17 +64,15 @@ static int	_finish_exit(char **argv, t_shell *sh)
 	}
 	else if (argv[1] && ft_strisnum(argv[1]) == 0)
 	{
-		_print_error(sh, argv[1]);
+		_exit_print_error(sh, argv[1]);
 	}
 	else if (argv[1])
 	{
-		n = test_ft_atoi(argv[1]);
-		nbr = ft_atoi(argv[1]);
-		if (n == -1 && nbr == 0)
-			_print_error(sh, argv[1]);
+		exit_nbr = custom_ft_atoi(argv[1]);
+		if ((!exit_nbr.nbr || exit_nbr.nbr == -1) && exit_nbr.f)
+			_exit_print_error(sh, argv[1]);
 		else
-			sh->exit_status = (int)(nbr & 0xFF);
-		printf("the N= %ld\n", n);
+			sh->exit_status = (int)(exit_nbr.nbr & 0xFF);
 	}
 	return (should_exit);
 }
@@ -89,7 +86,6 @@ void	builtin_exit(t_ast *ast, t_shell *sh)
 	{
 		free_ast(ast);
 		ft_lstclear(sh->tokens, del_token);
-		
 		cleanup_shell(sh);
 		if (g_exit_status)
 			exit (g_exit_status);
