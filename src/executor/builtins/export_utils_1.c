@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:25:39 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/08 11:26:48 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:32:30 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,7 @@ void	update_shell_var(t_list *node, char *value, t_var_type flag)
 	t_var	*var;
 
 	if (!node)
-	{
-		errno = ENOMEM;
-		perror("malloc export_update_node failed");
 		return ;
-	}
 	var = (t_var *)node->content;
 	if (var->value)
 		free(var->value);
@@ -39,7 +35,6 @@ void	create_shell_var(t_list **vars, char *key, char *value, t_var_type flag)
 	node = malloc(sizeof(t_var));
 	if (!node)
 	{
-		errno = ENOMEM;
 		perror("malloc export_add_node failed");
 		return ;
 	}
