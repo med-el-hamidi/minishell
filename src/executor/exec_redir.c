@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:46:27 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/09 19:33:51 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/09 20:50:45 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,12 @@ static int	open_redir_file(t_ast *node)
 		node->redir_fd = open(node->redir_file, \
 			O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (node->redir_fd == -1)
-		return (ft_putstr_fd("minishell: ", STDERR_FILENO), \
-			perror(node->redir_file), 1);
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		if (node->redir_file && node->redir_file[0] != '\0')
+			return (perror(node->redir_file), 1);
+		return (perror(" "), 1);
+	}
 	return (0);
 }
 
