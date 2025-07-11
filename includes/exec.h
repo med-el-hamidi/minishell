@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 15:27:21 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/09 17:32:29 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/11 15:10:26 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,16 @@
 # define EXEC_H
 
 # include <sys/wait.h>
+
+# define CD_ARGS "minishell: cd: too many arguments"
+# define CD_RETRIV "minishell: cd: error retrieving current directory"
+
+
+typedef struct s_int_f
+{
+	int	nbr;
+	int	f;
+}	t_int_f;
 
 /* built-ins functions*/
 int		builtin_echo(char **argv);
@@ -26,9 +36,9 @@ int		builtin_export(char **argv, t_list **vars);
 
 /* utils functions */
 int		is_builtin(char *cmd);
-int		_is_local_vars(char **args);
+int		_is_local_vars(t_ast *node);
 int		ft_strcmp(const char *s1, const char *s2);
-int		ft_argv_count(char **argv);
+size_t	count_2d_array(char **arr);
 int		ft_strisnum(char *n);
 char	*join_3(const char *s1, char *c, const char *s2);
 char	*get_cmd_path(char *cmd, t_shell *shell);
@@ -39,7 +49,8 @@ t_list	*find_shell_var(t_list *vars, char *key);
 int		_export(t_list *vars);
 void	update_shell_var(t_list *node, char *value, t_var_type flag);
 void	create_shell_var(t_list **vars, char *key, \
-	char *value, t_var_type flag);
+char	*value, t_var_type flag);
+int		id_directory(char *path);
 
 /* executor main functions */
 int		exec_redirection(t_ast *node, t_shell *shell);
