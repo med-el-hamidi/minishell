@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/09 16:22:29 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/11 00:04:24 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,23 +20,18 @@ static int	print_error(char *arg, int fg)
 		ft_putendl_fd(": command not found", STDERR_FILENO);
 	if (fg == 2)
 		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	if (fg == 4)
+		ft_putendl_fd(": Is a directory", STDERR_FILENO);
 	return (1);
 }
 
 static int	_envp_helper(t_var *env, char **envp, int *i)
 {
-	if (env)
-	{
-		envp[*i] = join_3(env->key, "=", env->value);
-		if (!envp[(*i)++])
-			return (free_2d_array(envp), 1);
-	}
-	else if (env->key)
-	{
-		envp[*i] = ft_strdup(env->key);
-		if (!envp[(*i)++])
-			return (free_2d_array(envp), 1);
-	}
+	if (!env || !env->key)
+		return (1);
+	envp[*i] = join_3(env->key, "=", env->value);
+	if (!envp[(*i)++])
+		return (free_2d_array(envp), 1);
 	return (0);
 }
 
@@ -55,11 +50,12 @@ char	**env_list_to_envp(t_list *vars)
 	while (ptr)
 	{
 		env = (t_var *)ptr->content;
-		if (_envp_helper(env, envp, &i))
+		if (env->flag == VAR_ENV && _envp_helper(env, envp, &i))
 			return (NULL);
 		ptr = ptr->next;
 	}
-	return (envp[i] = NULL, envp);
+	envp[i] = NULL;
+	return (envp);
 }
 
 char	*get_cmd_path(char *cmd, t_shell *shell)
@@ -95,6 +91,8 @@ int	exec_external(t_ast *node, t_shell *shell)
 	char	*path;
 	char	**envp;
 
+	if (id_directory(node->args[0]))
+		return (print_error(node->args[0], 4), 126);
 	path = get_cmd_path(node->args[0], shell);
 	if (!path)
 		return (127);
@@ -105,13 +103,11 @@ int	exec_external(t_ast *node, t_shell *shell)
 	if (pid == 0)
 	{
 		execve(path, node->args, envp);
-		perror("execve failed");
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		perror(node->args[0]);
 		exit (126);
 	}
-	else
-	{
-		waitpid(pid, &status, 0);
-		shell->exit_status = WEXITSTATUS(status);
-	}
+	waitpid(pid, &status, 0);
+	shell->exit_status = WEXITSTATUS(status);
 	return (free(path), free_2d_array(envp), shell->exit_status);
 }
