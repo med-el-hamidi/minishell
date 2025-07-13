@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/13 19:24:00 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/13 22:47:59 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@ int	exec_external(t_ast *node, t_shell *shell)
 
 	if (!node || !node->args)
 		return (0);
-	if (is_directory(node->args[0]))
+	if (node->args[0] && !*node->args[0])
+		return (ft_putendl_fd("Command '' not found", 2), 127);
+	else if (is_directory(node->args[0]))
 		return (execv_print_error(node->args[0], 4), 126);
 	path = get_cmd_path(node->args[0], shell);
 	if (!path)
