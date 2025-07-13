@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 22:33:49 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/13 16:53:14 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/14 00:01:15 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ static int	_chdir_failling(char *arg, char **path, char **pwd_oldpwd)
 	{
 		*path = _fall_back_path(*pwd_oldpwd);
 		if (chdir(*path) == -1)
-			return (free(*pwd_oldpwd), free(*path), perror(*path), 1);
+			return (free(*pwd_oldpwd), free(*path), \
+				ft_putstr_fd("minishell: cd: ", 2), perror(arg), 1);
 		free (*path);
 	}
 	else
-		return (free(*pwd_oldpwd), perror(*path), 1);
+		return (free(*pwd_oldpwd), \
+		ft_putstr_fd("minishell: cd: ", 2), perror(arg), 1);
 	return (0);
 }
 
