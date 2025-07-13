@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 21:20:08 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/07/13 03:16:11 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/13 17:18:12 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 # define MINISHELL_H
 
 # include <errno.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
+// # include <unistd.h>
+// # include <stdio.h>
+// # include <stdlib.h>
 # include <fcntl.h>
 # include <signal.h>
 # include <readline/readline.h>
