@@ -45,11 +45,12 @@ static int	lexer_word(t_shell	*shell, t_list **tokens, char *input, size_t *i)
 				word = NULL;
 			}
 			j = 0;
-			if (content[j])
+			if (word && content[j])
 			{
 				word = ft_strjoin_to_s1(word, ft_strdup(content[j++]));
 				add_token(tokens, create_token(TOKEN_WORD, word));
 				free(word);
+				word = NULL;
 			}
 			while (content[j] && content[j + 1])
 				add_token(tokens, create_token(TOKEN_WORD, content[j++]));
