@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 21:20:08 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/07/13 17:18:12 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/06/28 21:20:10 by mel-hami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 # define MINISHELL_H
 
 # include <errno.h>
-// # include <unistd.h>
-// # include <stdio.h>
-// # include <stdlib.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <stdlib.h>
 # include <fcntl.h>
 # include <signal.h>
 # include <readline/readline.h>
@@ -70,8 +70,5 @@ int		set_herdoc_tmp_file(t_shell *shell, char **delimiter, int parse);
 int		open_script(char *script);
 char	*_getenv(t_list *vars, char *name);
 char	*_getpid(void );
-
-/*Tests functions*/
-void	print_ast(t_ast *node, int depth);
 
 #endif
