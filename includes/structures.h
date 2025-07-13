@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 21:20:15 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/07/04 19:39:47 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/06/29 21:31:47 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef enum e_token_type {
 	TOKEN_REDIR_OUT,
 	TOKEN_REDIR_APPEND,
 	TOKEN_REDIR_HEREDOC,
-	TOKEN_EOF
+	TOKEN_AMB_REDIR
 }	t_token_type;
 
 typedef struct s_token

@@ -41,6 +41,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(UTL_DIR)/signal.c \
 			$(UTL_DIR)/error.c \
 			$(UTL_DIR)/free.c \
+			$(UTL_DIR)/histfile_utils.c \
 			$(UTL_DIR)/history_utils.c \
 			$(UTL_DIR)/history.c \
 			$(LEX_DIR)/lexer_word.c \
@@ -63,8 +64,10 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(BLT_DIR)/export_utils_0.c \
 			$(BLT_DIR)/export_utils_1.c \
 			$(EXE_DIR)/exec_cmd.c \
+			$(EXE_DIR)/errors_utils.c \
 			$(EXE_DIR)/exec_utils_0.c \
 			$(EXE_DIR)/exec_utils_1.c \
+			$(EXE_DIR)/execve_utils.c \
 			$(EXE_DIR)/external_cmd.c \
 			$(EXE_DIR)/exec_local_vars.c \
 			$(EXE_DIR)/exec_redir.c \
