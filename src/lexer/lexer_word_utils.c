@@ -57,18 +57,32 @@ char	*ft_strjoin_char_to_s1(char *s1, char c)
 	return (s1);
 }
 
+char	*_getenv_al(t_list *vars, char *name)
+{
+	t_var	*env;
+	size_t	len;
+
+	len = ft_strlen(name);
+	while (vars)
+	{
+		env = vars->content;
+		if (!ft_strncmp(env->key, name, len) && ft_strlen(env->key) == len)
+		{
+			if (!env->value)
+				break ;
+			return (ft_strdup(env->value));
+		}
+		vars = vars->next;
+	}
+	return (NULL);
+}
+
 char	*gethome(t_list	*vars)
 {
 	char	*home;
-	char	*tmp;
 
-	tmp = _getenv(vars, "HOME");
-	if (tmp)
-	{
-		home = ft_strdup(tmp);
-		free(tmp);
-	}
-	else
+	home = _getenv(vars, "HOME");
+	if (!home)
 		home = ft_strdup("");
 	return (home);
 }

@@ -29,18 +29,18 @@ static int	get_redirection_type(char *input, size_t *i)
 	return (type);
 }
 
-static char	*get_delimiter(char *input, size_t *i)
+static char	*get_delimiter_al(char *input, size_t *i)
 {
 	char	*result;
 	int		f;
 
 	f = 0;
-	result = ft_strdup("");
+	result = NULL;
 	while (input[*i] && !ft_strchr("|<>", input[*i]))
 	{
 		if (!f && is_whitespace(input[*i]))
 			break ;
-		else if ((input[*i] == '"' || input[*i] == '\''))
+		else if (input[*i] == '"' || input[*i] == '\'')
 		{
 			if (!f && check_unclosed_quotes(input, *i))
 				return (free(result), NULL);
@@ -48,7 +48,7 @@ static char	*get_delimiter(char *input, size_t *i)
 				f = 1;
 			else
 				f = 0;
-			(*i)++;
+			result = ft_strjoin_char_to_s1(result, input[(*i)++]);
 		}
 		else
 			result = ft_strjoin_char_to_s1(result, input[(*i)++]);
@@ -56,18 +56,19 @@ static char	*get_delimiter(char *input, size_t *i)
 	return (result);
 }
 
-static char	*get_redir_value(t_shell *shell, char *input, size_t *i, int *type)
+char	*get_redir_value(t_shell *shell, char *input, size_t *i, int *type)
 {
 	char	*str;
 	char	*amb;
 
+	str = NULL;
 	if (*type == TOKEN_REDIR_HEREDOC)
-		str = get_delimiter(input, i);
+		str = get_delimiter_al(input, i);
 	else
 	{
 		amb = is_ambiguous_redirect(shell, input, *i);
 		if (!amb)
-			str = accumulate_token(shell, input, i);
+			str = get_redi_file(shell, input, i);
 		else
 		{
 			*type = TOKEN_AMB_REDIR;
@@ -93,7 +94,6 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 {
 	char	*str;
 	int		type;
-	int		flag;
 	size_t	bkp;
 
 	type = get_redirection_type(input, i);
@@ -101,13 +101,12 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 		return (2);
 	bkp = skip_whitespace(input, i);
 	str = get_redir_value(shell, input, i, &type);
-	if (!str)
-		return (1);
+	if (!str && (input[*i] == '\'' || input[*i] == '"'))
+		return (2);
 	if (type == TOKEN_REDIR_HEREDOC)
 	{
-		flag = set_herdoc_tmp_file(shell, &str, input, bkp);
 		add_token(tokens, create_token(TOKEN_REDIR_HEREDOC, str));
-		return (free(str), flag);
+		return (free(str), 0);
 	}
 	add_redir_token(tokens, str, type);
 	return (free(str), 0);

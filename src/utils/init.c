@@ -59,7 +59,6 @@ t_list	*init_env(char **envp)
 static void	_set_history_sizes(t_shell *shell)
 {
 	char	*val;
-	char	*nbr;
 	int		n;
 
 	n = 0;
@@ -69,9 +68,7 @@ static void	_set_history_sizes(t_shell *shell)
 	if (n <= 0)
 	{
 		n = HISTSIZE;
-		nbr = ft_itoa(n);
-		create_shell_var(&shell->vars, "HISTSIZE", nbr, VAR_LOCAL);
-		free(nbr);
+		set_default_history_sizes(&shell->vars, "HISTSIZE", n);
 	}
 	shell->history.histsize = n;
 	n = 0;
@@ -81,9 +78,7 @@ static void	_set_history_sizes(t_shell *shell)
 	if (n <= 0)
 	{
 		n = HISTFILESIZE;
-		nbr = ft_itoa(n);
-		create_shell_var(&shell->vars, "HISTFILESIZE", nbr, VAR_LOCAL);
-		free(nbr);
+		set_default_history_sizes(&shell->vars, "HISTFILESIZE", n);
 	}
 	shell->history.histfilesize = n;
 }

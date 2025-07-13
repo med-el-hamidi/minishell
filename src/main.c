@@ -52,7 +52,7 @@ void	script_shell_loop(t_shell *shell, char *script)
 		if (tokens)
 		{
 			shell->exit_status = 0;
-			ast = parser(tokens);
+			ast = parser(tokens, shell);
 			if (ast)
 			{
 				print_ast(ast, 0);//test
@@ -86,7 +86,7 @@ void	shell_loop(t_shell *shell)
 		{
 			g_exit_status = 0;
 			shell->exit_status = 0;
-			ast = parser(tokens);
+			ast = parser(tokens, shell);
 			if (ast)
 			{
 				print_ast(ast, 0);//test

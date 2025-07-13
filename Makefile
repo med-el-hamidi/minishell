@@ -41,6 +41,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(UTL_DIR)/signal.c \
 			$(UTL_DIR)/error.c \
 			$(UTL_DIR)/free.c \
+			$(UTL_DIR)/histfile_utils.c \
 			$(UTL_DIR)/history_utils.c \
 			$(UTL_DIR)/history.c \
 			$(LEX_DIR)/lexer_word_utils.c \

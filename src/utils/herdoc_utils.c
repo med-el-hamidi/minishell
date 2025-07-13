@@ -30,32 +30,6 @@ static char	*_gen_tmp_file(void )
 	return (tmp_file);
 }
 
-static int	_should_parse_dollar(char *input, size_t i)
-{
-	int		parse;
-	int		f;
-
-	parse = 1;
-	f = 0;
-	while (input[i] && !ft_strchr("|<>", input[i]))
-	{
-		if (!f && is_whitespace(input[i]))
-			break ;
-		else if ((input[i] == '"' || input[i] == '\''))
-		{
-			parse = 0;
-			if (!f)
-				f = 1;
-			else
-				f = 0;
-			i++;
-		}
-		else
-			i++;
-	}
-	return (parse);
-}
-
 static char	*_parse_herdoc_input(t_shell *shell, char *input, int f)
 {
 	char	*result;
@@ -67,7 +41,7 @@ static char	*_parse_herdoc_input(t_shell *shell, char *input, int f)
 	{
 		if (f && input[i] == '$' && input[i + 1] != '"' && input[i + 1] != '\'')
 			result = \
-				ft_strjoin_to_s1(result, accumulate_dollar(shell, input, &i));
+			ft_strjoin_to_s1(result, accu_dollar(shell, input, &i, _getenv));
 		else
 			result = ft_strjoin_char_to_s1(result, input[i++]);
 	}
@@ -98,7 +72,22 @@ static void	_herdoc_loop(t_shell *shell, char *delimiter, int fd, int f)
 	exit(0);
 }
 
-int	set_herdoc_tmp_file(t_shell *shell, char **delimiter, char *input, size_t i)
+static int	_close_all_heredocs(char *tmp_file, int fd)
+{
+	int	ret;
+
+	ret = 130;
+	close (fd);
+	fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
+	if (fd == -1)
+	{
+		perror("minishell: herdoc");
+		return (1);
+	}
+	return (ret);
+}
+
+int	set_herdoc_tmp_file(t_shell *shell, char **delimiter, int parse)
 {
 	char	*tmp_file;
 	int		fd;
@@ -112,17 +101,13 @@ int	set_herdoc_tmp_file(t_shell *shell, char **delimiter, char *input, size_t i)
 	if (fd == -1)
 		return (perror("minishell: herdoc"), 1);
 	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), 1);
 	if (!pid)
-		_herdoc_loop(shell, *delimiter, fd, _should_parse_dollar(input, i));
+		_herdoc_loop(shell, *delimiter, fd, parse);
 	waitpid(pid, &status, 0);
 	if (WIFSIGNALED(status) && WTERMSIG(status))
-	{
-		ret = 130;
-		close (fd);
-		fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
-		if (fd == -1)
-			return (perror("minishell: herdoc"), 1);
-	}
+		_close_all_heredocs(tmp_file, fd);
 	(free(*delimiter), close (fd));
 	return ((*delimiter = tmp_file), ret);
 }

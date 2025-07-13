@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static char	*accumulate_word(char *input, size_t *i)
+char	*accumulate_word(char *input, size_t *i)
 {
 	char	*result;
 
@@ -26,36 +26,30 @@ static char	*accumulate_word(char *input, size_t *i)
 	return (result);
 }
 
-char	*accumulate_dollar(t_shell *shell, char *input, size_t *i)
+char	*accu_dollar(t_shell *sh, char *s, size_t *i, char *f(t_list *, char *))
 {
 	char	*key;
 	char	*val;
 	size_t	start;
 
-	if (input[++(*i)] == '?')
-	{
-		(*i)++;
-		return (ft_itoa(shell->exit_status));
-	}
-	else if (input[*i] == '$')
-	{
-		(*i)++;
-		return (_getpid());
-	}
-	else if (!input[*i] || is_whitespace(input[*i]))
+	if (s[++(*i)] == '?')
+		return ((*i)++, ft_itoa(sh->exit_status));
+	else if (s[*i] == '$')
+		return ((*i)++, _getpid());
+	else if (!s[*i] || is_whitespace(s[*i]))
 		return (ft_strdup("$"));
 	start = *i;
-	while (ft_isalnum(input[*i]) || input[*i] == '_')
+	while (ft_isalnum(s[*i]) || s[*i] == '_')
 		(*i)++;
-	key = ft_substr(input, start, *i - start);
-	val = _getenv(shell->vars, key);
+	key = ft_substr(s, start, *i - start);
+	val = f(sh->vars, key);
 	free(key);
 	if (val)
 		return (val);
 	return (ft_strdup(""));
 }
 
-static char	*accumulate_quoted(t_shell *shell, char *input, size_t *i)
+char	*accumulate_quoted(t_shell *shell, char *input, size_t *i)
 {
 	char	*result;
 	char	quote;
@@ -68,7 +62,7 @@ static char	*accumulate_quoted(t_shell *shell, char *input, size_t *i)
 	{
 		if (quote == '"' && input[*i] == '$' && input[*i + 1] != '"')
 			result = ft_strjoin_to_s1(result, \
-								accumulate_dollar(shell, input, i));
+					accu_dollar(shell, input, i, _getenv_al));
 		else
 			result = ft_strjoin_char_to_s1(result, input[(*i)++]);
 	}
@@ -84,19 +78,11 @@ char	*accumulate_token(t_shell *shell, char *input, size_t *i)
 
 	result = ft_strdup("");
 	while (input[*i] && !is_whitespace(input[*i])
-		&& !ft_strchr("|<>", input[*i]))
+		&& !ft_strchr("|<>$", input[*i]))
 	{
 		chunk = NULL;
 		if (input[*i] == '"' || input[*i] == '\'')
 			chunk = accumulate_quoted(shell, input, i);
-		else if (input[*i] == '$')
-			chunk = accumulate_dollar(shell, input, i);
-		else if (input[*i] == '~' && (!input[*i + 1] || input[*i + 1] == '/'
-				|| is_whitespace(input[*i + 1])))
-		{
-			(*i)++;
-			chunk = gethome(shell->vars);
-		}
 		else
 			chunk = accumulate_word(input, i);
 		if (!chunk)

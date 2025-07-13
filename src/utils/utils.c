@@ -29,12 +29,13 @@ int	open_script(char *script)
 	return (fd);
 }
 
-
 static char	*_getenv_helper(char *value)
 {
 	char	**content;
 	size_t	i;
 
+	if (!has_whitespace(value))
+		return (ft_strdup(value));
 	content = ft_split(value, ' ');
 	if (!content)
 		return (NULL);
@@ -43,14 +44,15 @@ static char	*_getenv_helper(char *value)
 	while (content[i])
 	{
 		value = ft_strjoin_to_s1(value, content[i]);
-		value = ft_strjoin_char_to_s1(value, ' ');
+		if (content[i + 1])
+			value = ft_strjoin_char_to_s1(value, ' ');
 		i++;
 	}
 	free(content);
 	return (value);
 }
 
-char	*_getenv(t_list *vars, const char *name)
+char	*_getenv(t_list *vars, char *name)
 {
 	char	*value;
 	t_var	*env;
@@ -94,20 +96,4 @@ char	*_getpid(void )
 		return (NULL);
 	buf[bytes] = '\0';
 	return (ft_itoa(ft_atoi(buf)));
-}
-
-int	_add_history(t_shell *shell, char *line, int i, int *skip)
-{
-	int	len;
-
-	len = ft_strlen(line);
-	if (len > 1 && line[len - 1] == '\n')
-	{
-		line[len - 1] = '\0';
-		if (i > skip[1] || !skip[1])
-			add_history(line);
-		shell->history.entries[shell->history.count++] = line;
-		return (1);
-	}
-	return (0);
 }

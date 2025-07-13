@@ -36,6 +36,35 @@ int	check_invalid_token(char *input, size_t pos)
 	return (0);
 }
 
+char	*get_redi_file(t_shell *shell, char *input, size_t *i)
+{
+	char	*result;
+	char	*chunk;
+
+	result = ft_strdup("");
+	while (input[*i] && !is_whitespace(input[*i])
+		&& !ft_strchr("|<>", input[*i]))
+	{
+		chunk = NULL;
+		if (input[*i] == '"' || input[*i] == '\'')
+			chunk = accumulate_quoted(shell, input, i);
+		else if (input[*i] == '$')
+			chunk = accu_dollar(shell, input, i, _getenv);
+		else if (input[*i] == '~' && (!input[*i + 1] || input[*i + 1] == '/'
+				|| is_whitespace(input[*i + 1])))
+		{
+			(*i)++;
+			chunk = gethome(shell->vars);
+		}
+		else
+			chunk = accumulate_word(input, i);
+		if (!chunk)
+			return (free(result), NULL);
+		result = ft_strjoin_to_s1(result, chunk);
+	}
+	return (result);
+}
+
 size_t	skip_whitespace(char *input, size_t *i)
 {
 	while (is_whitespace(input[*i]))
@@ -43,18 +72,18 @@ size_t	skip_whitespace(char *input, size_t *i)
 	return (*i);
 }
 
-static int	has_whitespace(char *str)
+int	has_whitespace(char *str)
 {
-	size_t	k;
+	size_t	i;
 
 	if (!str || !*str)
-		return (1);
-	k = 0;
-	while (str[k])
+		return (0);
+	i = 0;
+	while (str[i])
 	{
-		if (is_whitespace(str[k]))
+		if (is_whitespace(str[i]))
 			return (1);
-		k++;
+		i++;
 	}
 	return (0);
 }
@@ -71,11 +100,13 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 			&& input[i + 1] != '"' && input[i + 1] != '\'')
 		{
 			j = i;
-			str = accumulate_dollar(shell, input, &j);
+			str = accu_dollar(shell, input, &j, _getenv);
 			if (str && (!*str || has_whitespace(str)))
 			{
-				free(str);
-				return (ft_substr(input, i, j - 2));
+				j = i;
+				while (ft_isalnum(input[j]) || input[j] == '_')
+					j++;
+				return (free(str), ft_substr(input, i, j - 1));
 			}
 			free(str);
 			i = j;

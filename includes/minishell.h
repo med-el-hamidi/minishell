@@ -50,6 +50,8 @@ void	init_termios(t_shell *shell);
 
 /* History functions*/
 void	set_histfile(t_shell *shell);
+void	set_default_history_sizes(t_list **vars, char *key, int n);
+int		_add_history(t_shell *shell, char *line, int i, int *skip);
 void	load_history(t_shell *shell);
 void	add_to_history(t_shell *shell, char *input);
 void	save_history(t_shell *shell, char *path);
@@ -64,12 +66,10 @@ void	del_token(void *t);
 void	free_ast(t_ast *node);
 
 /* Other utils */
-int		set_herdoc_tmp_file(t_shell *shell, char **delimiter, char *input, \
-																	size_t i);
+int		set_herdoc_tmp_file(t_shell *shell, char **delimiter, int parse);
 int		open_script(char *script);
-char	*_getenv(t_list *vars, const char *name);
+char	*_getenv(t_list *vars, char *name);
 char	*_getpid(void );
-int		_add_history(t_shell *shell, char *line, int i, int *skip);
 
 /*Tests functions*/
 void	print_ast(t_ast *node, int depth);

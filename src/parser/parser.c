@@ -21,24 +21,24 @@ static int	syntax_error(t_list *tokens)
 	{
 		ft_putendl_fd("minishell: syntax error near unexpected token '|'", \
 																STDERR_FILENO);
-		return (1);
+		return (2);
 	}
 	while (tokens)
 	{
 		if (is_redirection(((t_token *)tokens->content)->type)
 			&& !((t_token *)tokens->content)->value)
-			return (1);
+			return (2);
 		tokens = tokens->next;
 	}
 	return (0);
 }
 
-static t_ast	*build_ast(t_list **tokens)
+static t_ast	*build_ast(t_list **tokens, t_shell *shell)
 {
 	t_ast	*left;
 	t_ast	*node;
 
-	left = parse_command(tokens);
+	left = parse_command(tokens, shell);
 	if (!left)
 		return (NULL);
 	while (*tokens && ((t_token *)(*tokens)->content)->type == TOKEN_PIPE)
@@ -51,7 +51,7 @@ static t_ast	*build_ast(t_list **tokens)
 			return (NULL);
 		}
 		node->left = left;
-		node->right = parse_command(tokens);
+		node->right = parse_command(tokens, shell);
 		if (!node->right)
 		{
 			free_ast(node);
@@ -76,13 +76,15 @@ static int	syntax_error_ast(t_ast *node)
 	return (0);
 }
 
-t_ast	*parser(t_list *tokens)
+t_ast	*parser(t_list *tokens, t_shell *shell)
 {
 	t_ast	*ast;
 
-	if (!tokens || syntax_error(tokens))
+	shell->exit_status = syntax_error(tokens);
+	if (!tokens || shell->exit_status)
 		return (NULL);
-	ast = build_ast(&tokens);
+	ast = build_ast(&tokens, shell);
+	shell->exit_status = syntax_error_ast(ast);
 	if (!ast || syntax_error_ast(ast))
 	{
 		free_ast(ast);
