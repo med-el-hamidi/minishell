@@ -33,12 +33,12 @@ static int	syntax_error(t_list *tokens)
 	return (0);
 }
 
-static t_ast	*build_ast(t_list **tokens, t_shell *shell)
+static t_ast	*build_ast(t_list **tokens)
 {
 	t_ast	*left;
 	t_ast	*node;
 
-	left = parse_command(tokens, shell);
+	left = parse_command(tokens);
 	if (!left)
 		return (NULL);
 	while (*tokens && ((t_token *)(*tokens)->content)->type == TOKEN_PIPE)
@@ -51,7 +51,7 @@ static t_ast	*build_ast(t_list **tokens, t_shell *shell)
 			return (NULL);
 		}
 		node->left = left;
-		node->right = parse_command(tokens, shell);
+		node->right = parse_command(tokens);
 		if (!node->right)
 		{
 			free_ast(node);
@@ -83,7 +83,7 @@ t_ast	*parser(t_list *tokens, t_shell *shell)
 	shell->exit_status = syntax_error(tokens);
 	if (!tokens || shell->exit_status)
 		return (NULL);
-	ast = build_ast(&tokens, shell);
+	ast = build_ast(&tokens);
 	shell->exit_status = syntax_error_ast(ast);
 	if (!ast || syntax_error_ast(ast))
 	{

@@ -41,7 +41,7 @@ static char	*_parse_herdoc_input(t_shell *shell, char *input, int f)
 	{
 		if (f && input[i] == '$' && input[i + 1] != '"' && input[i + 1] != '\'')
 			result = \
-			ft_strjoin_to_s1(result, accu_dollar(shell, input, &i, _getenv));
+			ft_strjoin_to_s1(result, accu_dollar(shell, input, &i, _getenv_al));
 		else
 			result = ft_strjoin_char_to_s1(result, input[i++]);
 	}
@@ -72,14 +72,14 @@ static void	_herdoc_loop(t_shell *shell, char *delimiter, int fd, int f)
 	exit(0);
 }
 
-static int	_ignore_all_heredocs(char *tmp_file, int fd)
+static int	_ignore_all_heredocs(char *tmp_file, int *fd, int status)
 {
 	int	ret;
 
-	ret = 130;
-	close (fd);
-	fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
-	if (fd == -1)
+	ret = 128 + status;
+	close (*fd);
+	*fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
+	if (*fd == -1)
 	{
 		perror("minishell: herdoc");
 		return (1);
@@ -105,9 +105,11 @@ int	set_herdoc_tmp_file(t_shell *shell, char **delimiter, int parse)
 		return (perror("fork"), 1);
 	if (!pid)
 		_herdoc_loop(shell, *delimiter, fd, parse);
+	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &status, 0);
+	setup_signals();
 	if (WIFSIGNALED(status) && WTERMSIG(status))
-		ret = _ignore_all_heredocs(tmp_file, fd);
+		ret = _ignore_all_heredocs(tmp_file, &fd, status);
 	(free(*delimiter), close (fd));
 	return ((*delimiter = tmp_file), ret);
 }

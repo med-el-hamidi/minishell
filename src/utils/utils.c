@@ -36,7 +36,7 @@ static char	*_getenv_helper(char *value)
 
 	if (!has_whitespace(value))
 		return (ft_strdup(value));
-	content = ft_split(value, ' ');
+	content = ft_split_set(value, " \t");
 	if (!content)
 		return (NULL);
 	value = NULL;
@@ -85,7 +85,6 @@ char	*_getpid(void )
 		return (NULL);
 	}
 	bytes = read(fd, buf, 10);
-	printf("bytes:%ld", bytes);
 	close(fd);
 	if (bytes == -1)
 	{

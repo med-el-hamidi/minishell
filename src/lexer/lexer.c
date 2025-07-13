@@ -12,84 +12,30 @@
 
 #include "../../includes/minishell.h"
 
-static int	lexer_word(t_shell	*shell, t_list **tokens, char *input, size_t *i)
+static int	lexer_word(t_shell *shell, t_list **tokens, char *input, size_t *i)
 {
-	char	**content;
-	char	*word;
-	char	*tmp;
-	size_t	j;
-	size_t	len;
-	int		f;
+	t_lexerctx	ctx;
+	char		*word;
+	int			f;
 
+	ctx.shell = shell;
+	ctx.tokens = tokens;
+	ctx.input = input;
+	ctx.i = i;
 	f = 1;
 	word = NULL;
 	while (input[*i] && !is_whitespace(input[*i])
 		&& !ft_strchr("|<>", input[*i]))
 	{
-		if (input[*i] == '$')
-		{
-			f &= 1;
-			tmp = accu_dollar(shell, input, i, _getenv_al);
-			if (!has_whitespace(tmp))
-			{
-				word = ft_strjoin_to_s1(word, tmp);
-				continue ;
-			}
-			content = ft_split(tmp, ' ');
-			if (!content)
-				return (free(tmp), free (word), ft_lstclear(tokens, del_token), 0);
-			if (word && tmp && tmp[0] == ' ')
-			{
-				add_token(tokens, create_token(TOKEN_WORD, word));
-				free(word);
-				word = NULL;
-			}
-			j = 0;
-			if (word && content[j])
-			{
-				word = ft_strjoin_to_s1(word, ft_strdup(content[j++]));
-				add_token(tokens, create_token(TOKEN_WORD, word));
-				free(word);
-				word = NULL;
-			}
-			while (content[j] && content[j + 1])
-				add_token(tokens, create_token(TOKEN_WORD, content[j++]));
-			if (content[j])
-			{
-				len = ft_strlen(tmp);
-				if (len && tmp[len - 1] == ' ')
-					add_token(tokens, create_token(TOKEN_WORD, content[j++]));
-				if (content[j])
-					word = ft_strdup(content[j]);
-				else
-					word = ft_strdup("");
-			}
-			(free(tmp), free_2d_array(content));
-		}
-		else if (input[*i] == '~' && (!input[*i + 1] || input[*i + 1] == '/'
-				|| is_whitespace(input[*i + 1])))
-		{
-			f &= 1;
-			(*i)++;
-			word = ft_strjoin_to_s1(word, gethome(shell->vars));
-		}
-		else
-		{
-			f &= 0;
-			tmp = accumulate_token(shell, input, i);
-			if (!tmp && word)
-				free(word);
-			word = ft_strjoin_to_s1(word, tmp);
-		}
-		if (!word)
+		if (!handle_lexer_loop(ctx, &word, &f))
 			break ;
 	}
 	if (word && !*word && f)
 		return (free(word), 1);
-	else if (word)
+	if (word)
 		add_token(tokens, create_token(TOKEN_WORD, word));
-	else
-		return (ft_lstclear(tokens, del_token), 0);
+	else if (!f)
+		return (shell->exit_status = 2, ft_lstclear(tokens, del_token), 0);
 	return (free(word), 1);
 }
 

@@ -55,7 +55,6 @@ void	script_shell_loop(t_shell *shell, char *script)
 			ast = parser(tokens, shell);
 			if (ast)
 			{
-				print_ast(ast, 0);//test
 				shell->exit_status = executor(ast, shell);
 				free_ast(ast);
 			}
@@ -89,7 +88,6 @@ void	shell_loop(t_shell *shell)
 			ast = parser(tokens, shell);
 			if (ast)
 			{
-				print_ast(ast, 0);//test
 				shell->exit_status = executor(ast, shell);
 				free_ast(ast);
 			}

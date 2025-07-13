@@ -29,58 +29,28 @@ static int	get_redirection_type(char *input, size_t *i)
 	return (type);
 }
 
-static char	*get_delimiter_al(char *input, size_t *i)
-{
-	char	*result;
-	int		f;
-
-	f = 0;
-	result = NULL;
-	while (input[*i] && !ft_strchr("|<>", input[*i]))
-	{
-		if (!f && is_whitespace(input[*i]))
-			break ;
-		else if (input[*i] == '"' || input[*i] == '\'')
-		{
-			if (!f && check_unclosed_quotes(input, *i))
-				return (free(result), NULL);
-			if (!f)
-				f = 1;
-			else
-				f = 0;
-			result = ft_strjoin_char_to_s1(result, input[(*i)++]);
-		}
-		else
-			result = ft_strjoin_char_to_s1(result, input[(*i)++]);
-	}
-	return (result);
-}
-
 char	*get_redir_value(t_shell *shell, char *input, size_t *i, int *type)
 {
 	char	*str;
 	char	*amb;
 
 	str = NULL;
-	if (*type == TOKEN_REDIR_HEREDOC)
-		str = get_delimiter_al(input, i);
+	amb = is_ambiguous_redirect(shell, input, *i);
+	if (!amb)
+		str = get_redi_file(shell, input, i);
 	else
 	{
-		amb = is_ambiguous_redirect(shell, input, *i);
-		if (!amb)
-			str = get_redi_file(shell, input, i);
-		else
-		{
-			*type = TOKEN_AMB_REDIR;
-			return (amb);
-		}
+		*type = TOKEN_AMB_REDIR;
+		return (amb);
 	}
 	return (str);
 }
 
 static void	add_redir_token(t_list **tokens, char *str, int type)
 {
-	if (type == TOKEN_REDIR_APPEND)
+	if (type == TOKEN_REDIR_HEREDOC)
+		add_token(tokens, create_token(TOKEN_REDIR_HEREDOC, str));
+	else if (type == TOKEN_REDIR_APPEND)
 		add_token(tokens, create_token(TOKEN_REDIR_APPEND, str));
 	else if (type == TOKEN_REDIR_OUT)
 		add_token(tokens, create_token(TOKEN_REDIR_OUT, str));
@@ -100,14 +70,20 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 	if (check_invalid_token(input, *i))
 		return (2);
 	bkp = skip_whitespace(input, i);
-	str = get_redir_value(shell, input, i, &type);
-	if (!str && (input[*i] == '\'' || input[*i] == '"'))
-		return (2);
 	if (type == TOKEN_REDIR_HEREDOC)
 	{
-		add_token(tokens, create_token(TOKEN_REDIR_HEREDOC, str));
-		return (free(str), 0);
+		str = get_delimiter(input, i, 0);
+		if (!str)
+			return (2);
+		shell->exit_status = set_herdoc_tmp_file(shell, &str, \
+									should_parse_dollar(input, bkp));
+		if (shell->exit_status)
+			return (free(str), shell->exit_status);
 	}
+	else
+		str = get_redir_value(shell, input, i, &type);
+	if (!str)
+		return (2);
 	add_redir_token(tokens, str, type);
 	return (free(str), 0);
 }

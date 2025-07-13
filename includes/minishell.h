@@ -71,7 +71,4 @@ int		open_script(char *script);
 char	*_getenv(t_list *vars, char *name);
 char	*_getpid(void );
 
-/*Tests functions*/
-void	print_ast(t_ast *node, int depth);
-
 #endif
