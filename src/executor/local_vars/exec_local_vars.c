@@ -6,21 +6,45 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:07:46 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/09 00:02:15 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/13 19:24:05 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../../includes/minishell.h"
+
+static void	_handl_plus_(char **value, char *assign)
+{
+	if (*value)
+		*value = ft_strjoin(*value, assign + 1);
+	else
+		*value = ft_strdup(assign + 1);
+}
+
+static void	_find_d_update_or_creat_v(t_list **vars, char *args, char *value)
+{
+	t_list	*node;
+
+	node = find_shell_var(*vars, args);
+	if (node)
+	{
+		if (((t_var *)node->content)->flag == VAR_LOCAL)
+			update_shell_var(node, value, VAR_LOCAL);
+		else
+			update_shell_var(node, value, VAR_ENV);
+	}
+	else
+		create_shell_var(vars, args, value, VAR_LOCAL);
+}
 
 int	exec_local_vars(char **args, t_list **vars)
 {
 	char	*assign;
 	char	*value;
-	char	*alloc_value;
-	t_list	*node;
 	size_t	i;
 
-	alloc_value = NULL;
+	if (!args || !vars)
+		return (1);
+	value = NULL;
 	i = 0;
 	while (args[i])
 	{
@@ -30,29 +54,12 @@ int	exec_local_vars(char **args, t_list **vars)
 		{
 			*(assign - 1) = '\0';
 			value = expand_env(*vars, args[i]);
-			if (value)
-			{
-				alloc_value = ft_strjoin(value,  assign + 1);
-				value = alloc_value;
-			}
-			else
-				value = assign + 1;
+			_handl_plus_(&value, assign);
 		}
 		else
-			value = assign + 1;
-		node = find_shell_var(*vars, args[i]);
-		if (node)
-		{
-			if (((t_var *)node->content)->flag == VAR_LOCAL)
-				update_shell_var(node, value, VAR_LOCAL);
-			else
-				update_shell_var(node, value, VAR_ENV);
-		}
-		else
-			create_shell_var(vars, args[i], value, VAR_LOCAL);
-		i++;
-		if (alloc_value)
-			free(alloc_value);
+			value = ft_strdup(assign + 1);
+		_find_d_update_or_creat_v(vars, args[i++], value);
 	}
+	free(value);
 	return (0);
 }

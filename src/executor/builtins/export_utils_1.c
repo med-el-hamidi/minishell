@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:25:39 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/11 15:32:30 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/13 16:54:40 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	create_shell_var(t_list **vars, char *key, char *value, t_var_type flag)
 	node = malloc(sizeof(t_var));
 	if (!node)
 	{
-		perror("malloc export_add_node failed");
+		perror("failed to malloc create_shell_var");
 		return ;
 	}
 	node->key = ft_strdup(key);
@@ -45,4 +45,15 @@ void	create_shell_var(t_list **vars, char *key, char *value, t_var_type flag)
 		node->value = NULL;
 	node->flag = flag;
 	ft_lstadd_back(vars, ft_lstnew(node));
+}
+
+void	_add_or_update_path_cd(t_list **vars, char *name, char *value)
+{
+	t_list	*node;
+
+	node = find_shell_var(*vars, name);
+	if (node)
+		update_shell_var(node, value, VAR_ENV);
+	else
+		create_shell_var(vars, name, value, VAR_ENV);
 }

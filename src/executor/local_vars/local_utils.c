@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils_1.c                                     :+:      :+:    :+:   */
+/*   local_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:14:50 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/11 16:50:51 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/13 19:24:11 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../../includes/minishell.h"
 
 char	*join_3(const char *s1, char *s2, const char *s3)
 {
@@ -23,15 +23,6 @@ char	*join_3(const char *s1, char *s2, const char *s3)
 	res = ft_strjoin(tmp, s3);
 	free(tmp);
 	return (res);
-}
-
-int	id_directory(char *path)
-{
-	struct stat path_stat;
-
-	if (stat(path, &path_stat) != 0)
-		return (0);
-	return (S_ISDIR(path_stat.st_mode));
 }
 
 static int	_is_valid_local_var(const char *cmd)
@@ -82,14 +73,12 @@ int	_is_local_vars(t_ast *node)
 {
 	size_t	i;
 
-	if (!node->args)
+	if (!node || !node->args)
 		return (0);
 	i = 0;
 	while (node->args[i])
 	{
 		if (_is_valid_local_var(node->args[i]))
-			i++;
-		else if (*node->args[i] == '\0')
 			i++;
 		else
 		{

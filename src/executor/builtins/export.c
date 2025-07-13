@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:30:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/11 23:25:48 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/11 23:54:50 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ static int	_export_var(char **arg, t_list **vars)
 	}
 	i = -1;
 	while (++i < invalid_count)
-		print_error(invalid_args[i]);
+		export_print_error(invalid_args[i]);
 	free(invalid_args);
 	return (invalid_count > 0);
 }

@@ -6,11 +6,17 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 23:23:36 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/12 22:00:37 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/13 19:07:18 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void	pip_error_exit_child(const char *msg)
+{
+	perror(msg);
+	exit(EXIT_FAILURE);
+}
 
 int	export_print_error(char *arg)
 {
