@@ -29,6 +29,9 @@ LEX_DIR		:= $(SRC_DIR)/lexer
 PAR_DIR		:= $(SRC_DIR)/parser
 EXE_DIR		:= $(SRC_DIR)/executor
 BLT_DIR		:= $(EXE_DIR)/builtins
+EXECVE_DIR	:= $(EXE_DIR)/execve_ext
+LOC_VA_DIR	:= $(EXE_DIR)/local_vars
+RED_PIP_DIR	:= $(EXE_DIR)/redirection_pipe
 UTL_DIR		:= $(SRC_DIR)/utils
 
 # Source files
@@ -57,22 +60,24 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(PAR_DIR)/parser_utils.c \
 			$(PAR_DIR)/parser.c \
 			$(BLT_DIR)/cd.c \
-			$(BLT_DIR)/exit.c \
 			$(BLT_DIR)/echo.c \
 			$(BLT_DIR)/env.c \
+			$(BLT_DIR)/exit.c \
 			$(BLT_DIR)/pwd.c \
 			$(BLT_DIR)/unset.c \
+			$(BLT_DIR)/export.c \
 			$(BLT_DIR)/export_utils_0.c \
 			$(BLT_DIR)/export_utils_1.c \
-			$(BLT_DIR)/export.c \
-			$(EXE_DIR)/exec_cmd.c \
-			$(EXE_DIR)/exec_pipe.c \
-			$(EXE_DIR)/exec_redir.c \
-			$(EXE_DIR)/exec_utils_0.c \
-			$(EXE_DIR)/exec_utils_1.c \
-			$(EXE_DIR)/exec_local_vars.c \
-			$(EXE_DIR)/external_cmd.c \
-			$(EXE_DIR)/executor.c
+			$(EXE_DIR)/is_builtin.c \
+			$(EXE_DIR)/errors_utils.c \
+			$(EXE_DIR)/executor.c \
+			$(EXE_DIR)/utils.c \
+			$(LOC_VA_DIR)/local_utils.c \
+			$(LOC_VA_DIR)/exec_local_vars.c \
+			$(EXECVE_DIR)/execve_utils.c \
+			$(EXECVE_DIR)/execve.c \
+			$(RED_PIP_DIR)/pipe.c \
+			$(RED_PIP_DIR)/exec_redir.c \
 
 
 # Object files
