@@ -86,9 +86,8 @@ int	handle_lexer_loop(t_lexerctx ctx, char **word, int *f)
 		if (!handle_dollar(ctx, word))
 			return (0);
 	}
-	else if (ctx.input[*ctx.i] == '~'
-		&& (!ctx.input[*ctx.i + 1] || ctx.input[*ctx.i + 1] == '/'
-			|| is_whitespace(ctx.input[*ctx.i + 1])))
+	else if (ctx.input[*ctx.i] == '~' && (is_whitespace(ctx.input[*ctx.i + 1])
+			|| !ctx.input[*ctx.i + 1] || ctx.input[*ctx.i + 1] == '/'))
 	{
 		*f &= 1;
 		*word = handle_tilde(ctx.shell, ctx.i, *word);
@@ -98,12 +97,8 @@ int	handle_lexer_loop(t_lexerctx ctx, char **word, int *f)
 		*f &= 0;
 		tmp = accumulate_token(ctx.shell, ctx.input, ctx.i);
 		if (!tmp && *word)
-		{
-			free(*word);
-			*word = NULL;
-		}
-		else
-			*word = ft_strjoin_to_s1(*word, tmp);
+			return (free(*word), *word = NULL, (*f |= 2), 0);
+		*word = ft_strjoin_to_s1(*word, tmp);
 		if (!*word)
 			return ((*f |= 2), 0);
 	}

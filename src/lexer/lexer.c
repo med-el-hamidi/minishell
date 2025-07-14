@@ -30,7 +30,6 @@ static int	lexer_word(t_shell *shell, t_list **tokens, char *input, size_t *i)
 		if (!handle_lexer_loop(ctx, &word, &f))
 			return (shell->exit_status = 2, ft_lstclear(tokens, del_token), 0);
 	}
-	printf("f-->%d\n", f);
 	if (word && !*word && f)
 		return (free(word), 1);
 	else if (word)

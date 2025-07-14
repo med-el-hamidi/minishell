@@ -81,7 +81,7 @@ char	*_getpid(void )
 	fd = open("/proc/self/stat", O_RDONLY);
 	if (fd == -1)
 	{
-		perror("minishell: getpid");
+		perror("minishell: getpid: /proc/self/stat");
 		return (NULL);
 	}
 	bytes = read(fd, buf, 10);

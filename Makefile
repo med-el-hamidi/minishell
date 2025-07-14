@@ -12,8 +12,8 @@ RESET	:= \033[0m
 # ******************************* VARIABLES ********************************** #
 NAME		:= minishell
 CC			:= cc
-CFLAGS		:= -Wall -Wextra -Werror -fsanitize=address
-LDFLAGS		:= -Llibft -lft -lreadline
+CFLAGS		:= -Wall -Wextra -Werror -I$(HOME)/brew/opt/readline/include  -fsanitize=address
+LDFLAGS		:= -Llibft -lft -L$(HOME)/brew/opt/readline/lib -lreadline
 LIBFT		:= libft/libft.a
 
 # Header files

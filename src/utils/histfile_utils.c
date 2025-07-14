@@ -22,7 +22,7 @@ static int	_getuid(void )
 	str_uid = NULL;
 	fd = open("/proc/self/status", O_RDONLY);
 	if (fd == -1)
-		return (perror("minishell: getpid"), 0);
+		return (perror("minishell: getuid: /proc/self/status"), 0);
 	while (1)
 	{
 		buf = get_next_line(fd);
@@ -41,13 +41,15 @@ static int	_getuid(void )
 	return (uid);
 }
 
-static char	*_retreive_home(__uid_t uid)
+static char	*_retreive_home(uid_t	uid)
 {
 	char			*home;
 	DIR				*dir;
 	struct dirent	*entry;
 	struct stat		state;
 
+	if (!uid)
+		return (NULL);
 	dir = opendir("/home");
 	if (!dir)
 		return (NULL);

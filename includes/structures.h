@@ -28,7 +28,8 @@ typedef struct s_history
 	int		histfilesize;
 }	t_history;
 
-typedef enum e_token_type {
+typedef enum e_token_type
+{
 	TOKEN_WORD,
 	TOKEN_PIPE,
 	TOKEN_REDIR_IN,
