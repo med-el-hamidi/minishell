@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:41:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/13 19:24:22 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:46:23 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ int	exec_pipe(t_ast *node, t_shell *sh)
 		dup2_and_exec(node->right, sh, pipefd[0], pipefd);
 	close(pipefd[0]);
 	close(pipefd[1]);
+	waitpid(child_pid[0], NULL, 0);
 	if (waitpid(child_pid[1], &status, 0) != -1 && WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	waitpid(child_pid[0], NULL, 0);
 	return (EXIT_FAILURE);
 }
