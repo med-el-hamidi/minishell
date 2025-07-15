@@ -51,7 +51,6 @@ void	script_shell_loop(t_shell *shell, char *script)
 		shell->tokens = &tokens;
 		if (tokens)
 		{
-			shell->exit_status = 0;
 			ast = parser(tokens, shell);
 			if (ast)
 			{
@@ -76,15 +75,11 @@ void	shell_loop(t_shell *shell)
 		if (!input)
 			break ;
 		add_to_history(shell, input);
-		if (g_exit_status)
-			shell->exit_status = g_exit_status;
 		tokens = lexer(shell, input);
 		free(input);
 		shell->tokens = &tokens;
 		if (tokens)
 		{
-			g_exit_status = 0;
-			shell->exit_status = 0;
 			ast = parser(tokens, shell);
 			if (ast)
 			{

@@ -56,6 +56,8 @@ t_list	*lexer(t_shell *shell, char *input)
 	t_list	*tokens;
 	size_t	i;
 
+	if (g_exit_status)
+		shell->exit_status = g_exit_status;
 	tokens = NULL;
 	i = 0;
 	while (input[i])

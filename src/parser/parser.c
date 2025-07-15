@@ -80,6 +80,7 @@ t_ast	*parser(t_list *tokens, t_shell *shell)
 {
 	t_ast	*ast;
 
+	g_exit_status = 0;
 	shell->exit_status = syntax_error(tokens);
 	if (!tokens || shell->exit_status)
 		return (NULL);
