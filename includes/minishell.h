@@ -69,6 +69,5 @@ void	free_ast(t_ast *node);
 int		set_herdoc_tmp_file(t_shell *shell, char **delimiter, int parse);
 int		open_script(char *script);
 char	*_getenv(t_list *vars, char *name);
-char	*_getpid(void );
 
 #endif

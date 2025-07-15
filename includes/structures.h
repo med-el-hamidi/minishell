@@ -94,6 +94,7 @@ typedef struct s_shell
 	struct termios	new_termios;
 	t_history		history;
 	t_list			**tokens;
+	char			*name;
 	int				is_interactive;
 	int				stdin_fd;
 	int				stdout_fd;
