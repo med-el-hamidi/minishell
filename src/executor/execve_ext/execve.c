@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/15 17:24:07 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/15 19:20:36 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,22 +43,31 @@ static void	_handl_child_exit_st(t_shell *shell, int status)
 		shell->exit_status = 128 + WTERMSIG(status);
 }
 
+static int	is_space_or_path(char *arg)
+{
+	if (arg && !*arg)
+		return (ft_putendl_fd("Command '' not found", 2), 127);
+	else if (arg[0] == '/' || !strcmp(arg, "./") || !strcmp(arg, "../"))
+	{
+		if (is_directory(arg))
+			return (execv_print_error(arg, 4), 126);
+	}
+	return (0);
+}
+
 int	exec_external(t_ast *node, t_shell *shell)
 {
 	pid_t	pid;
 	int		status;
 	char	*path;
 	char	**envp;
+	int 	ret;
 
 	if (!node || !node->args)
 		return (0);
-	if (node->args[0] && !*node->args[0])
-		return (ft_putendl_fd("Command '' not found", 2), 127);
-	if (node->args[0][0] == '/' || !strcmp(node->args[0], "./") || !strcmp(node->args[0], "../"))
-	{
-		if (is_directory(node->args[0]))
-			return (execv_print_error(node->args[0], 4), 126);
-	}
+	ret = is_space_or_path(node->args[0]);
+	if (ret)
+		return (ret);
 	path = get_cmd_path(node->args[0], shell);
 	if (!path)
 	{
@@ -70,7 +79,7 @@ int	exec_external(t_ast *node, t_shell *shell)
 	pid = fork();
 	if (pid == -1)
 		return (free(path), perror("fork"), 1);
-	if (pid == 0)
+	else if (pid == 0)
 		_child_execve(node, path, envp);
 	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &status, 0);
