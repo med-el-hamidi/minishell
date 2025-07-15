@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 02:01:55 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/13 19:23:51 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/15 14:45:00 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,11 @@ char	*get_cmd_path(char *cmd, t_shell *shell)
 	if (!cmd || ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
 	if (!env)
+	{
+		if (is_directory(cmd))
+			return (NULL);
 		return (execv_print_error(cmd, 2), NULL);
+	}
 	paths = ft_split(env, ':');
 	while (paths && paths[i])
 	{

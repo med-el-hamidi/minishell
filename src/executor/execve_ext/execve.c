@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/13 22:47:59 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/15 17:24:07 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,15 +54,22 @@ int	exec_external(t_ast *node, t_shell *shell)
 		return (0);
 	if (node->args[0] && !*node->args[0])
 		return (ft_putendl_fd("Command '' not found", 2), 127);
-	else if (is_directory(node->args[0]))
-		return (execv_print_error(node->args[0], 4), 126);
+	if (node->args[0][0] == '/' || !strcmp(node->args[0], "./") || !strcmp(node->args[0], "../"))
+	{
+		if (is_directory(node->args[0]))
+			return (execv_print_error(node->args[0], 4), 126);
+	}
 	path = get_cmd_path(node->args[0], shell);
 	if (!path)
-		return (127);
+	{
+		if (is_directory(node->args[0]))
+			return (free(path), execv_print_error(node->args[0], 4), 126);
+		return (free(path), 127);
+	}
 	envp = env_list_to_envp(shell->vars);
 	pid = fork();
 	if (pid == -1)
-		return (perror("fork"), 1);
+		return (free(path), perror("fork"), 1);
 	if (pid == 0)
 		_child_execve(node, path, envp);
 	signal(SIGINT, SIG_IGN);
