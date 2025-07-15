@@ -71,28 +71,3 @@ char	*_getenv(t_list *vars, char *name)
 		return (NULL);
 	return (_getenv_helper(value));
 }
-
-char	*_getpid(void )
-{
-	char	buf[11];
-	ssize_t	bytes;
-	int		fd;
-
-	fd = open("/proc/self/stat", O_RDONLY);
-	if (fd == -1)
-	{
-		perror("minishell: getpid: /proc/self/stat");
-		return (NULL);
-	}
-	bytes = read(fd, buf, 10);
-	close(fd);
-	if (bytes == -1)
-	{
-		perror("minishell: getpid");
-		return (NULL);
-	}
-	else if (!bytes)
-		return (NULL);
-	buf[bytes] = '\0';
-	return (ft_itoa(ft_atoi(buf)));
-}

@@ -16,16 +16,10 @@ static char	*_gen_tmp_file(void )
 {
 	static int	uniq_id = 0;
 	char		*str;
-	char		*tmp;
 	char		*tmp_file;
 
-	str = _getpid();
-	tmp_file = ft_strjoin("/tmp/minishell_herdoc_", str);
-	free(str);
 	str = ft_itoa(uniq_id++);
-	tmp = tmp_file;
-	tmp_file = ft_strjoin(tmp_file, str);
-	free(tmp);
+	tmp_file = ft_strjoin("/tmp/minishell_herdoc_", str);
 	free(str);
 	return (tmp_file);
 }

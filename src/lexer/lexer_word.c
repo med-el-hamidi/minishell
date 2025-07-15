@@ -35,7 +35,7 @@ char	*accu_dollar(t_shell *sh, char *s, size_t *i, char *f(t_list *, char *))
 	if (s[++(*i)] == '?')
 		return ((*i)++, ft_itoa(sh->exit_status));
 	else if (s[*i] == '$')
-		return ((*i)++, _getpid());
+		return ((*i)++, ft_strdup(""));
 	else if (!s[*i] || is_whitespace(s[*i]))
 		return (ft_strdup("$"));
 	start = *i;

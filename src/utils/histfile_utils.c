@@ -12,33 +12,32 @@
 
 #include "../../includes/minishell.h"
 
-static int	_getuid(void )
+static uid_t	_getuid(t_shell *shell)
 {
-	char	*buf;
-	char	*str_uid;
-	int		uid;
-	int		fd;
+	char			*pwd;
+	DIR				*dir;
+	struct dirent	*entry;
+	struct stat		state;
 
-	str_uid = NULL;
-	fd = open("/proc/self/status", O_RDONLY);
-	if (fd == -1)
-		return (perror("minishell: getuid: /proc/self/status"), 0);
+	pwd = _getenv(shell->vars, "PWD");
+	if (!pwd)
+		return (0);
+	dir = opendir(pwd);
+	if (!dir)
+		return (free(pwd), 0);
 	while (1)
 	{
-		buf = get_next_line(fd);
-		if (!buf)
-			break ;
-		else if (!ft_strncmp(buf, "Uid:", 4))
-			str_uid = \
-				ft_substr(buf, ft_strchr(buf, ':') - buf + 1, ft_strlen(buf));
-		free(buf);
+		entry = readdir(dir);
+		if (!entry)
+			return (closedir(dir), free(pwd), 0);
+		if (ft_strcmp(entry->d_name, shell->name))
+			continue ;
+		pwd = ft_strjoin_to_s1(pwd, ft_strjoin("/", entry->d_name));
+		if (!stat(pwd, &state))
+			return (closedir(dir), free(pwd), state.st_uid);
+		break ;
 	}
-	close(fd);
-	if (!str_uid)
-		return (0);
-	uid = ft_atoi(str_uid);
-	free(str_uid);
-	return (uid);
+	return (closedir(dir), free(pwd), 0);
 }
 
 static char	*_retreive_home(uid_t	uid)
@@ -50,7 +49,7 @@ static char	*_retreive_home(uid_t	uid)
 
 	if (!uid)
 		return (NULL);
-	dir = opendir("/home");
+	dir = opendir("/mnt/homes");
 	if (!dir)
 		return (NULL);
 	while (1)
@@ -60,7 +59,7 @@ static char	*_retreive_home(uid_t	uid)
 			break ;
 		if (!ft_strncmp(entry->d_name, ".", 1))
 			continue ;
-		home = ft_strjoin("/home/", entry->d_name);
+		home = ft_strjoin("/mnt/homes/", entry->d_name);
 		stat(home, &state);
 		if (S_ISDIR(state.st_mode) && uid == state.st_uid)
 			break ;
@@ -79,7 +78,7 @@ void	set_histfile(t_shell *shell)
 	if (getenv("HOME"))
 		home = ft_strdup(getenv("HOME"));
 	else
-		home = _retreive_home(_getuid());
+		home = _retreive_home(_getuid(shell));
 	if (home)
 	{
 		shell->history.path = ft_strjoin(home, HISTFILE);

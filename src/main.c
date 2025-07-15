@@ -107,7 +107,7 @@ void	cleanup_shell(t_shell *shell)
 		free_2d_array(shell->history.entries);
 		rl_clear_history();
 	}
-	ft_lstclear(&shell->vars, del_env);
+	free(shell->name);
 	ft_lstclear(&shell->vars, del_env);
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
@@ -118,6 +118,11 @@ int	main(int argc, char **argv, char **envp)
 	t_shell	shell;
 
 	(void)argc;
+	if (ft_strrchr(argv[0], '/'))
+		shell.name = ft_substr(argv[0], \
+			ft_strrchr(argv[0], '/') - argv[0] + 1, ft_strlen(argv[0]));
+	else
+		shell.name = ft_strdup(argv[0]);
 	shell.is_interactive = 1;
 	if (argv[1])
 		shell.is_interactive = 0;
