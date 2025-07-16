@@ -96,7 +96,6 @@ void	add_to_history(t_shell *shell, char *input)
 		return ;
 	else if (shell->history.histfilesize == shell->history.count)
 	{
-		rl_clear_history();
 		free(shell->history.entries[0]);
 		ft_memmove(shell->history.entries,
 			shell->history.entries + 1,
@@ -104,10 +103,14 @@ void	add_to_history(t_shell *shell, char *input)
 		shell->history.count--;
 		if (shell->history.current)
 			shell->history.current--;
-		i = 0;
-		while (i < shell->history.count && i < (shell->history.histsize - 1))
+	}
+	shell->history.entries[shell->history.count++] = ft_strdup(input);
+	if (shell->history.histsize <= shell->history.count)
+	{
+		rl_clear_history();
+		i = shell->history.count - shell->history.histsize + 1;
+		while (i < shell->history.count)
 			add_history(shell->history.entries[i++]);
 	}
 	add_history(input);
-	shell->history.entries[shell->history.count++] = ft_strdup(input);
 }
