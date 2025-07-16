@@ -26,6 +26,21 @@ char	*accumulate_word(char *input, size_t *i)
 	return (result);
 }
 
+static char	*_handle_special_pos_param(t_shell *sh, char *s, size_t *i)
+{
+	char	*str;
+
+	str = NULL;
+	if (sh->is_interactive && s[*i] == '0')
+		str = ft_strdup(sh->argv[0]);
+	else if (!sh->is_interactive && ((s[*i] - '0') + 1) < sh->argc)
+		str = ft_strdup(sh->argv[(s[*i] - '0') + 1]);
+	(*i)++;
+	if (!str)
+		return (ft_strdup(""));
+	return (str);
+}
+
 char	*accu_dollar(t_shell *sh, char *s, size_t *i, char *f(t_list *, char *))
 {
 	char	*key;
@@ -36,6 +51,8 @@ char	*accu_dollar(t_shell *sh, char *s, size_t *i, char *f(t_list *, char *))
 		return ((*i)++, ft_itoa(sh->exit_status));
 	else if (s[*i] == '$')
 		return ((*i)++, ft_strdup(""));
+	else if (ft_isdigit(s[*i]))
+		return (_handle_special_pos_param(sh, s, i));
 	else if (!s[*i] || is_whitespace(s[*i]))
 		return (ft_strdup("$"));
 	start = *i;
@@ -44,9 +61,9 @@ char	*accu_dollar(t_shell *sh, char *s, size_t *i, char *f(t_list *, char *))
 	key = ft_substr(s, start, *i - start);
 	val = f(sh->vars, key);
 	free(key);
-	if (val)
-		return (val);
-	return (ft_strdup(""));
+	if (!val)
+		return (ft_strdup(""));
+	return (val);
 }
 
 char	*accumulate_quoted(t_shell *shell, char *input, size_t *i)
