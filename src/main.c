@@ -93,9 +93,12 @@ void	shell_loop(t_shell *shell)
 
 void	cleanup_shell(t_shell *shell)
 {
+	struct stat	state;
+
 	if (shell->is_interactive)
 	{
 		if (shell->history.path
+			&& !stat(shell->history.path, &state) && S_ISREG(state.st_mode)
 			&& (shell->history.count - shell->history.current) > 0)
 			save_history(shell, shell->history.path);
 		free(shell->history.path);
