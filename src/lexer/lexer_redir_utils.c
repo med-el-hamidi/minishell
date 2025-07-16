@@ -102,12 +102,7 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 			j = i;
 			str = accu_dollar(shell, input, &j, _getenv);
 			if (str && (!*str || has_whitespace(str)))
-			{
-				j = i;
-				while (ft_isalnum(input[j]) || input[j] == '_')
-					j++;
-				return (free(str), ft_substr(input, i, j - 1));
-			}
+				return (free(str), ft_substr(input, i, j - 3));
 			free(str);
 			i = j;
 		}
