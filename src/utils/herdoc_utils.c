@@ -15,12 +15,18 @@
 static char	*_gen_tmp_file(void )
 {
 	static int	uniq_id = 0;
-	char		*str;
 	char		*tmp_file;
+	char		*addr_str;
+	char		*tmp;
+	uintptr_t	addr;
 
-	str = ft_itoa(uniq_id++);
-	tmp_file = ft_strjoin("/tmp/minishell_herdoc_", str);
-	free(str);
+	addr = (uintptr_t)(&tmp_file);
+	addr_str = ft_itoa((int)addr);
+	tmp = ft_strjoin("/tmp/minishell_heredoc_", addr_str);
+	tmp_file = ft_strjoin(tmp, "_");
+	tmp_file = ft_strjoin_to_s1(tmp_file, ft_itoa(uniq_id++));
+	free(addr_str);
+	free(tmp);
 	return (tmp_file);
 }
 
