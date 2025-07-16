@@ -95,6 +95,9 @@ typedef struct s_shell
 	t_history		history;
 	t_list			**tokens;
 	char			*name;
+	char			*prompt;
+	char			**argv;
+	int				argc;
 	int				is_interactive;
 	int				stdin_fd;
 	int				stdout_fd;
