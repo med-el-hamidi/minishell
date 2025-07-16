@@ -78,7 +78,7 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 		shell->exit_status = set_herdoc_tmp_file(shell, &str, \
 									should_parse_dollar(input, bkp));
 		if (shell->exit_status)
-			return (free(str), shell->exit_status);
+			return (unlink(str), free(str), shell->exit_status);
 	}
 	else
 		str = get_redir_value(shell, input, i, &type);
