@@ -28,7 +28,8 @@ typedef struct s_history
 	int		histfilesize;
 }	t_history;
 
-typedef enum e_token_type {
+typedef enum e_token_type
+{
 	TOKEN_WORD,
 	TOKEN_PIPE,
 	TOKEN_REDIR_IN,
@@ -93,6 +94,10 @@ typedef struct s_shell
 	struct termios	new_termios;
 	t_history		history;
 	t_list			**tokens;
+	char			*name;
+	char			*prompt;
+	char			**argv;
+	int				argc;
 	int				is_interactive;
 	int				stdin_fd;
 	int				stdout_fd;

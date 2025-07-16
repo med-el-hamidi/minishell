@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:46:27 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/13 19:24:17 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/16 17:08:52 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,9 @@ static void	_dup2_leading_redir_fds(t_ast *node, int *f_stdin, int *f_stdout)
 		dup2(node->redir_fd, STDIN_FILENO);
 		*f_stdin = 1;
 	}
-	else if (!*f_stdout && node->redir_fd != -1)
+	else if (!*f_stdout && node->redir_fd != -1
+		&& node->redir_type != REDIR_INPUT
+		&& node->redir_type != REDIR_HEREDOC)
 	{
 		dup2(node->redir_fd, STDOUT_FILENO);
 		*f_stdout = 1;
@@ -119,5 +121,6 @@ int	exec_redirection(t_ast *node, t_shell *shell)
 	if (!exit_status)
 		exit_status = executor(node, shell);
 	dup2(shell->stdin_fd, STDIN_FILENO);
-	return (dup2(shell->stdout_fd, STDOUT_FILENO), exit_status);
+	dup2(shell->stdout_fd, STDOUT_FILENO);
+	return (exit_status);
 }
