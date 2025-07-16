@@ -24,9 +24,16 @@ static void	increment_shell_level(t_list **vars)
 	else
 	{
 		lvl = ft_atoi(((t_var *)shlvl->content)->value);
-		if (1999 == lvl)
-			lvl = -1;
-		str_lvl = ft_itoa(++lvl);
+		if (++lvl > 1999)
+		{
+			ft_putstr_fd("minishell: warning: shell level (", STDERR_FILENO);
+			ft_putnbr_fd(lvl, STDERR_FILENO);
+			ft_putstr_fd(") too high, resetting to 1\n", STDERR_FILENO);
+			lvl = 1;
+		}
+		if (lvl < 0)
+			lvl = 0;
+		str_lvl = ft_itoa(lvl);
 		update_shell_var(shlvl, str_lvl, ((t_var *)shlvl->content)->flag);
 		free(str_lvl);
 	}
