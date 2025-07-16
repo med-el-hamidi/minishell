@@ -28,7 +28,6 @@ static int	count_lines_in_file(int fd)
 		if (bytes == -1)
 		{
 			close(fd);
-			perror("minishell: history : cannot read from ~"HISTFILE);
 			return (-1);
 		}
 		else if (!bytes)
@@ -49,10 +48,7 @@ int	get_histfile_lines_c(char *path, int oflag, int perm)
 	else
 		fd = open(path, oflag);
 	if (fd == -1)
-	{
-		perror("minishell: history : cannot open ~"HISTFILE);
 		return (-1);
-	}
 	histfile_lines_c = count_lines_in_file(fd);
 	close(fd);
 	return (histfile_lines_c);

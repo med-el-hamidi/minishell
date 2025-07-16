@@ -71,21 +71,24 @@ static char	*_retreive_home(uid_t	uid)
 
 void	set_histfile(t_shell *shell)
 {
-	char	*home;
+	char		*home;
 
 	shell->history.path = NULL;
 	home = NULL;
-	if (getenv("HOME"))
+	if (getenv("HISTFILE"))
+		shell->history.path = ft_strdup(getenv("HISTFILE"));
+	else if (getenv("HOME"))
 		home = ft_strdup(getenv("HOME"));
 	else
 		home = _retreive_home(_getuid(shell));
 	if (home)
 	{
 		shell->history.path = ft_strjoin(home, HISTFILE);
-		create_shell_var(&shell->vars, "HISTFILE", \
-			shell->history.path, VAR_LOCAL);
 		free(home);
 	}
+	if (shell->history.path)
+		create_shell_var(&shell->vars, "HISTFILE", \
+			shell->history.path, VAR_LOCAL);
 }
 
 void	set_default_history_sizes(t_list **vars, char *key, int n)
