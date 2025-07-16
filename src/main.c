@@ -101,7 +101,6 @@ void	cleanup_shell(t_shell *shell)
 	if (shell->is_interactive)
 	{
 		if (shell->history.path
-			&& !access(shell->history.path, F_OK | R_OK | W_OK)
 			&& (shell->history.count - shell->history.current) > 0)
 			save_history(shell, shell->history.path);
 		free(shell->history.path);

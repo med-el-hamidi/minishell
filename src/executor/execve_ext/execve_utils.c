@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 02:01:55 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/15 14:45:00 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/15 23:11:32 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,7 @@ char	*get_cmd_path(char *cmd, t_shell *shell)
 		free(full_path);
 		i++;
 	}
-	free_2d_array(paths);
-	return (execv_print_error(cmd, 1), NULL);
+	return (free_2d_array(paths), execv_print_error(cmd, 1), NULL);
 }
 
 static int	_envp_helper(t_var *env, char **envp, int *i)
