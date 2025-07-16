@@ -44,7 +44,7 @@ void	save_history_oflag(char *path, int oflag, t_shell *shell, int skip)
 	fd = open(path, oflag, 0600);
 	if (fd == -1)
 	{
-		perror("Minishell: history: cannot save history in ~"HISTFILE);
+		perror("Minishell: history: cannot save history!");
 		return ;
 	}
 	i = 0;
