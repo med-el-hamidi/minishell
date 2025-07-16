@@ -71,7 +71,7 @@ void	shell_loop(t_shell *shell)
 
 	while (1)
 	{
-		input = readline("minishell$ ");
+		input = readline(shell->prompt);
 		if (!input)
 			break ;
 		add_to_history(shell, input);
@@ -103,6 +103,7 @@ void	cleanup_shell(t_shell *shell)
 		rl_clear_history();
 	}
 	free(shell->name);
+	free(shell->prompt);
 	ft_lstclear(&shell->vars, del_env);
 	close(shell->stdin_fd);
 	close(shell->stdout_fd);
@@ -112,12 +113,14 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_shell	shell;
 
-	(void)argc;
+	shell.argc = argc;
+	shell.argv = argv;
 	if (ft_strrchr(argv[0], '/'))
 		shell.name = ft_substr(argv[0], \
 			ft_strrchr(argv[0], '/') - argv[0] + 1, ft_strlen(argv[0]));
 	else
 		shell.name = ft_strdup(argv[0]);
+	shell.prompt = ft_strjoin(shell.name, "$ ");
 	shell.is_interactive = 1;
 	if (argv[1])
 		shell.is_interactive = 0;
