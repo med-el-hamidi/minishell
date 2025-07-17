@@ -74,17 +74,11 @@ static void	_herdoc_loop(t_shell *shell, char *delimiter, int fd, int f)
 
 static int	_ignore_all_heredocs(char *tmp_file, int *fd, int status)
 {
-	int	ret;
-
-	ret = 128 + status;
 	close (*fd);
 	*fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (*fd == -1)
-	{
 		perror("minishell: herdoc");
-		return (1);
-	}
-	return (ret);
+	return (1);
 }
 
 int	set_herdoc_tmp_file(t_shell *shell, char **delimiter, int parse)
