@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:46:27 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/16 17:08:52 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/16 22:30:54 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,9 @@ static void	_dup2_leading_redir_fds(t_ast *node, int *f_stdin, int *f_stdout)
 		dup2(node->redir_fd, STDIN_FILENO);
 		*f_stdin = 1;
 	}
-	else if (!*f_stdout && node->redir_fd != -1
-		&& node->redir_type != REDIR_INPUT
-		&& node->redir_type != REDIR_HEREDOC)
+	else if (!*f_stdout && node->redir_fd != -1	&& 
+		(node->redir_type == REDIR_OUTPUT
+			|| node->redir_type == REDIR_APPEND))
 	{
 		dup2(node->redir_fd, STDOUT_FILENO);
 		*f_stdout = 1;
