@@ -72,7 +72,7 @@ static void	_herdoc_loop(t_shell *shell, char *delimiter, int fd, int f)
 	exit(0);
 }
 
-static int	_ignore_all_heredocs(char *tmp_file, int *fd, int status)
+static int	_ignore_all_heredocs(char *tmp_file, int *fd)
 {
 	close (*fd);
 	*fd = open(tmp_file, O_CREAT | O_TRUNC | O_WRONLY, 0600);
@@ -103,7 +103,7 @@ int	set_herdoc_tmp_file(t_shell *shell, char **delimiter, int parse)
 	waitpid(pid, &status, 0);
 	setup_signals();
 	if (WIFSIGNALED(status) && WTERMSIG(status))
-		ret = _ignore_all_heredocs(tmp_file, &fd, status);
+		ret = _ignore_all_heredocs(tmp_file, &fd);
 	(free(*delimiter), close (fd));
 	return ((*delimiter = tmp_file), ret);
 }
