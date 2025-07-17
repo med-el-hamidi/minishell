@@ -6,21 +6,13 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:07:46 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/13 19:24:05 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/16 22:11:31 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
-static void	_handl_plus_(char **value, char *assign)
-{
-	if (*value)
-		*value = ft_strjoin(*value, assign + 1);
-	else
-		*value = ft_strdup(assign + 1);
-}
-
-static void	_find_d_update_or_creat_v(t_list **vars, char *args, char *value)
+static void	_set_shell_var(t_list **vars, char *args, char *value)
 {
 	t_list	*node;
 
@@ -54,11 +46,11 @@ int	exec_local_vars(char **args, t_list **vars)
 		{
 			*(assign - 1) = '\0';
 			value = expand_env(*vars, args[i]);
-			_handl_plus_(&value, assign);
+			value = ft_strjoin(value, assign + 1);
 		}
 		else
 			value = ft_strdup(assign + 1);
-		_find_d_update_or_creat_v(vars, args[i++], value);
+		_set_shell_var(vars, args[i++], value);
 	}
 	free(value);
 	return (0);
