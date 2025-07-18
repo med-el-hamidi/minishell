@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/13 02:01:55 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/15 23:11:32 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/18 06:09:54 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,18 @@ int	is_directory(char *path)
 {
 	struct stat	path_stat;
 
-	if (stat(path, &path_stat) != 0)
+	if (stat(path, &path_stat))
 		return (0);
 	return (S_ISDIR(path_stat.st_mode));
+}
+
+int	is_regular_file(char *path)
+{
+	struct stat	path_stat;
+
+	if (access(path, F_OK) || stat(path, &path_stat))
+		return (0);
+	return (S_ISREG(path_stat.st_mode));
 }
 
 char	*get_cmd_path(char *cmd, t_shell *shell)
@@ -28,26 +37,26 @@ char	*get_cmd_path(char *cmd, t_shell *shell)
 	int		i;
 	char	*env;
 
-	env = expand_env(shell->vars, "PATH");
-	i = 0;
-	if (!cmd || ft_strchr(cmd, '/'))
+	if (!cmd)
+		return (NULL);
+	else if (ft_strchr(cmd, '/') && is_regular_file(cmd))
 		return (ft_strdup(cmd));
+	else if (cmd[0] == '/' || !strncmp(cmd, "./", 2) || !strncmp(cmd, "../", 3)
+		|| (ft_strlen(cmd) > 0 && cmd[ft_strlen(cmd) - 1] == '/'))
+		return (NULL);
+	env = expand_env(shell->vars, "PATH");
 	if (!env)
-	{
-		if (is_directory(cmd))
-			return (NULL);
-		return (execv_print_error(cmd, 2), NULL);
-	}
+		return (NULL);
 	paths = ft_split(env, ':');
+	i = 0;
 	while (paths && paths[i])
 	{
-		full_path = join_3(paths[i], "/", cmd);
-		if (access(full_path, X_OK) == 0)
+		full_path = join_3(paths[i++], "/", cmd);
+		if (is_regular_file(full_path))
 			return (free_2d_array(paths), full_path);
 		free(full_path);
-		i++;
 	}
-	return (free_2d_array(paths), execv_print_error(cmd, 1), NULL);
+	return (free_2d_array(paths), NULL);
 }
 
 static int	_envp_helper(t_var *env, char **envp, int *i)
