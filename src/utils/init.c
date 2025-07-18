@@ -58,7 +58,6 @@ t_list	*init_env(char **envp)
 
 static void	_set_history_sizes(t_shell *shell)
 {
-	char	*path;
 	char	*val;
 	int		n;
 
