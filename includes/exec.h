@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 15:27:21 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/13 19:08:00 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/18 03:12:38 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void	update_shell_var(t_list *node, char *value, t_var_type flag);
 void	create_shell_var(t_list **vars, char *key, \
 char	*value, t_var_type flag);
 int		is_directory(char *path);
+int		is_regular_file(char *path);
 void	_add_or_update_path_cd(t_list **vars, char *name, char *value);
 
 /* executor main functions */
