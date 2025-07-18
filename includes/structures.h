@@ -16,6 +16,7 @@
 # define HISTFILE "/.minishell_history"
 # define HISTSIZE 500
 # define HISTFILESIZE 500
+# define CHUNK_SIZE 512
 
 typedef struct s_history
 {

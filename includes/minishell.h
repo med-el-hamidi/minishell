@@ -40,6 +40,7 @@ void	cleanup_shell(t_shell *shell);
 /* Error functions*/
 void	_print_error(char *msg, const int sys_error);
 int		print_syntax_error(const char *token);
+void	open_script_err_exit(char *script, char *msg, int e);
 
 /* Init functions*/
 t_list	*init_env(char **envp);
