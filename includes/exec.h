@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 15:27:21 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/18 03:12:38 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/18 06:28:08 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int		executor(t_ast *node, t_shell *shell);
 /* print fcts error */
 int		export_print_error(char *arg);
 void	pip_error_exit_child(const char *msg);
-int		execv_print_error(char *arg, int fg);
+int		execve_print_error(char *arg, int fg);
 
 /* using parser utils functions for testing before merging*/
 char	*expand_env(t_list *vars, const char *name);
