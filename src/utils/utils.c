@@ -84,7 +84,7 @@ int	open_script(char *script)
 	{
 		close(fd);
 		ft_putstr_fd(script, STDERR_FILENO);
-		t_putstr_fd(": cannot execute binary file\n", STDERR_FILENO);
+		ft_putstr_fd(": cannot execute binary file\n", STDERR_FILENO);
 		exit(126);
 	}
 	return (fd);
