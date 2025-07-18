@@ -11,6 +11,7 @@ RESET	:= \033[0m
 
 # ******************************* VARIABLES ********************************** #
 NAME		:= minishell
+BONUS_NAME	:= minishell_bonus
 CC			:= cc
 CFLAGS		:= -Wall -Wextra -Werror -I$(HOME)/brew/opt/readline/include  -fsanitize=address
 LDFLAGS		:= -Llibft -lft -L$(HOME)/brew/opt/readline/lib -lreadline
@@ -86,11 +87,77 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(EXECVE_DIR)/execve_utils.c \
 			$(EXECVE_DIR)/execve.c \
 			$(RED_PIP_DIR)/pipe.c \
-			$(RED_PIP_DIR)/exec_redir.c \
+			$(RED_PIP_DIR)/exec_redir.c
 
+# ******************************* BONUS ********************************** #
+BONUS_PATH := minishell_bonus_part
+
+# BONUS Header files
+BONUS_INCLUDES	:=	$(BONUS_PATH)/includes_bonus/minishell_bonus.h \
+				$(BONUS_PATH)/includes_bonus/structures_bonus.h \
+				$(BONUS_PATH)/includes_bonus/lexer_bonus.h \
+				$(BONUS_PATH)/includes_bonus/parser_bonus.h \
+				$(BONUS_PATH)/includes_bonus/exec_bonus.h
+
+# BONUS Source directories
+BONUS_SRC_DIR		:= $(BONUS_PATH)/src_bonus
+BONUS_LEX_DIR		:= $(BONUS_SRC_DIR)/lexer_bonus
+BONUS_PAR_DIR		:= $(BONUS_SRC_DIR)/parser_bonus
+BONUS_EXE_DIR		:= $(BONUS_SRC_DIR)/executor_bonus
+BONUS_BLT_DIR		:= $(BONUS_EXE_DIR)/builtins_bonus
+BONUS_EXECVE_DIR	:= $(BONUS_EXE_DIR)/execve_ext_bonus
+BONUS_LOC_VA_DIR	:= $(BONUS_EXE_DIR)/local_vars_bonus
+BONUS_RED_PIP_DIR	:= $(BONUS_EXE_DIR)/redirection_pipe_bonus
+BONUS_UTL_DIR		:= $(BONUS_SRC_DIR)/utils_bonus
+
+# BONUS Source files
+BONUS_SRCS		:= $(BONUS_SRC_DIR)/main_bonus.c \
+			$(BONUS_UTL_DIR)/utils_bonus.c \
+			$(BONUS_UTL_DIR)/herdoc_utils_bonus.c \
+			$(BONUS_UTL_DIR)/init_utils_bonus.c \
+			$(BONUS_UTL_DIR)/init_bonus.c \
+			$(BONUS_UTL_DIR)/signal_bonus.c \
+			$(BONUS_UTL_DIR)/error_bonus.c \
+			$(BONUS_UTL_DIR)/free_bonus.c \
+			$(BONUS_UTL_DIR)/histfile_utils_bonus.c \
+			$(BONUS_UTL_DIR)/history_utils_bonus.c \
+			$(BONUS_UTL_DIR)/history_bonus.c \
+			$(BONUS_LEX_DIR)/ft_split_set_bonus.c \
+			$(BONUS_LEX_DIR)/lexer_word_utils_0_bonus.c \
+			$(BONUS_LEX_DIR)/lexer_word_utils_1_bonus.c \
+			$(BONUS_LEX_DIR)/lexer_word_bonus.c \
+			$(BONUS_LEX_DIR)/lexer_herdoc_utils_bonus.c \
+			$(BONUS_LEX_DIR)/lexer_redir_utils_bonus.c \
+			$(BONUS_LEX_DIR)/lexer_redir_bonus.c \
+			$(BONUS_LEX_DIR)/lexer_utils_bonus.c \
+			$(BONUS_LEX_DIR)/lexer_bonus.c \
+			$(BONUS_PAR_DIR)/parse_bonus.c \
+			$(BONUS_PAR_DIR)/parse_redir_bonus.c \
+			$(BONUS_PAR_DIR)/parser_utils_bonus.c \
+			$(BONUS_PAR_DIR)/parser_bonus.c \
+			$(BONUS_BLT_DIR)/cd_bonus.c \
+			$(BONUS_BLT_DIR)/echo_bonus.c \
+			$(BONUS_BLT_DIR)/env_bonus.c \
+			$(BONUS_BLT_DIR)/exit_bonus.c \
+			$(BONUS_BLT_DIR)/pwd_bonus.c \
+			$(BONUS_BLT_DIR)/unset_bonus.c \
+			$(BONUS_BLT_DIR)/export_bonus.c \
+			$(BONUS_BLT_DIR)/export_utils_0_bonus.c \
+			$(BONUS_BLT_DIR)/export_utils_1_bonus.c \
+			$(BONUS_EXE_DIR)/is_builtin_bonus.c \
+			$(BONUS_EXE_DIR)/errors_utils_bonus.c \
+			$(BONUS_EXE_DIR)/executor_bonus.c \
+			$(BONUS_EXE_DIR)/utils_bonus.c \
+			$(BONUS_LOC_VA_DIR)/local_utils_bonus.c \
+			$(BONUS_LOC_VA_DIR)/exec_local_vars_bonus.c \
+			$(BONUS_EXECVE_DIR)/execve_utils_bonus.c \
+			$(BONUS_EXECVE_DIR)/execve_bonus.c \
+			$(BONUS_RED_PIP_DIR)/pipe_bonus.c \
+			$(BONUS_RED_PIP_DIR)/exec_redir_bonus.c
 
 # Object files
 OBJS		:= $(SRCS:.c=.o)
+BONUS_OBJS		:= $(BONUS_SRCS:.c=.o)
 
 # ******************************** RULES ************************************* #
 
@@ -107,15 +174,29 @@ $(LIBFT): $(LIBFT_SRCS) libft/libft.h
 
 all: $(NAME)
 
+$(BONUS_NAME): $(LIBFT) $(BONUS_OBJS)
+	$(CC) $(CFLAGS) $(BONUS_OBJS) $(LDFLAGS) -o $(BONUS_NAME)
+	@printf "$(GREEN)$(BOLD)✅ Minishell Bonus ready!$(RESET)\n"
+
+%.o: %.c $(BONUS_INCLUDES)
+	$(CC) $(CFLAGS) -c $< -o $@
+	@printf "$(BLUE)🔧 Building: $(notdir $<)$(RESET)\n"
+
+bonus: $(BONUS_NAME)
+
 clean:
 	make -C libft clean
 	rm -f $(OBJS)
 	@printf "$(YELLOW)🧹 Cleaned object files$(RESET)\n"
+	rm -f $(BONUS_OBJS)
+	@printf "$(YELLOW)🧹 Cleaned bonus object files$(RESET)\n"
 
 fclean: clean
 	make -C libft fclean
 	rm -f $(NAME)
 	@printf "$(RED)🔥 Full clean complete$(RESET)\n"
+	rm -f $(BONUS_NAME)
+	@printf "$(RED)🔥 Full clean complete for Bonus$(RESET)\n"
 
 re: fclean all
 
