@@ -105,7 +105,7 @@ static char	*_gnl(t_list *list)
 
 static void	_getready_next_gnl(t_list **list)
 {
-	t_list	*last_node;
+	t_list	*lst;
 	t_list	*node;
 	char	*buf;
 	int		i;
@@ -119,13 +119,13 @@ static void	_getready_next_gnl(t_list **list)
 	node = malloc(sizeof(t_list));
 	if (!node)
 		return ;
-	last_node = ft_lstlast(*list);
+	lst = ft_lstlast(*list);
 	i = 0;
 	j = 0;
-	while (((char *)last_node->content)[i] && ((char *)last_node->content)[i] != '\n')
+	while (((char *)lst->content)[i] && ((char *)lst->content)[i] != '\n')
 		i++;
-	while (((char *)last_node->content)[i] && ((char *)last_node->content)[++i])
-		buf[j++] = ((char *)last_node->content)[i];
+	while (((char *)lst->content)[i] && ((char *)lst->content)[++i])
+		buf[j++] = ((char *)lst->content)[i];
 	buf[j] = '\0';
 	node->content = buf;
 	node->next = NULL;
