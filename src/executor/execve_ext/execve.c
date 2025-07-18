@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/18 06:34:19 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/18 08:23:30 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,11 @@ static int	_execve_print_error(t_shell *shell, char *arg)
 		shell->exit_status = 127;
 		execve_print_error(arg, 2);
 	}
-	shell->exit_status = 127;
-	execve_print_error(arg, 1);
+	else
+	{
+		shell->exit_status = 127;
+		execve_print_error(arg, 1);
+	}
 	return (shell->exit_status);
 }
 
