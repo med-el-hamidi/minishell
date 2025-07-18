@@ -1,21 +1,32 @@
-# include "../../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 19:38:36 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 19:38:38 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static void	*cleanup_init_shell(t_list	**head_env, char **split)
+#include "../../includes/minishell.h"
+
+static t_var	*create_env_v(char *str)
 {
-	free_2d_array(split);
-	ft_lstclear(head_env, del_env);
-	return (NULL);
-}
+	t_var	*v;
 
-static t_env	*create_env_v(char **split)
-{
-	t_env *v;
-
-	v = malloc(sizeof(t_env));
+	if (!str)
+		return (NULL);
+	v = malloc(sizeof(t_var));
 	if (!v)
 		return (NULL);
-	v->key = ft_strdup(split[0]);
-	v->value = ft_strdup(split[1]);
+	v->key = ft_substr(str, 0, ft_strchr(str, '=') - str);
+	if (ft_strchr(str, '=') + 1)
+		v->value = ft_strdup(ft_strchr(str, '=') + 1);
+	else
+		v->value = NULL;
+	v->flag = VAR_ENV;
 	return (v);
 }
 
@@ -23,85 +34,81 @@ t_list	*init_env(char **envp)
 {
 	t_list	*head_env;
 	t_list	*node_env;
-	t_env	*v;
-	char	**split;
+	t_var	*v;
 	int		i;
 
-	if (!envp || !*envp)
-		return (NULL);
 	head_env = NULL;
-	i = -1;
-	while (envp[++i])
+	if (envp)
 	{
-		split = ft_split(envp[i], '=');
-		if (!split || !*split)
-			cleanup_init_shell(&head_env, NULL);
-		v = create_env_v(split);
-		if (!v)
-			cleanup_init_shell(&head_env, split);
-		node_env = ft_lstnew(v);
-		if (!node_env)
-			cleanup_init_shell(&head_env, split);
-		free_2d_array(split);
-		ft_lstadd_back(&head_env, node_env);
+		i = -1;
+		while (envp[++i])
+		{
+			v = create_env_v(envp[i]);
+			if (!v)
+				return (ft_lstclear(&head_env, del_env), NULL);
+			node_env = ft_lstnew(v);
+			if (!node_env)
+				return (ft_lstclear(&head_env, del_env), NULL);
+			ft_lstadd_back(&head_env, node_env);
+		}
 	}
-	// Increment SHLVL if it exists
-	//increment_shell_level(head_env);
+	init_shell_vars(&head_env);
 	return (head_env);
 }
 
-/*
-*
-* init_history: Initialize history of minishell
-*
-* 1. Read existing history
-* 2. Set history file for future writes
-*
-*/
-void	init_history(t_shell *shell)
+static void	_set_history_sizes(t_shell *shell)
 {
 	char	*path;
 	char	*val;
 	int		n;
 
-	shell->history.count = 0;
-	shell->history.current = 0;
-	shell->history.histmem_lines_c = 0;
 	n = 0;
 	val = getenv("HISTSIZE");
 	if (val)
 		n = ft_atoi(val);
 	if (n <= 0)
+	{
 		n = HISTSIZE;
+		set_default_history_sizes(&shell->vars, "HISTSIZE", n);
+	}
 	shell->history.histsize = n;
 	n = 0;
 	val = getenv("HISTFILESIZE");
 	if (val)
 		n = ft_atoi(val);
 	if (n <= 0)
+	{
 		n = HISTFILESIZE;
+		set_default_history_sizes(&shell->vars, "HISTFILESIZE", n);
+	}
 	shell->history.histfilesize = n;
-	shell->history.entries = malloc((shell->history.histfilesize + 1) * sizeof(char *));
+}
+
+void	init_history(t_shell *shell)
+{
+	shell->history.count = 0;
+	shell->history.current = 0;
+	shell->history.histmem_lines_c = 0;
+	_set_history_sizes(shell);
+	shell->history.entries = malloc((shell->history.histfilesize + 1) \
+														* sizeof(char *));
 	if (!shell->history.entries)
 	{
 		perror("minishell: history is not initialized!");
 		return ;
 	}
-	ft_bzero(shell->history.entries, (shell->history.histfilesize + 1) * sizeof(char *));
-	path = get_history_path();
-	if (!path)
+	ft_bzero(shell->history.entries, (shell->history.histfilesize + 1) * \
+															sizeof(char *));
+	set_histfile(shell);
+	if (!shell->history.path || !*shell->history.path)
 		return ;
-	if (!access(path, F_OK | R_OK))
+	if (!access(shell->history.path, F_OK | R_OK))
 		load_history(shell);
-	free(path);
 }
 
 void	init_termios(t_shell *shell)
 {
-    // Backup original terminal settings
 	tcgetattr(STDIN_FILENO, &shell->orig_termios);
-
-    // Configure new settings (e.g., disable echo control chars)
 	shell->new_termios = shell->orig_termios;
 	shell->new_termios.c_lflag &= ~(ECHOCTL);
 	tcsetattr(STDIN_FILENO, TCSANOW, &shell->new_termios);

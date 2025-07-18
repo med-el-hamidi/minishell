@@ -1,6 +1,17 @@
-# include "../../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   history_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/29 16:24:01 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/29 16:24:02 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-/* Count number of lines in history file */
+#include "../../includes/minishell.h"
+
 static int	count_lines_in_file(int fd)
 {
 	ssize_t	bytes;
@@ -17,7 +28,6 @@ static int	count_lines_in_file(int fd)
 		if (bytes == -1)
 		{
 			close(fd);
-			perror("minishell: history : cannot read from ~"HISTFILE);
 			return (-1);
 		}
 		else if (!bytes)
@@ -28,8 +38,7 @@ static int	count_lines_in_file(int fd)
 	return (count);
 }
 
-/* Get number of lines in history file */
-int	get_histfile_lines_count(char *path, int oflag, int perm)
+int	get_histfile_lines_c(char *path, int oflag, int perm)
 {
 	int	fd;
 	int	histfile_lines_c;
@@ -39,49 +48,34 @@ int	get_histfile_lines_count(char *path, int oflag, int perm)
 	else
 		fd = open(path, oflag);
 	if (fd == -1)
-	{
-		perror("minishell: history : cannot open from ~"HISTFILE);
 		return (-1);
-	}
 	histfile_lines_c = count_lines_in_file(fd);
 	close(fd);
 	return (histfile_lines_c);
 }
 
-void	load_history_fd(t_shell *shell, int	histfile_lines_c, int *skip, int fd)
+void	load_hist_fd(t_shell *shell, int histfile_lines_c, int *skip, int fd)
 {
 	char	*line;
-	size_t	len;
 	int		i;
 
-	// Using get_next_line to read history file
-	i= -1;
+	i = -1;
 	while (++i < histfile_lines_c)
-    {
+	{
 		line = get_next_line(fd);
 		if (!line)
-        	break ;
+			break ;
 		if (i >= skip[0])
 		{
-			len = ft_strlen(line);
-			if (len > 1 && line[len - 1] == '\n')
-			{
-				// Remove trailing newline if present
-				line[len - 1] = '\0';
-				if (i > skip[1] || !skip[1])
-					add_history(line);
-				shell->history.entries[shell->history.count++] = line;
-			}
-			else
+			if (!_add_history(shell, line, i, skip))
 				free(line);
 		}
 		else
 			free(line);
-    }
+	}
 }
 
-/* Get the recent lines from HISTORY_FILE from "exceed" (Look at load_recent_history)*/
-static void	get_recent_history_fd(t_shell *shell, int exceed, int histfile_lines_c, int *fd)
+static void	get_recent_hist_fd(t_shell *s, int e, int histfile_lines_c, int *fd)
 {
 	char	*line;
 	int		i;
@@ -89,18 +83,17 @@ static void	get_recent_history_fd(t_shell *shell, int exceed, int histfile_lines
 
 	i = 0;
 	j = 0;
-
 	while (i < histfile_lines_c)
 	{
 		line = get_next_line(*fd);
 		if (!line)
 			break ;
-		if (i >= exceed && j < shell->history.histfilesize)
+		if (i >= e && j < s->history.histfilesize)
 		{
-			if (shell->history.entries[j])
-				free(shell->history.entries[j]);
-			shell->history.entries[j++] = line;
-			shell->history.count++;
+			if (s->history.entries[j])
+				free(s->history.entries[j]);
+			s->history.entries[j++] = line;
+			s->history.count++;
 		}
 		else
 			free(line);
@@ -108,30 +101,26 @@ static void	get_recent_history_fd(t_shell *shell, int exceed, int histfile_lines
 	}
 }
 
-/* Load the recent history from HISTORY_FILE*/
 int	load_recent_history(char *path, t_shell *shell, int histfile_lines_c)
 {
 	int		fd;
 	int		start;
 	int		exceed;
 
-	fd = open(path, O_CREAT | O_RDWR, 0644);
+	fd = open(path, O_CREAT | O_RDWR, 0600);
 	if (fd == -1)
 		return (0);
 	start = 0;
-	// In case recent HISTORY_FILE has more that histfilesize,
-	// We concider the recent HISTORY_FILE starts from index "start" -> histfilesize (The limit we concider from env)
 	if (histfile_lines_c > shell->history.histfilesize)
 		start = histfile_lines_c - shell->history.histfilesize;
-	// Calculate the exceed part from the HISTORY_FILE out of histfilesize
-	exceed =  shell->history.histmem_lines_c + start;
-	// Move our in-memory history into its position (histfilesize - shell->history.histmem_lines_c) in entries,
-	// To let the first entris to lines from HISTORY_FILE from "exceed"
-	if (shell->history.current != (shell->history.histfilesize - shell->history.histmem_lines_c))
-		ft_memmove(shell->history.entries + (shell->history.histfilesize - shell->history.histmem_lines_c),
-					shell->history.entries + shell->history.current,
-					shell->history.histmem_lines_c * sizeof(char *));
-	get_recent_history_fd(shell, exceed, histfile_lines_c, &fd);
+	exceed = shell->history.histmem_lines_c + start;
+	if (shell->history.current != \
+		(shell->history.histfilesize - shell->history.histmem_lines_c))
+		ft_memmove(shell->history.entries + \
+			(shell->history.histfilesize - shell->history.histmem_lines_c),
+			shell->history.entries + shell->history.current,
+			shell->history.histmem_lines_c * sizeof(char *));
+	get_recent_hist_fd(shell, exceed, histfile_lines_c, &fd);
 	close(fd);
 	return (histfile_lines_c - exceed);
 }

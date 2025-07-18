@@ -1,13 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/28 20:49:23 by mel-hami          #+#    #+#             */
+/*   Updated: 2025/06/28 20:49:25 by mel-hami         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-static void handle_sigint(int sig)
+static void	handle_sigint(int sig)
 {
 	(void)sig;
 	ft_putchar_fd('\n', STDOUT_FILENO);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	//g_exit_status = 130; // Set exit status (128 + SIGINT=2)
+	g_exit_status = 130;
 }
 
 void	setup_signals(void)
@@ -22,5 +34,4 @@ void	setup_signals(void)
 	sa.sa_handler = handle_sigint;
 	if (sigaction(SIGINT, &sa, NULL) == -1)
 		perror("Minishell: SIGINT (Ctrl+C) handler failed");
-	// Handle EOF (Ctrl+D)
 }
