@@ -56,7 +56,7 @@ static int	is_binary_file(const char *path, mode_t mode)
 				return (close(fd), -1);
 		}
 	}
-	else if (!isatty(fd))
+	else
 		is_binary = check_buffer_binary(buffer, bytes_read);
 	return (close(fd), is_binary);
 }
@@ -78,15 +78,13 @@ int	open_script(char *script)
 			exit(126);
 		exit(127);
 	}
-	if (fstat(fd, &state) == -1)
+	else if (fstat(fd, &state) == -1)
 		(close(fd), perror(script), exit(errno));
-	else if (is_binary_file(script, state.st_mode) == 1)
-	{
-		close(fd);
-		ft_putstr_fd(script, STDERR_FILENO);
-		ft_putstr_fd(": cannot execute binary file\n", STDERR_FILENO);
-		exit(126);
-	}
+	if (S_ISDIR(state.st_mode))
+		(close(fd), open_script_err_exit(script, ": is a directory", 126));
+	else if (!isatty(fd) && is_binary_file(script, state.st_mode) == 1)
+		(close(fd), open_script_err_exit(script, \
+									": cannot execute binary file", 126));
 	return (fd);
 }
 

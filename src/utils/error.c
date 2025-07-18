@@ -32,3 +32,10 @@ int	print_syntax_error(const char *token)
 	ft_putstr_fd("'\n", STDERR_FILENO);
 	return (2);
 }
+
+void	open_script_err_exit(char *script, char *msg, int e)
+{
+	ft_putstr_fd(script, STDERR_FILENO);
+	ft_putendl_fd(msg, STDERR_FILENO);
+	exit(e);
+}
