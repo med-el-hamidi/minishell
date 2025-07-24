@@ -103,4 +103,12 @@ typedef struct s_shell
 	int				stdin_fd;
 	int				stdout_fd;
 }	t_shell;
+
+typedef struct s_lexerctx
+{
+	t_shell	*shell;
+	t_list	**tokens;
+	char	*input;
+	size_t	*i;
+}	t_lexerctx;
 #endif
