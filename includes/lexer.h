@@ -13,14 +13,6 @@
 #ifndef LEXER_H
 # define LEXER_H
 
-typedef struct s_lexerctx
-{
-	t_shell	*shell;
-	t_list	**tokens;
-	char	*input;
-	size_t	*i;
-}	t_lexerctx;
-
 t_token	*create_token(t_token_type type, char *value);
 void	add_token(t_list **tokens, t_token *token);
 
