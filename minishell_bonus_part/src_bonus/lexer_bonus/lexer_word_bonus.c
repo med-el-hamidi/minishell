@@ -88,7 +88,7 @@ char	*accumulate_quoted(t_shell *shell, char *input, size_t *i)
 	return (result);
 }
 
-char	*accumulate_token(t_shell *shell, char *input, size_t *i)
+char	*accumulate_token(t_shell *shell, char *input, size_t *i, int *f)
 {
 	char	*result;
 	char	*chunk;
@@ -99,7 +99,11 @@ char	*accumulate_token(t_shell *shell, char *input, size_t *i)
 	{
 		chunk = NULL;
 		if (input[*i] == '"' || input[*i] == '\'')
+		{
 			chunk = accumulate_quoted(shell, input, i);
+			if (chunk && ft_strchr(chunk, '*'))
+				*f |= 7;
+		}
 		else
 			chunk = accumulate_word(input, i);
 		if (!chunk)
