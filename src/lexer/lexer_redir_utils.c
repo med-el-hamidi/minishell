@@ -96,8 +96,8 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 	while (input[i] && !is_whitespace(input[i])
 		&& !ft_strchr("|<>", input[i]))
 	{
-		if (input[i] == '$' && input[i - 1] != '"' && input[i - 1] != '\''
-			&& input[i + 1] != '"' && input[i + 1] != '\'')
+		if (input[i] == '$' && !ft_strchr("\"'", input[i + 1])
+			&& i > 0 && !ft_strchr("\"'", input[i - 1]))
 		{
 			j = i;
 			str = accu_dollar(shell, input, &j, _getenv);
