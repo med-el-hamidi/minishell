@@ -13,14 +13,6 @@
 #ifndef LEXER_BONUS_H
 # define LEXER_BONUS_H
 
-typedef struct s_lexerctx
-{
-	t_shell	*shell;
-	t_list	**tokens;
-	char	*input;
-	size_t	*i;
-}	t_lexerctx;
-
 t_token	*create_token(t_token_type type, char *value);
 void	add_token(t_list **tokens, t_token *token);
 
@@ -48,9 +40,13 @@ char	*accumulate_word(char *input, size_t *i);
 char	*accumulate_quoted(t_shell *shell, char *input, size_t *i);
 char	*accu_dollar(t_shell *shell, char *input, size_t *i, \
 												char *f(t_list *, char *));
-char	*accumulate_token(t_shell *shell, char *input, size_t *i);
+char	*accumulate_token(t_shell *shell, char *input, size_t *i, int *f);
 
-int		handle_lexer_loop(t_lexerctx ctx, char **word, int *f);
+int		handle_lexer_loop(t_lexerctx *ctx, char **word);
+
+int		init_glob_vars(t_glob *g, t_list **tokens, char *word);
+void	handle_glob(t_list **tokens, char *word);
+void	add_token_word(t_list **tokens, char *word);
 
 t_list	*lexer(t_shell *shell, char *input);
 
