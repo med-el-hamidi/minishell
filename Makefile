@@ -129,6 +129,8 @@ BONUS_SRCS		:= $(BONUS_SRC_DIR)/main_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_herdoc_utils_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_redir_utils_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_redir_bonus.c \
+			$(BONUS_LEX_DIR)/glob_bonus.c \
+			$(BONUS_LEX_DIR)/glob_utils_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_utils_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_bonus.c \
 			$(BONUS_PAR_DIR)/parse_bonus.c \
