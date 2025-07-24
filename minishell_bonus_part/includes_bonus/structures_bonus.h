@@ -103,4 +103,26 @@ typedef struct s_shell
 	int				stdin_fd;
 	int				stdout_fd;
 }	t_shell;
+
+typedef struct s_lexerctx
+{
+	t_shell	*shell;
+	t_list	**tokens;
+	char	*input;
+	size_t	*i;
+	int		f;
+}	t_lexerctx;
+
+typedef struct s_glob
+{
+	DIR				*dir;
+	struct dirent	*entry;
+	char			*h_name;
+	char			*t_name;
+	char			*dir_path;
+	char			*ptr;
+	char			*pattern;
+	int				f;
+	int				must_be_dir;
+}	t_glob;
 #endif
