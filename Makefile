@@ -61,6 +61,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(LEX_DIR)/lexer_word_utils_1.c \
 			$(LEX_DIR)/lexer_word.c \
 			$(LEX_DIR)/lexer_herdoc_utils.c \
+			$(LEX_DIR)/lexer_redir_filename.c \
 			$(LEX_DIR)/lexer_redir_utils.c \
 			$(LEX_DIR)/lexer_redir.c \
 			$(LEX_DIR)/lexer_utils.c \
@@ -127,8 +128,11 @@ BONUS_SRCS		:= $(BONUS_SRC_DIR)/main_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_word_utils_1_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_word_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_herdoc_utils_bonus.c \
+			$(BONUS_LEX_DIR)/lexer_redir_filename_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_redir_utils_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_redir_bonus.c \
+			$(BONUS_LEX_DIR)/glob_bonus.c \
+			$(BONUS_LEX_DIR)/glob_utils_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_utils_bonus.c \
 			$(BONUS_LEX_DIR)/lexer_bonus.c \
 			$(BONUS_PAR_DIR)/parse_bonus.c \
