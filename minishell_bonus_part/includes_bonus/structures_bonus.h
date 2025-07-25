@@ -33,6 +33,9 @@ typedef enum e_token_type
 {
 	TOKEN_WORD,
 	TOKEN_PIPE,
+	TOKEN_AND,
+	TOKEN_OR,
+	TOKEN_SUBSHELL,
 	TOKEN_REDIR_IN,
 	TOKEN_REDIR_OUT,
 	TOKEN_REDIR_APPEND,
@@ -51,6 +54,9 @@ typedef enum e_ast_type
 	AST_CMD,
 	AST_PIPE,
 	AST_REDIR,
+	AST_AND,
+	AST_OR,
+	AST_SUBSHELL
 }	t_ast_type;
 
 typedef enum e_redir_type
@@ -110,6 +116,7 @@ typedef struct s_lexerctx
 	t_list	**tokens;
 	char	*input;
 	size_t	*i;
+	int		amb;
 	int		f;
 }	t_lexerctx;
 

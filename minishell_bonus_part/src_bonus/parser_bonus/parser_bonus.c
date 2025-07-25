@@ -33,18 +33,31 @@ static int	syntax_error(t_list *tokens)
 	return (0);
 }
 
+static int	get_ast_op(int token_type)
+{
+	if (token_type == TOKEN_PIPE)
+		return (AST_PIPE);
+	if (token_type == TOKEN_AND)
+		return (AST_AND);
+	if (token_type == TOKEN_OR)
+		return (AST_OR);
+	return (-1);
+}
+
 static t_ast	*build_ast(t_list **tokens)
 {
 	t_ast	*left;
 	t_ast	*node;
+	int		op;
 
 	left = parse_command(tokens);
 	if (!left)
 		return (NULL);
-	while (*tokens && ((t_token *)(*tokens)->content)->type == TOKEN_PIPE)
+	while (*tokens)
 	{
+		op = get_ast_op(((t_token *)(*tokens)->content)->type);
 		advance_token(tokens);
-		node = new_ast_node(AST_PIPE, NULL);
+		node = new_ast_node(op, NULL);
 		if (!node)
 		{
 			free_ast(left);

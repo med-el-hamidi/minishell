@@ -41,17 +41,24 @@ int	is_whitespace(char c)
 
 void	add_token_word(t_list **tokens, char *word)
 {
-	t_token	*token;
+	t_list	*words;
+	t_list	*ptr;
 
 	if (!tokens || !word)
 		return ;
 	if (ft_strchr(word, '*'))
 	{
-		handle_glob(tokens, word);
+		words = handle_glob(word);
+		if (!words)
+			return ;
+		ptr = words;
+		while (ptr)
+		{
+			add_token(tokens, create_token(TOKEN_WORD, (char *)ptr->content));
+			ptr = ptr->next;
+		}
+		ft_lstclear(&words, free);
 		return ;
 	}
-	token = create_token(TOKEN_WORD, word);
-	if (!token)
-		return ;
-	ft_lstadd_back(tokens, ft_lstnew(token));
+	add_token(tokens, create_token(TOKEN_WORD, word));
 }

@@ -19,7 +19,7 @@ void	add_token(t_list **tokens, t_token *token);
 char	**ft_split_set(char const *s, char *seps);
 
 int		check_invalid_token(char *input, size_t pos);
-char	*get_redi_file(t_shell *shell, char *input, size_t *i);
+char	*get_redir_filename(t_shell *shell, char *input, size_t *i);
 int		is_whitespace(char c);
 size_t	skip_whitespace(char *input, size_t *i);
 int		has_whitespace(char *str);
@@ -27,6 +27,7 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i);
 
 int		should_parse_dollar(char *input, size_t i);
 char	*get_delimiter(char *input, size_t	*i, int f);
+char	*get_redir_filename(t_shell *shell, char *input, size_t *i);
 
 int		check_unclosed_quotes(char *input, size_t i);
 char	*ft_strjoin_to_s1(char *s1, char *s2);
@@ -44,8 +45,8 @@ char	*accumulate_token(t_shell *shell, char *input, size_t *i, int *f);
 
 int		handle_lexer_loop(t_lexerctx *ctx, char **word);
 
-int		init_glob_vars(t_glob *g, t_list **tokens, char *word);
-void	handle_glob(t_list **tokens, char *word);
+int		init_glob_vars(t_list **words, t_glob *g, char *word);
+t_list	*handle_glob(char *word);
 void	add_token_word(t_list **tokens, char *word);
 
 t_list	*lexer(t_shell *shell, char *input);

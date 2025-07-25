@@ -36,35 +36,6 @@ int	check_invalid_token(char *input, size_t pos)
 	return (0);
 }
 
-char	*get_redi_file(t_shell *shell, char *input, size_t *i)
-{
-	char	*result;
-	char	*chunk;
-
-	result = ft_strdup("");
-	while (input[*i] && !is_whitespace(input[*i])
-		&& !ft_strchr("|<>", input[*i]))
-	{
-		chunk = NULL;
-		if (input[*i] == '"' || input[*i] == '\'')
-			chunk = accumulate_quoted(shell, input, i);
-		else if (input[*i] == '$')
-			chunk = accu_dollar(shell, input, i, _getenv);
-		else if (input[*i] == '~' && (!input[*i + 1] || input[*i + 1] == '/'
-				|| is_whitespace(input[*i + 1])))
-		{
-			(*i)++;
-			chunk = gethome(shell->vars);
-		}
-		else
-			chunk = accumulate_word(input, i);
-		if (!chunk)
-			return (free(result), NULL);
-		result = ft_strjoin_to_s1(result, chunk);
-	}
-	return (result);
-}
-
 size_t	skip_whitespace(char *input, size_t *i)
 {
 	while (is_whitespace(input[*i]))
@@ -90,24 +61,27 @@ int	has_whitespace(char *str)
 
 char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 {
-	size_t	j;
-	char	*str;
+	t_lexerctx	ctx;
+	char		*word;
+	size_t		bkp;
 
+	ctx.shell = shell;
+	ctx.tokens = NULL;
+	ctx.input = input;
+	ctx.i = &i;
+	ctx.f = 1;
+	bkp = i;
+	word = NULL;
+	ctx.amb = 0;
 	while (input[i] && !is_whitespace(input[i])
 		&& !ft_strchr("|<>", input[i]))
 	{
-		if (input[i] == '$' && input[i - 1] != '"' && input[i - 1] != '\''
-			&& input[i + 1] != '"' && input[i + 1] != '\'')
-		{
-			j = i;
-			str = accu_dollar(shell, input, &j, _getenv);
-			if (str && (!*str || has_whitespace(str)))
-				return (free(str), ft_substr(input, i, j - 3));
-			free(str);
-			i = j;
-		}
-		else
-			i++;
+		if (!handle_lexer_loop(&ctx, &word))
+			return (shell->exit_status = 2, NULL);
+		if (ctx.amb == 1 || (ctx.amb == 2 && word && *word))
+			return (free(word), ft_substr(input, bkp, i - bkp));
 	}
-	return (NULL);
+	if (ctx.amb != 2 && ((word && !*word && ctx.f) || !word))
+		return (free(word), ft_substr(input, bkp, i - bkp));
+	return (free(word), NULL);
 }

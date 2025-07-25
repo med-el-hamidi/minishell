@@ -56,7 +56,7 @@ static char	*get_trailing_slash(int must_be_dir, char *word, char *pattern)
 	return (t_name);
 }
 
-int	init_glob_vars(t_glob *g, t_list **tokens, char *word)
+int	init_glob_vars(t_list **words, t_glob *g, char *word)
 {
 	g->must_be_dir = is_dir_pattern(word);
 	g->pattern = strip_trailing_slash(word);
@@ -73,7 +73,7 @@ int	init_glob_vars(t_glob *g, t_list **tokens, char *word)
 		g->dir = opendir(".");
 	if (!g->dir)
 	{
-		add_token(tokens, create_token(TOKEN_WORD, word));
+		ft_lstadd_back(words, ft_lstnew(ft_strdup(word)));
 		free(g->t_name);
 		free(g->dir_path);
 		free(g->pattern);

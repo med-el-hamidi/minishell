@@ -12,27 +12,46 @@
 
 #include "../../includes_bonus/minishell_bonus.h"
 
-static int	handle_dollar_split(char **content, char *tmp,
-	t_lexerctx ctx, char **word)
+static size_t	handle_word_start(char **content, char **word,
+	t_lexerctx *ctx, char *tmp)
 {
 	size_t	j;
 	size_t	len;
 
+	len = ft_strlen(tmp);
 	j = 0;
-	if (*word && content[j])
+	if (*word && *word[0] && content[j])
 	{
 		*word = ft_strjoin_to_s1(*word, ft_strdup(content[j++]));
-		add_token_word(ctx.tokens, *word);
+		add_token_word(ctx->tokens, *word);
 		free(*word);
 		*word = NULL;
+		if (!content[j] && len && tmp[len - 1] == ' ' && !ctx->amb)
+			ctx->amb = 2;
 	}
+	return (j);
+}
+
+static int	handle_dollar_split(char **content, char *tmp,
+	t_lexerctx *ctx, char **word)
+{
+	size_t	j;
+	size_t	len;
+
+	j = handle_word_start(content, word, ctx, tmp);
 	while (content[j] && content[j + 1])
-		add_token_word(ctx.tokens, content[j++]);
+		add_token_word(ctx->tokens, content[j++]);
 	if (content[j])
 	{
+		if (j > 0)
+			ctx->amb = 1;
 		len = ft_strlen(tmp);
 		if (len && tmp[len - 1] == ' ')
-			add_token_word(ctx.tokens, content[j++]);
+		{
+			add_token_word(ctx->tokens, content[j++]);
+			if (!ctx->amb)
+				ctx->amb = 2;
+		}
 		if (content[j])
 			*word = ft_strdup(content[j]);
 		else
@@ -41,23 +60,24 @@ static int	handle_dollar_split(char **content, char *tmp,
 	return (1);
 }
 
-static int	handle_dollar(t_lexerctx ctx, char **word)
+static int	handle_dollar(t_lexerctx *ctx, char **word)
 {
 	char	*tmp;
 	char	**content;
 
-	tmp = accu_dollar(ctx.shell, ctx.input, ctx.i, _getenv_al);
+	tmp = accu_dollar(ctx->shell, ctx->input, ctx->i, _getenv_al);
 	if (!has_whitespace(tmp))
 		return (*word = ft_strjoin_to_s1(*word, tmp), 1);
 	content = ft_split_set(tmp, " \t");
 	if (!content)
-		return (free(tmp), free(*word), ft_lstclear(ctx.tokens, del_token), 0);
-	if (*word && is_whitespace(tmp[0]))
+		return (free(tmp), free(*word), ft_lstclear(ctx->tokens, del_token), 0);
+	if (*word && *word[0] && is_whitespace(tmp[0]))
 	{
-		if (ctx.f == 7)
-			add_token(ctx.tokens, create_token(TOKEN_WORD, *word));
+		ctx->amb = 1;
+		if (ctx->f == 7)
+			add_token(ctx->tokens, create_token(TOKEN_WORD, *word));
 		else
-			add_token_word(ctx.tokens, *word);
+			add_token_word(ctx->tokens, *word);
 		free(*word);
 		*word = NULL;
 	}
@@ -82,7 +102,7 @@ int	handle_lexer_loop(t_lexerctx *ctx, char **word)
 	{
 		if (ctx->f != 7)
 			ctx->f &= 1;
-		if (!handle_dollar(*ctx, word))
+		if (!handle_dollar(ctx, word))
 			return (0);
 	}
 	else if (((!*ctx->i && ctx->input[*ctx->i] == '~') || (*ctx->i > 0 && \

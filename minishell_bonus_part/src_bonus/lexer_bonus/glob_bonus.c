@@ -26,7 +26,7 @@ static int	match(char *pattern, char *name)
 	return (0);
 }
 
-static void	process_entry(t_glob *g, t_list **tokens)
+static void	process_entry(t_list **words, t_glob *g)
 {
 	char	*tmp;
 
@@ -45,12 +45,12 @@ static void	process_entry(t_glob *g, t_list **tokens)
 	{
 		tmp = g->h_name;
 		g->h_name = ft_strjoin(g->dir_path, g->h_name);
-		add_token(tokens, create_token(TOKEN_WORD, g->h_name));
+		ft_lstadd_back(words, ft_lstnew(ft_strdup(g->h_name)));
 		if (g->t_name)
 			free(tmp);
 	}
 	else
-		add_token(tokens, create_token(TOKEN_WORD, g->h_name));
+		ft_lstadd_back(words, ft_lstnew(ft_strdup(g->h_name)));
 	if (g->t_name || g->dir_path)
 		free(g->h_name);
 }
@@ -63,22 +63,25 @@ static void	free_glob_vars(t_glob *g)
 	closedir(g->dir);
 }
 
-void	handle_glob(t_list **tokens, char *word)
+t_list	*handle_glob(char *word)
 {
+	t_list  *words;
 	t_glob	g;
 
-	if (!tokens || !word)
-		return ;
-	if (!init_glob_vars(&g, tokens, word))
-		return ;
+	if (!word)
+		return (NULL);
+	words = NULL;
+	if (!init_glob_vars(&words, &g, word))
+		return (NULL);
 	while (1)
 	{
 		g.entry = readdir(g.dir);
 		if (!g.entry)
 			break ;
-		process_entry(&g, tokens);
+		process_entry(&words, &g);
 	}
 	if (!g.f)
-		add_token(tokens, create_token(TOKEN_WORD, word));
+		ft_lstadd_back(&words, ft_lstnew(ft_strdup(word)));
 	free_glob_vars(&g);
+	return (words);
 }

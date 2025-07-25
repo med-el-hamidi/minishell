@@ -64,6 +64,7 @@ int		get_histfile_lines_c(char *path, int oflag, int perm);
 void	free_2d_array(char **arr);
 void	del_env(void *v);
 void	del_token(void *t);
+void	del_string(void *s);
 void	free_ast(t_ast *node);
 
 /* Other utils */

@@ -34,12 +34,15 @@ char	*get_redir_value(t_shell *shell, char *input, size_t *i, int *type)
 	char	*str;
 	char	*amb;
 
+	shell->exit_status = 0;
 	str = NULL;
 	amb = is_ambiguous_redirect(shell, input, *i);
-	if (!amb)
-		str = get_redi_file(shell, input, i);
+	if (!amb && !shell->exit_status)
+		str = get_redir_filename(shell, input, i);
 	else
 	{
+		if (shell->exit_status)
+			return (free(amb), NULL);
 		*type = TOKEN_AMB_REDIR;
 		return (amb);
 	}
