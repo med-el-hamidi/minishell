@@ -27,14 +27,14 @@ static int	lexer_word(t_shell *shell, t_list **tokens, char *input, size_t *i)
 	while (input[*i] && !is_whitespace(input[*i])
 		&& !ft_strchr("|<>", input[*i]))
 	{
-		if (!handle_lexer_loop(ctx, &word, &f))
+		if (!handle_lexer_loop(&ctx, &word, &f))
 			return (shell->exit_status = 2, ft_lstclear(tokens, del_token), 0);
 	}
 	if (word && !*word && f)
 		return (free(word), 1);
 	else if (word)
 		add_token(tokens, create_token(TOKEN_WORD, word));
-	else if (f == 2 || f == 3)
+	else if (f == 3)
 		return (shell->exit_status = 2, \
 						ft_lstclear(tokens, del_token), 0);
 	return (free(word), 1);
