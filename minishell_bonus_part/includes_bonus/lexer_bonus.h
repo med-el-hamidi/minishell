@@ -47,7 +47,7 @@ int		handle_lexer_loop(t_lexerctx *ctx, char **word);
 
 int		init_glob_vars(t_list **words, t_glob *g, char *word);
 t_list	*handle_glob(char *word);
-void	add_token_word(t_list **tokens, char *word);
+void	add_token_word(t_lexerctx *ctx, char *word);
 
 t_list	*lexer(t_shell *shell, char *input);
 
