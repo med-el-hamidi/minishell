@@ -23,7 +23,7 @@ static size_t	handle_word_start(char **content, char **word,
 	if (*word && *word[0] && content[j])
 	{
 		*word = ft_strjoin_to_s1(*word, ft_strdup(content[j++]));
-		add_token_word(ctx->tokens, *word);
+		add_token_word(ctx, *word);
 		free(*word);
 		*word = NULL;
 		if (!content[j] && len && tmp[len - 1] == ' ' && !ctx->amb)
@@ -40,7 +40,7 @@ static int	handle_dollar_split(char **content, char *tmp,
 
 	j = handle_word_start(content, word, ctx, tmp);
 	while (content[j] && content[j + 1])
-		add_token_word(ctx->tokens, content[j++]);
+		add_token_word(ctx, content[j++]);
 	if (content[j])
 	{
 		if (j > 0)
@@ -48,7 +48,7 @@ static int	handle_dollar_split(char **content, char *tmp,
 		len = ft_strlen(tmp);
 		if (len && tmp[len - 1] == ' ')
 		{
-			add_token_word(ctx->tokens, content[j++]);
+			add_token_word(ctx, content[j++]);
 			if (!ctx->amb)
 				ctx->amb = 2;
 		}
@@ -74,10 +74,7 @@ static int	handle_dollar(t_lexerctx *ctx, char **word)
 	if (*word && *word[0] && is_whitespace(tmp[0]))
 	{
 		ctx->amb = 1;
-		if (ctx->f == 7)
-			add_token(ctx->tokens, create_token(TOKEN_WORD, *word));
-		else
-			add_token_word(ctx->tokens, *word);
+		add_token_word(ctx, *word);
 		free(*word);
 		*word = NULL;
 	}

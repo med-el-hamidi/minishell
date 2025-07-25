@@ -82,6 +82,10 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 			return (free(word), ft_substr(input, bkp, i - bkp));
 	}
 	if (ctx.amb != 2 && ((word && !*word && ctx.f) || !word))
-		return (free(word), ft_substr(input, bkp, i - bkp));
+		return (free(word), ft_substr(input, bkp, i));
+	else if (word)
+		add_token_word(&ctx, word);
+	if (ctx.amb == 1)
+		return (free(word), ft_substr(input, bkp, i));
 	return (free(word), NULL);
 }

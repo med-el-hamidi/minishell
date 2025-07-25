@@ -39,26 +39,30 @@ int	is_whitespace(char c)
 	return ((c >= 9 && c <= 13) || c == ' ');
 }
 
-void	add_token_word(t_list **tokens, char *word)
+void	add_token_word(t_lexerctx *ctx, char *word)
 {
 	t_list	*words;
 	t_list	*ptr;
+	size_t	i;
 
-	if (!tokens || !word)
+	if (!word)
 		return ;
-	if (ft_strchr(word, '*'))
+	if (ctx->f != 7 && ft_strchr(word, '*'))
 	{
 		words = handle_glob(word);
 		if (!words)
 			return ;
+		i = 0;
 		ptr = words;
 		while (ptr)
 		{
-			add_token(tokens, create_token(TOKEN_WORD, (char *)ptr->content));
+			if (++i == 2)
+				ctx->amb = 1;
+			add_token(ctx->tokens, create_token(TOKEN_WORD, (char *)ptr->content));
 			ptr = ptr->next;
 		}
 		ft_lstclear(&words, free);
 		return ;
 	}
-	add_token(tokens, create_token(TOKEN_WORD, word));
+	add_token(ctx->tokens, create_token(TOKEN_WORD, word));
 }
