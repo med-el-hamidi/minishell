@@ -110,5 +110,6 @@ typedef struct s_lexerctx
 	t_list	**tokens;
 	char	*input;
 	size_t	*i;
+	int		amb;
 }	t_lexerctx;
 #endif
