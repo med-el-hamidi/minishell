@@ -72,7 +72,7 @@ t_list	*handle_glob(char *word)
 		return (NULL);
 	words = NULL;
 	if (!init_glob_vars(&words, &g, word))
-		return (NULL);
+		return (words);
 	while (1)
 	{
 		g.entry = readdir(g.dir);
