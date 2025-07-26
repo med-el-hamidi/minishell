@@ -29,7 +29,7 @@ int	check_unclosed_quotes(char *input, size_t i)
 			return (0);
 	}
 	ft_putstr_fd("minishell: syntax error: unclosed quotes!\n", STDERR_FILENO);
-	return (2);
+	return (SNTX_EXIT_STATUS);
 }
 
 char	*ft_strjoin_to_s1(char *s1, char *s2)

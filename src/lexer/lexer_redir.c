@@ -71,13 +71,13 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 
 	type = get_redirection_type(input, i);
 	if (check_invalid_token(input, *i))
-		return (2);
+		return (SNTX_EXIT_STATUS);
 	bkp = skip_whitespace(input, i);
 	if (type == TOKEN_REDIR_HEREDOC)
 	{
 		str = get_delimiter(input, i, 0);
 		if (!str)
-			return (2);
+			return (SNTX_EXIT_STATUS);
 		shell->exit_status = set_herdoc_tmp_file(shell, &str, \
 									should_parse_dollar(input, bkp));
 		if (shell->exit_status)
@@ -86,7 +86,7 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 	else
 		str = get_redir_value(shell, input, i, &type);
 	if (!str)
-		return (2);
+		return (SNTX_EXIT_STATUS);
 	add_redir_token(tokens, str, type);
 	return (free(str), 0);
 }

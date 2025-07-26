@@ -73,7 +73,7 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 		&& !ft_strchr("|<>", input[i]))
 	{
 		if (!handle_lexer_word(&ctx, &word, &f))
-			return (shell->exit_status = 2, NULL);
+			return (shell->exit_status = SNTX_EXIT_STATUS, NULL);
 		if (word && (ctx.amb == 1 || (ctx.amb == 2 && *word) || \
 				(ctx.amb == 3 && *word) || (ctx.amb == 4 && !*word)))
 			return (free(word), ft_substr(input, bkp, i - bkp));

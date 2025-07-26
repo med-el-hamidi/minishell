@@ -22,7 +22,7 @@ static int	syntax_error(t_list *tokens)
 	{
 		if (is_redirection(((t_token *)tokens->content)->type)
 			&& !((t_token *)tokens->content)->value)
-			return (2);
+			return (SNTX_EXIT_STATUS);
 		tokens = tokens->next;
 	}
 	return (0);

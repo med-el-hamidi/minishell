@@ -60,7 +60,7 @@ char	*get_redir_filename(t_shell *shell, char *input, size_t *i)
 	f = 1;
 	result = NULL;
 	if (!redir_filename_loop(&ctx, input, &result, &f))
-		return (shell->exit_status = 2, NULL);
+		return (shell->exit_status = SNTX_EXIT_STATUS, NULL);
 	if (result)
 	{
 		add_token(&tokens, create_token(TOKEN_WORD, result));
