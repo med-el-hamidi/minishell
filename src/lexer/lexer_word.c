@@ -41,7 +41,8 @@ static char	*_handle_special_pos_param(t_shell *sh, char *s, size_t *i)
 	return (str);
 }
 
-char	*accu_dollar(t_shell *sh, char *s, size_t *i, char *f(t_list *, char *))
+char	*accumulate_dollar(t_shell *sh, char *s, size_t *i,
+	char *f(t_list *, char *))
 {
 	char	*key;
 	char	*val;
@@ -79,7 +80,7 @@ char	*accumulate_quoted(t_shell *shell, char *input, size_t *i)
 	{
 		if (quote == '"' && input[*i] == '$' && input[*i + 1] != '"')
 			result = ft_strjoin_to_s1(result, \
-					accu_dollar(shell, input, i, _getenv_al));
+					accumulate_dollar(shell, input, i, _getenv_al));
 		else
 			result = ft_strjoin_char_to_s1(result, input[(*i)++]);
 	}
@@ -88,7 +89,7 @@ char	*accumulate_quoted(t_shell *shell, char *input, size_t *i)
 	return (result);
 }
 
-char	*accumulate_token(t_shell *shell, char *input, size_t *i)
+char	*accumulate_other(t_shell *shell, char *input, size_t *i)
 {
 	char	*result;
 	char	*chunk;

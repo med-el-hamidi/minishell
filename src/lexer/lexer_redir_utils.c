@@ -74,12 +74,13 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 	while (input[i] && !is_whitespace(input[i])
 		&& !ft_strchr("|<>", input[i]))
 	{
-		if (!handle_lexer_loop(&ctx, &word, &f))
+		if (!handle_lexer_word(&ctx, &word, &f))
 			return (shell->exit_status = 2, NULL);
-		if (ctx.amb == 1 || (ctx.amb == 2 && word && *word))
+		if (word && (ctx.amb == 1 || (ctx.amb == 2 && *word)
+				|| (ctx.amb == 3 && *word)))
 			return (free(word), ft_substr(input, bkp, i - bkp));
 	}
-	if (ctx.amb != 2 && ((word && !*word && f) || !word))
+	if ((word && !*word && f) || (ctx.amb != 3 && !word))
 		return (free(word), ft_substr(input, bkp, i - bkp));
 	return (free(word), NULL);
 }

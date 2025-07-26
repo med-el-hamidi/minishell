@@ -26,7 +26,7 @@ static size_t	handle_word_start(char **content, char **word,
 		add_token(ctx->tokens, create_token(TOKEN_WORD, *word));
 		free(*word);
 		*word = NULL;
-		if (!content[j] && len && tmp[len - 1] == ' ' && !ctx->amb)
+		if (!content[j] && len && is_whitespace(tmp[len - 1]) && ctx->amb != 1)
 			ctx->amb = 2;
 	}
 	return (j);
@@ -46,10 +46,10 @@ static int	handle_dollar_split(char **content, char *tmp,
 		if (j > 0)
 			ctx->amb = 1;
 		len = ft_strlen(tmp);
-		if (len && tmp[len - 1] == ' ')
+		if (len && is_whitespace(tmp[len - 1]))
 		{
 			add_token(ctx->tokens, create_token(TOKEN_WORD, content[j++]));
-			if (!ctx->amb)
+			if (ctx->amb != 1)
 				ctx->amb = 2;
 		}
 		if (content[j])
@@ -65,7 +65,7 @@ static int	handle_dollar(t_lexerctx *ctx, char **word)
 	char	*tmp;
 	char	**content;
 
-	tmp = accu_dollar(ctx->shell, ctx->input, ctx->i, _getenv_al);
+	tmp = accumulate_dollar(ctx->shell, ctx->input, ctx->i, _getenv_al);
 	if (!has_whitespace(tmp))
 	{
 		*word = ft_strjoin_to_s1(*word, tmp);
@@ -73,15 +73,15 @@ static int	handle_dollar(t_lexerctx *ctx, char **word)
 	}
 	content = ft_split_set(tmp, " \t");
 	if (!content)
-	{
-		(free(tmp), free(*word));
-		return (ft_lstclear(ctx->tokens, del_token), 0);
-	}
+		return (free(tmp), free(*word), \
+								ft_lstclear(ctx->tokens, del_token), 0);
 	if (*word && *word[0] && is_whitespace(tmp[0]))
 	{
-		ctx->amb = 1;
-		add_token(ctx->tokens, create_token(TOKEN_WORD, *word));
-		free(*word);
+		if (content[0])
+			ctx->amb = 1;
+		else
+			ctx->amb = 3;
+		(add_token(ctx->tokens, create_token(TOKEN_WORD, *word)), free(*word));
 		*word = NULL;
 	}
 	if (!handle_dollar_split(content, tmp, ctx, word))
@@ -96,7 +96,7 @@ static char	*handle_tilde(t_shell *shell, size_t *i, char *word, int *f)
 	return (ft_strjoin_to_s1(word, gethome(shell->vars)));
 }
 
-int	handle_lexer_loop(t_lexerctx *ctx, char **word, int *f)
+int	handle_lexer_word(t_lexerctx *ctx, char **word, int *f)
 {
 	char	*tmp;
 
@@ -114,7 +114,7 @@ int	handle_lexer_loop(t_lexerctx *ctx, char **word, int *f)
 	else
 	{
 		*f &= 0;
-		tmp = accumulate_token(ctx->shell, ctx->input, ctx->i);
+		tmp = accumulate_other(ctx->shell, ctx->input, ctx->i);
 		if (!tmp && *word)
 			return (free(*word), *word = NULL, (*f &= 3), 0);
 		*word = ft_strjoin_to_s1(*word, tmp);

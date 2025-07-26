@@ -27,7 +27,7 @@ static int	lexer_word(t_shell *shell, t_list **tokens, char *input, size_t *i)
 	while (input[*i] && !is_whitespace(input[*i])
 		&& !ft_strchr("|<>", input[*i]))
 	{
-		if (!handle_lexer_loop(&ctx, &word, &f))
+		if (!handle_lexer_word(&ctx, &word, &f))
 			return (shell->exit_status = 2, ft_lstclear(tokens, del_token), 0);
 	}
 	if (word && !*word && f)

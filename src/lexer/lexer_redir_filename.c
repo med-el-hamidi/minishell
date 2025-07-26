@@ -18,7 +18,7 @@ static int	redir_filename_loop(t_lexerctx *ctx, char *input,
 	while (input[*ctx->i] && !is_whitespace(input[*ctx->i])
 		&& !ft_strchr("|<>", input[*ctx->i]))
 	{
-		if (!handle_lexer_loop(ctx, result, f))
+		if (!handle_lexer_word(ctx, result, f))
 		{
 			free(*result);
 			ft_lstclear(ctx->tokens, del_token);
