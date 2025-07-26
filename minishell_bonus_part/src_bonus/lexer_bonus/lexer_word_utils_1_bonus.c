@@ -120,10 +120,10 @@ int	handle_lexer_word(t_lexerctx *ctx, char **word)
 		ctx->f &= 0;
 		tmp = accumulate_other(ctx->shell, ctx->input, ctx->i, &ctx->f);
 		if (!tmp && *word)
-			return (free(*word), *word = NULL, (ctx->f &= 3), 0);
+			return (free(*word), *word = NULL, 0);
 		*word = ft_strjoin_to_s1(*word, tmp);
 		if (!*word)
-			return ((ctx->f &= 3), 0);
+			return (0);
 	}
 	return (1);
 }

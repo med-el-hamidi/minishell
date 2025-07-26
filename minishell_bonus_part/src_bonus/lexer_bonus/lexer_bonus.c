@@ -32,9 +32,6 @@ static int	lexer_word(t_shell *shell, t_list **tokens, char *input, size_t *i)
 		return (free(word), 1);
 	else if (word)
 		add_token_word(&ctx, word);
-	else if (ctx.f == 3)
-		return (shell->exit_status = 2, \
-						ft_lstclear(tokens, del_token), 0);
 	return (free(word), 1);
 }
 
