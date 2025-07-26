@@ -14,16 +14,23 @@
 
 static int	syntax_error(t_list *tokens)
 {
+	t_list	*prev;
+
 	if (!tokens)
 		return (1);
 	if (((t_token *)tokens->content)->type == TOKEN_PIPE || \
 		((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_PIPE)
 		return (print_syntax_error("|"));
+	prev = NULL;
 	while (tokens)
 	{
-		if (is_redirection(((t_token *)tokens->content)->type)
+		if (((t_token *)tokens->content)->type == TOKEN_PIPE && \
+			prev && ((t_token *)prev->content)->type == TOKEN_PIPE)
+			return (print_syntax_error("|"));
+		else if (is_redirection(((t_token *)tokens->content)->type)
 			&& !((t_token *)tokens->content)->value)
 			return (SNTX_EXIT_STATUS);
+		prev = tokens;
 		tokens = tokens->next;
 	}
 	return (0);
