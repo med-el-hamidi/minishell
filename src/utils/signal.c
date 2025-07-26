@@ -19,7 +19,7 @@ static void	handle_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	g_exit_status = 130;
+	g_exit_status = 1;
 }
 
 void	setup_signals(void)
