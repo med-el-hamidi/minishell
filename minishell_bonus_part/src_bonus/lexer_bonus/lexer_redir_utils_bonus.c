@@ -20,9 +20,7 @@ int	check_invalid_token(char *input, size_t pos)
 		return (print_syntax_error("newline"));
 	if (input[pos] == '>' || input[pos] == '<')
 	{
-		if (!ft_strncmp(&input[pos], ">>>", 3))
-			return (print_syntax_error(">>>"));
-		else if (!ft_strncmp(&input[pos], ">>", 2))
+		if (!ft_strncmp(&input[pos], ">>", 2))
 			return (print_syntax_error(">>"));
 		else if (!ft_strncmp(&input[pos], "<<<", 3))
 			return (print_syntax_error("<<<"));
@@ -59,29 +57,38 @@ int	has_whitespace(char *str)
 	return (0);
 }
 
+static void	init_lexerctx(t_lexerctx *ctx, t_shell *shell, char *input,
+																size_t *i)
+{
+	if (!ctx)
+		return ;
+	ctx->shell = shell;
+	ctx->tokens = NULL;
+	ctx->input = input;
+	ctx->i = i;
+	ctx->f = 1;
+	ctx->amb = 0;
+}
+
 char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 {
 	t_lexerctx	ctx;
 	char		*word;
 	size_t		bkp;
 
-	ctx.shell = shell;
-	ctx.tokens = NULL;
-	ctx.input = input;
-	ctx.i = &i;
-	ctx.f = 1;
+	init_lexerctx(&ctx, shell, input, &i);
 	bkp = i;
 	word = NULL;
-	ctx.amb = 0;
-	while (input[i] && !is_whitespace(input[i])
-		&& !ft_strchr("|<>", input[i]))
+	while (input[i] && !is_whitespace(input[i]) && !ft_strchr("|<>", input[i])
+		&& ft_strncmp(input + i, "&&", 2))
 	{
-		if (!handle_lexer_loop(&ctx, &word))
+		if (!handle_lexer_word(&ctx, &word))
 			return (shell->exit_status = 2, NULL);
-		if (ctx.amb == 1 || (ctx.amb == 2 && word && *word))
-			return (free(word), ft_substr(input, bkp, i - bkp));
+		if (word && (ctx.amb == 1 || (ctx.amb == 2 && *word) || \
+				(ctx.amb == 3 && *word) || (ctx.amb == 4 && !*word)))
+			return (free(word), ft_substr(input, bkp, i));
 	}
-	if (ctx.amb != 2 && ((word && !*word && ctx.f) || !word))
+	if ((word && !*word && ctx.amb != 2 && ctx.f) || (ctx.amb < 2 && !word))
 		return (free(word), ft_substr(input, bkp, i));
 	else if (word)
 		add_token_word(&ctx, word);

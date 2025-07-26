@@ -19,9 +19,7 @@ static int	_count_args(t_list **tokens)
 
 	count = 0;
 	tmp = *tokens;
-	while (tmp && ((t_token *)tmp->content)->type != TOKEN_PIPE
-			&& ((t_token *)tmp->content)->type != TOKEN_AND
-			&&((t_token *)tmp->content)->type != TOKEN_OR)
+	while (tmp && !is_special(((t_token *)(*tokens)->content)->type))
 	{
 		if (((t_token *)tmp->content)->type == TOKEN_WORD)
 			count++;
@@ -39,9 +37,7 @@ static char	**gather_args(t_list **tokens, t_ast **redir_chain)
 	if (!args)
 		return (NULL);
 	i = 0;
-	while (*tokens && ((t_token *)(*tokens)->content)->type != TOKEN_PIPE
-			&& ((t_token *)(*tokens)->content)->type != TOKEN_AND
-			&& ((t_token *)(*tokens)->content)->type != TOKEN_OR)
+	while (*tokens && !is_special(((t_token *)(*tokens)->content)->type))
 	{
 		if (((t_token *)(*tokens)->content)->type == TOKEN_WORD)
 		{

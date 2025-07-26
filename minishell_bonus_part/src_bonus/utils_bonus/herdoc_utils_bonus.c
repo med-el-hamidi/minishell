@@ -40,8 +40,8 @@ static char	*_parse_herdoc_input(t_shell *shell, char *input, int f)
 	while (input[i])
 	{
 		if (f && input[i] == '$' && input[i + 1] != '"' && input[i + 1] != '\'')
-			result = \
-			ft_strjoin_to_s1(result, accu_dollar(shell, input, &i, _getenv_al));
+			result = ft_strjoin_to_s1(result, \
+							accumulate_dollar(shell, input, &i, _getenv_al));
 		else
 			result = ft_strjoin_char_to_s1(result, input[i++]);
 	}

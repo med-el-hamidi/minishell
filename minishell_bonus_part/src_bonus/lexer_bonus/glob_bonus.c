@@ -65,7 +65,7 @@ static void	free_glob_vars(t_glob *g)
 
 t_list	*handle_glob(char *word)
 {
-	t_list  *words;
+	t_list	*words;
 	t_glob	g;
 
 	if (!word)

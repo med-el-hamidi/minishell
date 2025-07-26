@@ -58,7 +58,8 @@ void	add_token_word(t_lexerctx *ctx, char *word)
 		{
 			if (++i == 2)
 				ctx->amb = 1;
-			add_token(ctx->tokens, create_token(TOKEN_WORD, (char *)ptr->content));
+			add_token(ctx->tokens, create_token(TOKEN_WORD,
+					(char *)ptr->content));
 			ptr = ptr->next;
 		}
 		ft_lstclear(&words, free);

@@ -32,7 +32,7 @@ char	*get_delimiter(char *input, size_t	*i, int f)
 	while (input[*i])
 	{
 		if (!f && (is_whitespace(input[*i]) || ft_strchr("|<>", input[*i])
-			|| !ft_strncmp(input + *i, "&&", 2)))
+				|| !ft_strncmp(input + *i, "&&", 2)))
 			break ;
 		else if (input[*i] == '"' || input[*i] == '\'')
 		{

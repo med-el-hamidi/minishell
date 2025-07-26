@@ -26,7 +26,10 @@ static size_t	handle_word_start(char **content, char **word,
 		add_token_word(ctx, *word);
 		free(*word);
 		*word = NULL;
-		if (!content[j] && len && tmp[len - 1] == ' ' && !ctx->amb)
+		if (ctx->amb == 2)
+			ctx->amb = 4;
+		else if (!content[j] && len && is_whitespace(tmp[len - 1])
+			&& ctx->amb != 1)
 			ctx->amb = 2;
 	}
 	return (j);
@@ -46,10 +49,12 @@ static int	handle_dollar_split(char **content, char *tmp,
 		if (j > 0)
 			ctx->amb = 1;
 		len = ft_strlen(tmp);
-		if (len && tmp[len - 1] == ' ')
+		if (len && is_whitespace(tmp[len - 1]))
 		{
 			add_token_word(ctx, content[j++]);
-			if (!ctx->amb)
+			if (ctx->amb == 2)
+				ctx->amb = 4;
+			else if (ctx->amb != 1)
 				ctx->amb = 2;
 		}
 		if (content[j])
@@ -65,7 +70,7 @@ static int	handle_dollar(t_lexerctx *ctx, char **word)
 	char	*tmp;
 	char	**content;
 
-	tmp = accu_dollar(ctx->shell, ctx->input, ctx->i, _getenv_al);
+	tmp = accumulate_dollar(ctx->shell, ctx->input, ctx->i, _getenv_al);
 	if (!has_whitespace(tmp))
 		return (*word = ft_strjoin_to_s1(*word, tmp), 1);
 	content = ft_split_set(tmp, " \t");
@@ -73,7 +78,10 @@ static int	handle_dollar(t_lexerctx *ctx, char **word)
 		return (free(tmp), free(*word), ft_lstclear(ctx->tokens, del_token), 0);
 	if (*word && *word[0] && is_whitespace(tmp[0]))
 	{
-		ctx->amb = 1;
+		if (content[0])
+			ctx->amb = 1;
+		else
+			ctx->amb = 3;
 		add_token_word(ctx, *word);
 		free(*word);
 		*word = NULL;
@@ -91,7 +99,7 @@ static char	*handle_tilde(t_shell *shell, char *word, size_t *i, int *f)
 	return (ft_strjoin_to_s1(word, gethome(shell->vars)));
 }
 
-int	handle_lexer_loop(t_lexerctx *ctx, char **word)
+int	handle_lexer_word(t_lexerctx *ctx, char **word)
 {
 	char	*tmp;
 
@@ -110,7 +118,7 @@ int	handle_lexer_loop(t_lexerctx *ctx, char **word)
 	else
 	{
 		ctx->f &= 0;
-		tmp = accumulate_token(ctx->shell, ctx->input, ctx->i, &ctx->f);
+		tmp = accumulate_other(ctx->shell, ctx->input, ctx->i, &ctx->f);
 		if (!tmp && *word)
 			return (free(*word), *word = NULL, (ctx->f &= 3), 0);
 		*word = ft_strjoin_to_s1(*word, tmp);

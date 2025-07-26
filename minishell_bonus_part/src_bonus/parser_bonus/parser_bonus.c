@@ -16,13 +16,12 @@ static int	syntax_error(t_list *tokens)
 {
 	if (!tokens)
 		return (1);
-	if (((t_token *)tokens->content)->type == TOKEN_PIPE
-		|| ((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_PIPE)
-	{
-		ft_putendl_fd("minishell: syntax error near unexpected token '|'", \
-																STDERR_FILENO);
-		return (2);
-	}
+	if (((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_PIPE)
+		return (print_syntax_error("|"));
+	else if (((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_AND)
+		return (print_syntax_error("&&"));
+	else if (((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_OR)
+		return (print_syntax_error("||"));
 	while (tokens)
 	{
 		if (is_redirection(((t_token *)tokens->content)->type)
@@ -59,17 +58,11 @@ static t_ast	*build_ast(t_list **tokens)
 		advance_token(tokens);
 		node = new_ast_node(op, NULL);
 		if (!node)
-		{
-			free_ast(left);
-			return (NULL);
-		}
+			return (free_ast(left), NULL);
 		node->left = left;
 		node->right = parse_command(tokens);
 		if (!node->right)
-		{
-			free_ast(node);
-			return (NULL);
-		}
+			return (free_ast(node), NULL);
 		left = node;
 	}
 	return (left);

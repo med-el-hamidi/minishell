@@ -41,3 +41,8 @@ int	is_redirection(int type)
 		|| type == TOKEN_REDIR_IN || type == TOKEN_REDIR_HEREDOC
 		|| type == TOKEN_AMB_REDIR);
 }
+
+int	is_special(int type)
+{
+	return (type == TOKEN_PIPE || type == TOKEN_AND || type == TOKEN_OR);
+}
