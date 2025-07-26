@@ -26,7 +26,10 @@ static size_t	handle_word_start(char **content, char **word,
 		add_token(ctx->tokens, create_token(TOKEN_WORD, *word));
 		free(*word);
 		*word = NULL;
-		if (!content[j] && len && is_whitespace(tmp[len - 1]) && ctx->amb != 1)
+		if (ctx->amb == 2)
+			ctx->amb = 4;
+		else if (!content[j] && len && is_whitespace(tmp[len - 1])
+			&& ctx->amb != 1)
 			ctx->amb = 2;
 	}
 	return (j);
@@ -49,7 +52,9 @@ static int	handle_dollar_split(char **content, char *tmp,
 		if (len && is_whitespace(tmp[len - 1]))
 		{
 			add_token(ctx->tokens, create_token(TOKEN_WORD, content[j++]));
-			if (ctx->amb != 1)
+			if (ctx->amb == 2)
+				ctx->amb = 4;
+			else if (ctx->amb != 1)
 				ctx->amb = 2;
 		}
 		if (content[j])

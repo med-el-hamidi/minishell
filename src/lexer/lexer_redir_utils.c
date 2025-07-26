@@ -20,9 +20,7 @@ int	check_invalid_token(char *input, size_t pos)
 		return (print_syntax_error("newline"));
 	if (input[pos] == '>' || input[pos] == '<')
 	{
-		if (!ft_strncmp(&input[pos], ">>>", 3))
-			return (print_syntax_error(">>>"));
-		else if (!ft_strncmp(&input[pos], ">>", 2))
+		if (!ft_strncmp(&input[pos], ">>", 2))
 			return (print_syntax_error(">>"));
 		else if (!ft_strncmp(&input[pos], "<<<", 3))
 			return (print_syntax_error("<<<"));
@@ -76,11 +74,11 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 	{
 		if (!handle_lexer_word(&ctx, &word, &f))
 			return (shell->exit_status = 2, NULL);
-		if (word && (ctx.amb == 1 || (ctx.amb == 2 && *word)
-				|| (ctx.amb == 3 && *word)))
+		if (word && (ctx.amb == 1 || (ctx.amb == 2 && *word) || \
+				(ctx.amb == 3 && *word) || (ctx.amb == 4 && !*word)))
 			return (free(word), ft_substr(input, bkp, i - bkp));
 	}
-	if ((word && !*word && f) || (ctx.amb != 3 && !word))
+	if ((word && !*word && ctx.amb != 2 && f) || (ctx.amb < 2 && !word))
 		return (free(word), ft_substr(input, bkp, i - bkp));
 	return (free(word), NULL);
 }
