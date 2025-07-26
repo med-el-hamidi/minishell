@@ -39,11 +39,11 @@ int		handle_redirection(t_shell *shell, t_list **tokens, char *input, \
 																size_t *i);
 char	*accumulate_word(char *input, size_t *i);
 char	*accumulate_quoted(t_shell *shell, char *input, size_t *i);
-char	*accu_dollar(t_shell *shell, char *input, size_t *i, \
+char	*accumulate_dollar(t_shell *shell, char *input, size_t *i, \
 												char *f(t_list *, char *));
-char	*accumulate_token(t_shell *shell, char *input, size_t *i);
+char	*accumulate_other(t_shell *shell, char *input, size_t *i);
 
-int		handle_lexer_loop(t_lexerctx *ctx, char **word, int *f);
+int		handle_lexer_word(t_lexerctx *ctx, char **word, int *f);
 
 t_list	*lexer(t_shell *shell, char *input);
 
