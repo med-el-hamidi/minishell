@@ -16,13 +16,8 @@ static int	syntax_error(t_list *tokens)
 {
 	if (!tokens)
 		return (1);
-	if (((t_token *)tokens->content)->type == TOKEN_PIPE
-		|| ((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_PIPE)
-	{
-		ft_putendl_fd("minishell: syntax error near unexpected token '|'", \
-																STDERR_FILENO);
-		return (2);
-	}
+	if (((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_PIPE)
+		return (print_syntax_error("|"));
 	while (tokens)
 	{
 		if (is_redirection(((t_token *)tokens->content)->type)
