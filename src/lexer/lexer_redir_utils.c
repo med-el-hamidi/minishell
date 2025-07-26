@@ -18,7 +18,9 @@ int	check_invalid_token(char *input, size_t pos)
 		pos++;
 	if (!ft_isprint(input[pos]))
 		return (print_syntax_error("newline"));
-	if (input[pos] == '>' || input[pos] == '<')
+	else if (input[pos] == '|')
+		return (print_syntax_error("|"));
+	else if (input[pos] == '>' || input[pos] == '<')
 	{
 		if (!ft_strncmp(&input[pos], ">>", 2))
 			return (print_syntax_error(">>"));
