@@ -16,7 +16,8 @@ static int	syntax_error(t_list *tokens)
 {
 	if (!tokens)
 		return (1);
-	if (((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_PIPE)
+	if (((t_token *)tokens->content)->type == TOKEN_PIPE || \
+		((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_PIPE)
 		return (print_syntax_error("|"));
 	while (tokens)
 	{
