@@ -15,14 +15,12 @@
 
 t_token	*create_token(t_token_type type, char *value);
 void	add_token(t_list **tokens, t_token *token);
+int		is_whitespace(char c);
+int		has_whitespace(char *str);
 
 char	**ft_split_set(char const *s, char *seps);
 
 int		check_invalid_token(char *input, size_t pos);
-char	*get_redir_filename(t_shell *shell, char *input, size_t *i);
-int		is_whitespace(char c);
-size_t	skip_whitespace(char *input, size_t *i);
-int		has_whitespace(char *str);
 char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i);
 
 int		should_parse_dollar(char *input, size_t i);
@@ -43,7 +41,7 @@ char	*accumulate_dollar(t_shell *shell, char *input, size_t *i, \
 												char *f(t_list *, char *));
 char	*accumulate_other(t_shell *shell, char *input, size_t *i);
 
-int		handle_lexer_word(t_lexerctx *ctx, char **word, int *f);
+int		handle_lexer_word(t_lexerctx *ctx, char **word);
 
 t_list	*lexer(t_shell *shell, char *input);
 

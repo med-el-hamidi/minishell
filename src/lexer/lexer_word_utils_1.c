@@ -58,9 +58,9 @@ static int	handle_dollar_split(char **content, char *tmp,
 				ctx->amb = 2;
 		}
 		if (content[j])
-			*word = ft_strdup(content[j]);
+			*word = ft_strjoin_to_s1(*word, ft_strdup(content[j]));
 		else
-			*word = ft_strdup("");
+			*word = ft_strjoin_to_s1(*word, ft_strdup(""));
 	}
 	return (1);
 }
@@ -101,13 +101,13 @@ static char	*handle_tilde(t_shell *shell, size_t *i, char *word, int *f)
 	return (ft_strjoin_to_s1(word, gethome(shell->vars)));
 }
 
-int	handle_lexer_word(t_lexerctx *ctx, char **word, int *f)
+int	handle_lexer_word(t_lexerctx *ctx, char **word)
 {
 	char	*tmp;
 
 	if (ctx->input[*ctx->i] == '$')
 	{
-		*f &= 1;
+		ctx->f &= 1;
 		if (!handle_dollar(ctx, word))
 			return (0);
 	}
@@ -115,10 +115,10 @@ int	handle_lexer_word(t_lexerctx *ctx, char **word, int *f)
 		is_whitespace(ctx->input[*ctx->i - 1]) && ctx->input[*ctx->i] == '~')) \
 		&& (is_whitespace(ctx->input[*ctx->i + 1]) || \
 		!ctx->input[*ctx->i + 1] || ctx->input[*ctx->i + 1] == '/'))
-		*word = handle_tilde(ctx->shell, ctx->i, *word, f);
+		*word = handle_tilde(ctx->shell, ctx->i, *word, &ctx->f);
 	else
 	{
-		*f &= 0;
+		ctx->f &= 0;
 		tmp = accumulate_other(ctx->shell, ctx->input, ctx->i);
 		if (!tmp && *word)
 			return (free(*word), *word = NULL, 0);

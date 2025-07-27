@@ -16,21 +16,21 @@ static int	lexer_word(t_shell *shell, t_list **tokens, char *input, size_t *i)
 {
 	t_lexerctx	ctx;
 	char		*word;
-	int			f;
 
 	ctx.shell = shell;
 	ctx.tokens = tokens;
 	ctx.input = input;
 	ctx.i = i;
-	f = 1;
+	ctx.f = 1;
 	word = NULL;
 	while (input[*i] && !is_whitespace(input[*i])
 		&& !ft_strchr("|<>", input[*i]))
 	{
-		if (!handle_lexer_word(&ctx, &word, &f))
-			return (shell->exit_status = 2, ft_lstclear(tokens, del_token), 0);
+		if (!handle_lexer_word(&ctx, &word))
+			return (shell->exit_status = SNTX_EXIT_STATUS,
+				ft_lstclear(tokens, del_token), 0);
 	}
-	if (word && !*word && f)
+	if (word && !*word && ctx.f)
 		return (free(word), 1);
 	else if (word)
 		add_token(tokens, create_token(TOKEN_WORD, word));

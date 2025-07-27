@@ -29,12 +29,30 @@ t_token	*create_token(t_token_type type, char *value)
 
 void	add_token(t_list **tokens, t_token *token)
 {
-	if (!tokens || !token)
+	if (!token)
 		return ;
+	else if (!tokens)
+	{
+		del_token(token);
+		return ;
+	}
 	ft_lstadd_back(tokens, ft_lstnew(token));
 }
 
 int	is_whitespace(char c)
 {
 	return ((c >= 9 && c <= 13) || c == ' ');
+}
+
+int	has_whitespace(char *str)
+{
+	if (!str || !*str)
+		return (0);
+	while (*str)
+	{
+		if (is_whitespace(*str))
+			return (1);
+		str++;
+	}
+	return (0);
 }

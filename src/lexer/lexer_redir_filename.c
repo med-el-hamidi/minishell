@@ -13,12 +13,12 @@
 #include "../../includes/minishell.h"
 
 static int	redir_filename_loop(t_lexerctx *ctx, char *input,
-	char **result, int *f)
+	char **result)
 {
 	while (input[*ctx->i] && !is_whitespace(input[*ctx->i])
 		&& !ft_strchr("|<>", input[*ctx->i]))
 	{
-		if (!handle_lexer_word(ctx, result, f))
+		if (!handle_lexer_word(ctx, result))
 		{
 			free(*result);
 			ft_lstclear(ctx->tokens, del_token);
@@ -50,16 +50,15 @@ char	*get_redir_filename(t_shell *shell, char *input, size_t *i)
 	t_lexerctx	ctx;
 	t_list		*tokens;
 	char		*result;
-	int			f;
 
 	tokens = NULL;
 	ctx.shell = shell;
 	ctx.tokens = &tokens;
 	ctx.input = input;
 	ctx.i = i;
-	f = 1;
+	ctx.f = 1;
 	result = NULL;
-	if (!redir_filename_loop(&ctx, input, &result, &f))
+	if (!redir_filename_loop(&ctx, input, &result))
 		return (shell->exit_status = SNTX_EXIT_STATUS, NULL);
 	if (result)
 	{

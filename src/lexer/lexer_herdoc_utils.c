@@ -36,13 +36,11 @@ char	*get_delimiter(char *input, size_t	*i, int f)
 		{
 			if (!f && check_unclosed_quotes(input, *i))
 				return (free(result), NULL);
-			if (!f)
-				f = 1;
-			else
-				f = 0;
+			f = !f;
 			(*i)++;
+			result = ft_strjoin_to_s1(result, ft_strdup(""));
 		}
-		else if (input[*i] == '$'
+		else if (!f && input[*i] == '$'
 			&& (input[*i + 1] == '"' || input[*i + 1] == '\''))
 			(*i)++;
 		else
