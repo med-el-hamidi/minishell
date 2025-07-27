@@ -72,20 +72,20 @@ static int	handle_dollar(t_lexerctx *ctx, char **word)
 
 	tmp = accumulate_dollar(ctx->shell, ctx->input, ctx->i, _getenv_al);
 	if (!has_whitespace(tmp))
-	{
-		*word = ft_strjoin_to_s1(*word, tmp);
-		return (1);
-	}
+		return (*word = ft_strjoin_to_s1(*word, tmp), 1);
 	content = ft_split_set(tmp, " \t");
 	if (!content)
 		return (free(tmp), free(*word), \
 								ft_lstclear(ctx->tokens, del_token), 0);
+	if (ctx->amb == 5 && (content[0] || (*word && *word[0])))
+		ctx->amb = 0;
+	else if (!content[0] && (!*word || (*word && !*word[0])))
+		ctx->amb = 5;
 	if (*word && *word[0] && is_whitespace(tmp[0]))
 	{
+		ctx->amb = 3;
 		if (content[0])
 			ctx->amb = 1;
-		else
-			ctx->amb = 3;
 		(add_token(ctx->tokens, create_token(TOKEN_WORD, *word)), free(*word));
 		*word = NULL;
 	}

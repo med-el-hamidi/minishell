@@ -83,10 +83,9 @@ char	*is_ambiguous_redirect(t_shell *shell, char *input, size_t i)
 			return (free(word), ft_substr(input, bkp, i - bkp));
 		}
 	}
-	if ((word && !*word && ctx.amb != 2 && ctx.f) || (ctx.amb < 2 && !word))
-	{
-		traverse_amb_string(input, &i);
-		return (free(word), ft_substr(input, bkp, i - bkp));
-	}
+	if ((word && !*word && ctx.amb != 2 && ctx.f)
+		|| (ctx.amb == 5 && (!word || (word && !*word))))
+		return (free(word), traverse_amb_string(input, &i),
+			ft_substr(input, bkp, i - bkp));
 	return (free(word), NULL);
 }
