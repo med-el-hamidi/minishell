@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 22:33:49 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/19 00:13:38 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/25 17:02:29 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ static int	cd_prepar_path(t_list *vars, char **arg, char **path)
 			return (ft_putendl_fd("minishell: cd: HOME not set", \
 			STDERR_FILENO), 1);
 	}
-	else if (arg[1] && arg[2])
-		return (3);
 	else if (arg[1][0] == '\0' || !ft_strcmp(arg[1], "."))
 		return (0);
 	else
@@ -83,8 +81,6 @@ int	builtin_cd(char **argv, t_shell *shell)
 	int		ret;
 
 	ret = cd_prepar_path(shell->vars, argv, &path);
-	if (ret == 3)
-		return (ft_putendl_fd(CD_ARGS, STDERR_FILENO), 1);
 	if (ret == 1)
 		return (1);
 	if (!ret)
