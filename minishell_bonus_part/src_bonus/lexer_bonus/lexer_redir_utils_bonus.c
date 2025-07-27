@@ -83,7 +83,7 @@ char	*is_ambiguous_redirect(t_shell *shell, char *in, size_t i)
 			return (shell->exit_status = 2, NULL);
 		if (word && (ctx.amb == 1 || (ctx.amb == 2 && *word) || \
 				(ctx.amb == 3 && *word) || (ctx.amb == 4 && !*word)))
-			return (free(word), traverse_amb_string(in, &i),
+			return (free(word), tr_amb(in, &i),
 				ft_substr(in, j, i - j));
 	}
 	if ((word && !*word && ctx.amb != 2 && ctx.f)
