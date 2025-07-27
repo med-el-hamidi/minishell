@@ -41,6 +41,8 @@ static t_ast	*build_ast(t_list **tokens)
 	t_ast	*left;
 	t_ast	*node;
 
+	if (!tokens)
+		return (NULL);
 	left = parse_command(tokens);
 	if (!left)
 		return (NULL);
@@ -49,17 +51,11 @@ static t_ast	*build_ast(t_list **tokens)
 		advance_token(tokens);
 		node = new_ast_node(AST_PIPE, NULL);
 		if (!node)
-		{
-			free_ast(left);
-			return (NULL);
-		}
+			return (free_ast(left), NULL);
 		node->left = left;
 		node->right = parse_command(tokens);
 		if (!node->right)
-		{
-			free_ast(node);
-			return (NULL);
-		}
+			return (free_ast(node), NULL);
 		left = node;
 	}
 	return (left);
