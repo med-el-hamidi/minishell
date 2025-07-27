@@ -17,6 +17,8 @@ static int	_count_args(t_list **tokens)
 	int		count;
 	t_list	*tmp;
 
+	if (!tokens)
+		return (0);
 	count = 0;
 	tmp = *tokens;
 	while (tmp && ((t_token *)tmp->content)->type != TOKEN_PIPE)
@@ -44,17 +46,17 @@ static char	**gather_args(t_list **tokens, t_ast **redir_chain)
 			args[i] = ft_strdup(((t_token *)(*tokens)->content)->value);
 			if (!args[i])
 				return (free_2d_array(args), NULL);
-			i++;
+			args[++i] = NULL;
 			advance_token(tokens);
 		}
 		else if (is_redirection(((t_token *)(*tokens)->content)->type))
 		{
 			*redir_chain = parse_redirection(tokens, *redir_chain);
 			if (!*redir_chain)
-				return (NULL);
+				return (free_2d_array(args), NULL);
 		}
 	}
-	return (args[i] = NULL, args);
+	return (args);
 }
 
 static t_ast	*_link_leading_redir_to_cmd(t_ast *redir_chain, t_ast *command)
