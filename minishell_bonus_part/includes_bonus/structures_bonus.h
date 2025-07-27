@@ -17,6 +17,8 @@
 # define HISTSIZE 500
 # define HISTFILESIZE 500
 # define CHUNK_SIZE 512
+# define SNTX_EXIT_STATUS 258
+# define SIGINT_EXIT_STATUS 1
 
 typedef struct s_history
 {
@@ -116,8 +118,8 @@ typedef struct s_lexerctx
 	t_list	**tokens;
 	char	*input;
 	size_t	*i;
-	int		amb;
 	int		f;
+	int		amb;
 }	t_lexerctx;
 
 typedef struct s_glob

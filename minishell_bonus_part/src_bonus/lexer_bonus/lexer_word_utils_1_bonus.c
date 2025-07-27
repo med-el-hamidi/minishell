@@ -58,9 +58,9 @@ static int	handle_dollar_split(char **content, char *tmp,
 				ctx->amb = 2;
 		}
 		if (content[j])
-			*word = ft_strdup(content[j]);
+			*word = ft_strjoin_to_s1(*word, ft_strdup(content[j]));
 		else
-			*word = ft_strdup("");
+			*word = ft_strjoin_to_s1(*word, ft_strdup(""));
 	}
 	return (1);
 }
@@ -76,14 +76,16 @@ static int	handle_dollar(t_lexerctx *ctx, char **word)
 	content = ft_split_set(tmp, " \t");
 	if (!content)
 		return (free(tmp), free(*word), ft_lstclear(ctx->tokens, del_token), 0);
+	if (ctx->amb == 5 && (content[0] || (*word && *word[0])))
+		ctx->amb = 0;
+	else if (!content[0] && (!*word || (*word && !*word[0])))
+		ctx->amb = 5;
 	if (*word && *word[0] && is_whitespace(tmp[0]))
 	{
+		ctx->amb = 3;
 		if (content[0])
 			ctx->amb = 1;
-		else
-			ctx->amb = 3;
-		add_token_word(ctx, *word);
-		free(*word);
+		(add_token_word(ctx, *word), free(*word));
 		*word = NULL;
 	}
 	if (!handle_dollar_split(content, tmp, ctx, word))

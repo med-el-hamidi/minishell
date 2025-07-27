@@ -24,10 +24,11 @@ static int	lexer_word(t_shell *shell, t_list **tokens, char *input, size_t *i)
 	ctx.f = 1;
 	word = NULL;
 	while (input[*i] && !is_whitespace(input[*i])
-		&& !ft_strchr("|<>", input[*i])
+		&& !ft_strchr("|<>()", input[*i])
 		&& ft_strncmp(input + *i, "&&", 2))
 		if (!handle_lexer_word(&ctx, &word))
-			return (shell->exit_status = 2, ft_lstclear(tokens, del_token), 0);
+			return (shell->exit_status = SNTX_EXIT_STATUS,
+				ft_lstclear(tokens, del_token), 0);
 	if (word && !*word && ctx.f)
 		return (free(word), 1);
 	else if (word)
@@ -58,6 +59,16 @@ static void	lexer_and_or(t_list **tokens, char *input, size_t *i)
 		add_token(tokens, create_token(TOKEN_AND, "&&"));
 		*i += 2;
 	}
+	else if (input[*i] == '(')
+	{
+		add_token(tokens, create_token(TOKEN_P_OPEN, "("));
+		(*i)++;
+	}
+	else if (input[*i] == ')')
+	{
+		add_token(tokens, create_token(TOKEN_P_CLOSE, ")"));
+		(*i)++;
+	}
 }
 
 t_list	*lexer(t_shell *shell, char *input)
@@ -74,7 +85,7 @@ t_list	*lexer(t_shell *shell, char *input)
 		if (is_whitespace(input[i]))
 			i++;
 		else if (!ft_strncmp(input + i, "||", 2) || \
-				!ft_strncmp(input + i, "&&", 2))
+				!ft_strncmp(input + i, "&&", 2) || ft_strchr("()", input[i]))
 			lexer_and_or(&tokens, input, &i);
 		else if (input[i] == '|')
 			(add_token(&tokens, create_token(TOKEN_PIPE, "|")), i++);

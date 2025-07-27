@@ -60,7 +60,7 @@ static void	_herdoc_loop(t_shell *shell, char *delimiter, int fd, int f)
 		if (!input || (!ft_strncmp(input, delimiter, len)
 				&& ft_strlen(input) == len))
 		{
-			if (!input)
+			if (!input && *delimiter)
 				printf("minishell: warning: here-document delimited by end-of-file \
 (wanted '%s')\n", delimiter);
 			break ;

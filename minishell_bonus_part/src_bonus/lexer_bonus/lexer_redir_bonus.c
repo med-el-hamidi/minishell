@@ -29,7 +29,14 @@ static int	get_redirection_type(char *input, size_t *i)
 	return (type);
 }
 
-char	*get_redir_value(t_shell *shell, char *input, size_t *i, int *type)
+static size_t	skip_whitespace(char *input, size_t *i)
+{
+	while (is_whitespace(input[*i]))
+		(*i)++;
+	return (*i);
+}
+
+static char	*get_redir_value(t_shell *shell, char *input, size_t *i, int *type)
 {
 	char	*str;
 	char	*amb;
@@ -70,14 +77,14 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 	size_t	bkp;
 
 	type = get_redirection_type(input, i);
-	if (check_invalid_token(input, *i))
-		return (2);
 	bkp = skip_whitespace(input, i);
+	if (check_invalid_token(input, *i))
+		return (SNTX_EXIT_STATUS);
 	if (type == TOKEN_REDIR_HEREDOC)
 	{
 		str = get_delimiter(input, i, 0);
 		if (!str)
-			return (2);
+			return (SNTX_EXIT_STATUS);
 		shell->exit_status = set_herdoc_tmp_file(shell, &str, \
 									should_parse_dollar(input, bkp));
 		if (shell->exit_status)
@@ -86,7 +93,7 @@ int	handle_redirection(t_shell *shell, t_list **tokens, char *input, size_t *i)
 	else
 		str = get_redir_value(shell, input, i, &type);
 	if (!str)
-		return (2);
+		return (SNTX_EXIT_STATUS);
 	add_redir_token(tokens, str, type);
 	return (free(str), 0);
 }

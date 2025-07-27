@@ -29,6 +29,8 @@ static t_ast	*_new_redir_node(t_ast *cmd, t_token *redir_tok)
 {
 	t_ast	*redir_node;
 
+	if (!redir_tok)
+		return (NULL);
 	redir_node = new_ast_node(AST_REDIR, NULL);
 	if (!redir_node)
 		return (NULL);
@@ -46,6 +48,8 @@ t_ast	*parse_redirection(t_list **tokens, t_ast *command)
 	t_ast	*redir_node;
 	t_token	*redir_tok;
 
+	if (!tokens)
+		return (NULL);
 	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
 	{
 		redir_tok = (t_token *)(*tokens)->content;

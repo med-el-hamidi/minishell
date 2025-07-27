@@ -20,7 +20,7 @@ int		is_special(int type);
 
 t_ast	*parse_redirection(t_list **tokens, t_ast *command);
 t_ast	*parse_command(t_list **tokens);
-
+t_ast	*build_ast(t_list **tokens, int min_precedence);
 t_ast	*parser(t_list *tokens, t_shell *shell);
 
 #endif

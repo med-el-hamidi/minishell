@@ -15,7 +15,7 @@
 static int	redir_filename_loop(t_lexerctx *ctx, char *input, char **result)
 {
 	while (input[*ctx->i] && !is_whitespace(input[*ctx->i])
-		&& !ft_strchr("|<>", input[*ctx->i])
+		&& !ft_strchr("|<>()", input[*ctx->i])
 		&& ft_strncmp(input + *ctx->i, "&&", 2))
 	{
 		if (!handle_lexer_word(ctx, result))
@@ -59,7 +59,7 @@ char	*get_redir_filename(t_shell *shell, char *input, size_t *i)
 	ctx.f = 1;
 	result = NULL;
 	if (!redir_filename_loop(&ctx, input, &result))
-		return (shell->exit_status = 2, NULL);
+		return (shell->exit_status = SNTX_EXIT_STATUS, NULL);
 	if (result)
 	{
 		add_token_word(&ctx, result);
