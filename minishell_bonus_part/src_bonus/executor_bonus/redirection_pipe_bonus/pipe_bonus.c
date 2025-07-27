@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe.c                                             :+:      :+:    :+:   */
+/*   pipe_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:41:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/19 00:15:16 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/27 17:07:59 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,9 @@ int	exec_pipe(t_ast *node, t_shell *sh)
 		return (perror("fork"), 1);
 	if (child_pid[1] == 0)
 		dup2_and_exec(node->right, sh, pipefd[0], pipefd);
-	close(pipefd[0]);
-	close(pipefd[1]);
+	(signal(SIGINT, SIG_IGN), close(pipefd[0]), close(pipefd[1]));
 	waitpid(child_pid[0], NULL, 0);
 	if (waitpid(child_pid[1], &status, 0) != -1 && WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (EXIT_FAILURE);
+		return (setup_signals(), WEXITSTATUS(status));
+	return (setup_signals(), EXIT_FAILURE);
 }
