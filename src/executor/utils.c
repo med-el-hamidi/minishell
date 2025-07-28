@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils_0.c                                     :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:33:26 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/10 01:36:50 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/28 15:19:30 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ int	ft_strisnum(char *s)
 	return (1);
 }
 
-/* parser utils removed after merging */
 char	*expand_env(t_list *vars, const char *name)
 {
 	t_list	*ptr;
