@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 15:27:21 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/18 06:28:08 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/27 23:54:49 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 # define CD_ARGS "minishell: cd: too many arguments"
 # define CD_RETRIV "minishell: cd: error retrieving current directory"
-
 
 typedef struct s_int_f
 {
