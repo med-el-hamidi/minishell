@@ -13,6 +13,7 @@
 #include "../../includes_bonus/minishell_bonus.h"
 
 static int	_check_bonus_part(t_ast *node, t_shell *shell);
+static int	_execute_subshell(t_ast *node, t_shell *shell);
 
 int	executor(t_ast *node, t_shell *shell)
 {
@@ -36,9 +37,27 @@ int	executor(t_ast *node, t_shell *shell)
 	return (1);
 }
 
+static int	_execute_subshell(t_ast *node, t_shell *shell)
+{
+	pid_t	pid;
+	int		status;
+
+	pid = fork();
+	if (pid == -1)
+		return (perror("subshell fork"), 1);
+	if (pid == 0)
+		exit(executor(node->left, shell));
+	if (waitpid(pid, &status, 0) == -1)
+		return (perror("waitpid"), 1);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (1);
+}
+
 static int	_check_bonus_part(t_ast *node, t_shell *shell)
 {
-	int	status;
+	int		status;
+	pid_t	pid;
 
 	if (node->type == AST_AND)
 	{
@@ -51,6 +70,10 @@ static int	_check_bonus_part(t_ast *node, t_shell *shell)
 		status = executor(node->left, shell);
 		if (status != 0)
 			status = executor(node->right, shell);
+	}
+	else if (node->type == AST_SUBSHELL && node->left)
+	{
+		status = _execute_subshell(node, shell);
 	}
 	else
 		status = 1;
