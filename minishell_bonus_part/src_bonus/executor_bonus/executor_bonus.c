@@ -57,7 +57,6 @@ static int	_execute_subshell(t_ast *node, t_shell *shell)
 static int	_check_bonus_part(t_ast *node, t_shell *shell)
 {
 	int		status;
-	pid_t	pid;
 
 	if (node->type == AST_AND)
 	{
