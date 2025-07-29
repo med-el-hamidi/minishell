@@ -12,71 +12,8 @@
 
 #include "../../includes_bonus/minishell_bonus.h"
 
-static int	syntax_error(t_list *tokens)
-{
-	t_list	*ptr;
-	t_list	*prev;
-	int		p_open;
-	int		p_body;
-
-	if (!tokens)
-		return (1);
-	if (is_special(((t_token *)tokens->content)->type) || \
-		is_special(((t_token *)ft_lstlast(tokens)->content)->type))
-		return (print_syntax_error(((t_token *)tokens->content)->value));
-	else if (((t_token *)tokens->content)->type == TOKEN_P_CLOSE || \
-			((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_P_OPEN)
-		return (print_syntax_error(((t_token *)tokens->content)->value));
-	prev = NULL;
-	ptr = tokens;
-	while (ptr)
-	{
-		if (is_special(((t_token *)ptr->content)->type) && \
-			prev && is_special(((t_token *)prev->content)->type))
-			return (print_syntax_error(((t_token *)ptr->content)->value));
-		else if (is_redirection(((t_token *)tokens->content)->type)
-			&& !((t_token *)tokens->content)->value)
-			return (SNTX_EXIT_STATUS);
-		prev = ptr;
-		ptr = ptr->next;
-	}
-	p_open = 0;
-	p_body = 0;
-	prev = NULL;
-	ptr = tokens;
-	while (ptr)
-	{
-		if (p_open)
-		{
-			p_open++;
-			if (p_open == 2 && ((t_token *)ptr->content)->type != TOKEN_WORD && !is_redirection(((t_token *)ptr->content)->type))
-				return (print_syntax_error(((t_token *)ptr->content)->value));
-			else if (is_special(((t_token *)ptr->content)->type))
-				p_body = 1;
-		}
-		if (!p_open && ((t_token *)ptr->content)->type == TOKEN_P_OPEN)
-		{
-			if (prev && !is_special(((t_token *)prev->content)->type))
-				return (print_syntax_error(((t_token *)ptr->content)->value));
-			p_open = 1;
-			p_body = 0;
-		}
-		else if (((t_token *)ptr->content)->type == TOKEN_P_CLOSE)
-		{
-			if ((prev  && ((t_token *)prev->content)->type != TOKEN_WORD && !is_redirection(((t_token *)prev->content)->type)) || !p_body)
-				return (print_syntax_error(((t_token *)ptr->content)->value));
-			p_open = 0;
-		}
-		prev = ptr;
-		ptr = ptr->next;
-	}
-	return (0);
-}
-
 static int	get_ast_op(int token_type)
 {
-	if (token_type == TOKEN_PIPE)
-		return (AST_PIPE);
 	if (token_type == TOKEN_AND)
 		return (AST_AND);
 	if (token_type == TOKEN_OR)
@@ -84,59 +21,56 @@ static int	get_ast_op(int token_type)
 	return (-1);
 }
 
-int	get_precedence(int token_type)
-{
-	if (token_type == TOKEN_OR)
-		return (1);
-	if (token_type == TOKEN_AND)
-		return (2);
-	if (token_type == TOKEN_PIPE)
-		return (3);
-	return (-1);
-}
-
-t_ast	*build_ast(t_list **tokens, int min_precedence)
+static t_ast	*build_ast(t_list **tokens)
 {
 	t_ast	*left;
-	t_ast	*right;
 	t_ast	*node;
-	int		op;
 
 	if (!tokens)
 		return (NULL);
 	left = parse_command(tokens);
 	if (!left)
 		return (NULL);
-	while (*tokens && \
-		get_precedence(((t_token *)(*tokens)->content)->type) >= min_precedence)
+	while (*tokens && ((t_token *)(*tokens)->content)->type == TOKEN_PIPE)
 	{
-		op = get_ast_op(((t_token *)(*tokens)->content)->type);
 		advance_token(tokens);
-		right = build_ast(tokens, min_precedence + 1);
-		if (!right)
-			return (free_ast(left), NULL);
-		node = new_ast_node(op, NULL);
+		node = new_ast_node(AST_PIPE, NULL);
 		if (!node)
-			return (free_ast(left), free_ast(right), NULL);
+			return (free_ast(left), NULL);
 		node->left = left;
-		node->right = right;
+		node->right = parse_command(tokens);
+		if (!node->right)
+			return (free_ast(node), NULL);
 		left = node;
 	}
 	return (left);
 }
 
-static int	syntax_error_ast(t_ast *node)
+static t_ast	*build_ast_wraper(t_list **tokens)
 {
-	if (!node)
-		return (1);
-	if (node->type == AST_CMD)
-		return (!node->args || !node->args[0]);
-	else if (node->type == AST_PIPE)
-		return (!node->left || !node->right
-			|| syntax_error_ast(node->left) || syntax_error_ast(node->right));
-	else if (node->type == AST_REDIR)
-		return (!node->redir_file);
-	return (0);
+	t_ast	*left;
+	t_ast	*node;
+
+	if (!tokens || !*tokens)
+		return (NULL);
+	left = build_ast(tokens);
+	if (!left)
+		return (NULL);
+	while (*tokens && (((t_token *)(*tokens)->content)->type == TOKEN_AND
+		|| ((t_token *)(*tokens)->content)->type == TOKEN_OR))
+	{
+		node = new_ast_node(get_ast_op(((t_token *)(*tokens)->content)->type),
+				NULL);
+		if (!node)
+			return (free_ast(left), NULL);
+		advance_token(tokens);
+		node->left = left;
+		node->right = build_ast(tokens);
+		if (!node->right)
+			return (free_ast(node), NULL);
+		left = node;
+	}
+	return (left);
 }
 
 t_ast	*parser(t_list *tokens, t_shell *shell)
@@ -147,7 +81,7 @@ t_ast	*parser(t_list *tokens, t_shell *shell)
 	shell->exit_status = syntax_error(tokens);
 	if (!tokens || shell->exit_status)
 		return (NULL);
-	ast = build_ast(&tokens, 0);
+	ast = build_ast_wraper(&tokens);
 	shell->exit_status = syntax_error_ast(ast);
 	if (!ast || syntax_error_ast(ast))
 	{

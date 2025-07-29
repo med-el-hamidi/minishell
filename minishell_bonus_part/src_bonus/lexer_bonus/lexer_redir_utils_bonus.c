@@ -59,7 +59,8 @@ static void	tr_amb(char *input, size_t *i)
 	f = 0;
 	while (input[*i])
 	{
-		if (!f && (is_whitespace(input[*i]) || ft_strchr("|<>", input[*i])))
+		if (!f && (is_whitespace(input[*i]) || ft_strchr("|<>", input[*i])
+				|| !ft_strncmp(input + *i, "&&", 2)))
 			break ;
 		else if (input[*i] == '"' || input[*i] == '\'')
 			f = !f;
@@ -76,7 +77,7 @@ char	*is_ambiguous_redirect(t_shell *shell, char *in, size_t i)
 	init_lexerctx(&ctx, shell, in, &i);
 	j = i;
 	word = NULL;
-	while (in[i] && !is_whitespace(in[i]) && !ft_strchr("|<>()", in[i])
+	while (in[i] && !is_whitespace(in[i]) && !ft_strchr("|<>", in[i])
 		&& ft_strncmp(in + i, "&&", 2))
 	{
 		if (!handle_lexer_word(&ctx, &word))

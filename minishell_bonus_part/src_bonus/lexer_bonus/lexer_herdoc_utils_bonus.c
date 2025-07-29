@@ -14,7 +14,7 @@
 
 int	should_parse_dollar(char *input, size_t i)
 {
-	while (input[i] && !ft_strchr("|<>()", input[i])
+	while (input[i] && !ft_strchr("|<>", input[i])
 		&& ft_strncmp(input + i, "&&", 2))
 	{
 		if ((input[i] == '"' || input[i] == '\''))
@@ -31,7 +31,7 @@ char	*get_delimiter(char *input, size_t	*i, int f)
 	result = NULL;
 	while (input[*i])
 	{
-		if (!f && (is_whitespace(input[*i]) || ft_strchr("|<>()", input[*i])
+		if (!f && (is_whitespace(input[*i]) || ft_strchr("|<>", input[*i])
 				|| !ft_strncmp(input + *i, "&&", 2)))
 			break ;
 		else if (input[*i] == '"' || input[*i] == '\'')

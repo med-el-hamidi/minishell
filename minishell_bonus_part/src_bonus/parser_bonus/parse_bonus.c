@@ -80,17 +80,6 @@ t_ast	*parse_command(t_list **tokens)
 	t_ast	*redir_chain;
 	char	**args;
 
-	if (!*tokens)
-		return (NULL);
-	if (((t_token *)(*tokens)->content)->type == TOKEN_P_OPEN)
-	{
-		advance_token(tokens);
-		command = build_ast(tokens, 0);
-		if (!command || !*tokens || ((t_token *)(*tokens)->content)->type != TOKEN_P_CLOSE)
-			return (NULL);
-		advance_token(tokens);
-		return (command);
-	}
 	redir_chain = NULL;
 	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
 	{

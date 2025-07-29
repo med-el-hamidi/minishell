@@ -18,9 +18,10 @@ void	advance_token(t_list **tokens);
 int		is_redirection(int type);
 int		is_special(int type);
 
+int		syntax_error(t_list *tokens);
+int		syntax_error_ast(t_ast *node);
 t_ast	*parse_redirection(t_list **tokens, t_ast *command);
 t_ast	*parse_command(t_list **tokens);
-t_ast	*build_ast(t_list **tokens, int min_precedence);
 t_ast	*parser(t_list *tokens, t_shell *shell);
 
 #endif

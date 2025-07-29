@@ -18,7 +18,7 @@ char	*accumulate_word(char *input, size_t *i)
 
 	result = ft_strdup("");
 	while (input[*i] && !is_whitespace(input[*i])
-		&& !ft_strchr("|<>$\"'()", input[*i])
+		&& !ft_strchr("|<>$\"'", input[*i])
 		&& ft_strncmp(input + *i, "&&", 2))
 	{
 		result = ft_strjoin_char_to_s1(result, input[*i]);
@@ -97,7 +97,7 @@ char	*accumulate_other(t_shell *shell, char *input, size_t *i, int *f)
 
 	result = ft_strdup("");
 	while (input[*i] && !is_whitespace(input[*i])
-		&& !ft_strchr("|<>$()", input[*i])
+		&& !ft_strchr("|<>$", input[*i])
 		&& ft_strncmp(input + *i, "&&", 2))
 	{
 		chunk = NULL;
