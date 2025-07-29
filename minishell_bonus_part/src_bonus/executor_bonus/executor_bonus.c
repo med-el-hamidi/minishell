@@ -12,8 +12,8 @@
 
 #include "../../includes_bonus/minishell_bonus.h"
 
-static int	_check_bonus_part(t_ast *node, t_shell *shell);
-static int	_execute_subshell(t_ast *node, t_shell *shell);
+static int	exec_and_or(t_ast *node, t_shell *shell);
+static int	exec_subshell(t_ast *node, t_shell *shell);
 
 int	executor(t_ast *node, t_shell *shell)
 {
@@ -24,7 +24,9 @@ int	executor(t_ast *node, t_shell *shell)
 	else if (node->type == AST_PIPE)
 		return (exec_pipe(node, shell));
 	else if (node->type == AST_AND || node->type == AST_OR)
-		return (_check_bonus_part(node, shell));
+		return (exec_and_or(node, shell));
+	else if (node->type == AST_SUBSHELL && node->left)
+		return (exec_subshell(node, shell));
 	else if (node->type == AST_CMD && node->args)
 	{
 		if (_is_local_vars(node))
@@ -37,7 +39,7 @@ int	executor(t_ast *node, t_shell *shell)
 	return (1);
 }
 
-static int	_execute_subshell(t_ast *node, t_shell *shell)
+static int	exec_subshell(t_ast *node, t_shell *shell)
 {
 	pid_t	pid;
 	int		status;
@@ -54,7 +56,7 @@ static int	_execute_subshell(t_ast *node, t_shell *shell)
 	return (1);
 }
 
-static int	_check_bonus_part(t_ast *node, t_shell *shell)
+static int	exec_and_or(t_ast *node, t_shell *shell)
 {
 	int		status;
 
@@ -69,10 +71,6 @@ static int	_check_bonus_part(t_ast *node, t_shell *shell)
 		status = executor(node->left, shell);
 		if (status != 0)
 			status = executor(node->right, shell);
-	}
-	else if (node->type == AST_SUBSHELL && node->left)
-	{
-		status = _execute_subshell(node, shell);
 	}
 	else
 		status = 1;
