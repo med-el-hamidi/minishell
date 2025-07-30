@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:40:40 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/30 21:44:28 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/30 22:53:08 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,8 +98,10 @@ int	exec_external(t_ast *node, t_shell *shell)
 	else if (pid == 0)
 		_execve(node, path, envp);
 	signal(SIGINT, SIG_IGN);
-	waitpid(pid, &status, 0);
-	setup_signals();
+	(waitpid(pid, &status, 0), setup_signals());
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
+		(tcsetattr(STDIN_FILENO, TCSANOW, &shell->new_termios), \
+		ft_putchar_fd('\n', 1));
 	_set_exit_status(shell, status);
 	return (free(path), free_2d_array(envp), shell->exit_status);
 }

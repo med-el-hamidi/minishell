@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:12:34 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/30 13:48:26 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/30 23:01:27 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,13 @@ static int	exec_subshell(t_ast *node, t_shell *shell)
 	signal(SIGINT, SIG_IGN);
 	if (waitpid(pid, &status, 0) == -1)
 		return (setup_signals(), perror("waitpid"), 1);
+	setup_signals();
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
+		(tcsetattr(STDIN_FILENO, TCSANOW, &shell->new_termios), \
+		ft_putchar_fd('\n', 1));
 	if (WIFEXITED(status))
-		return (setup_signals(), WEXITSTATUS(status));
-	return (setup_signals(), 1);
+		return (WEXITSTATUS(status));
+	return (1);
 }
 
 static int	exec_and_or(t_ast *node, t_shell *shell)
