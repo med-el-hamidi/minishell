@@ -1,4 +1,4 @@
-git# ============================================================================ #
+# ============================================================================ #
 #                               MINISHELL MAKEFILE                             #
 # ============================================================================ #
 # ******************************** COLORS ************************************ #
@@ -13,7 +13,7 @@ RESET	:= \033[0m
 NAME		:= minishell
 BONUS_NAME	:= minishell_bonus
 CC			:= cc
-CFLAGS		:= -Wall -Wextra -Werror -I$(HOME)/brew/opt/readline/include #-fsanitize=address
+CFLAGS		:= -Wall -Wextra -Werror -I$(HOME)/brew/opt/readline/include -fsanitize=address
 LDFLAGS		:= -Llibft -lft -L$(HOME)/brew/opt/readline/lib -lreadline
 LIBFT		:= libft/libft.a
 LIBFT_SRCS	:= libft/ft_isalpha.c libft/ft_isdigit.c libft/ft_isalnum.c libft/ft_isascii.c libft/ft_isprint.c libft/ft_strlen.c \
