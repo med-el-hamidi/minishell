@@ -61,3 +61,17 @@ t_ast	*parse_redirection(t_list **tokens, t_ast *command)
 	}
 	return (command);
 }
+
+t_ast	*parse_leading_redirection(t_list **tokens)
+{
+	t_ast	*redir_chain;
+
+	redir_chain = NULL;
+	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
+	{
+		redir_chain = parse_redirection(tokens, redir_chain);
+		if (!redir_chain)
+			return (NULL);
+	}
+	return (redir_chain);
+}

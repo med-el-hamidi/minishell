@@ -37,6 +37,8 @@ typedef enum e_token_type
 	TOKEN_PIPE,
 	TOKEN_AND,
 	TOKEN_OR,
+	TOKEN_P_OPEN,
+	TOKEN_P_CLOSE,
 	TOKEN_REDIR_IN,
 	TOKEN_REDIR_OUT,
 	TOKEN_REDIR_APPEND,
@@ -57,6 +59,7 @@ typedef enum e_ast_type
 	AST_REDIR,
 	AST_AND,
 	AST_OR,
+	AST_SUBSHELL,
 }	t_ast_type;
 
 typedef enum e_redir_type

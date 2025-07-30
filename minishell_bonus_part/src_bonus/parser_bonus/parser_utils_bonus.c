@@ -44,5 +44,6 @@ int	is_redirection(int type)
 
 int	is_special(int type)
 {
-	return (type == TOKEN_PIPE || type == TOKEN_AND || type == TOKEN_OR);
+	return (type == TOKEN_PIPE || type == TOKEN_AND || type == TOKEN_OR
+		|| type == TOKEN_P_OPEN || type == TOKEN_P_CLOSE);
 }

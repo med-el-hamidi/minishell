@@ -12,15 +12,6 @@
 
 #include "../../includes_bonus/minishell_bonus.h"
 
-static int	get_ast_op(int token_type)
-{
-	if (token_type == TOKEN_AND)
-		return (AST_AND);
-	if (token_type == TOKEN_OR)
-		return (AST_OR);
-	return (-1);
-}
-
 static t_ast	*build_ast(t_list **tokens)
 {
 	t_ast	*left;
@@ -46,7 +37,7 @@ static t_ast	*build_ast(t_list **tokens)
 	return (left);
 }
 
-static t_ast	*build_ast_wraper(t_list **tokens)
+t_ast	*build_ast_wraper(t_list **tokens)
 {
 	t_ast	*left;
 	t_ast	*node;
@@ -59,8 +50,10 @@ static t_ast	*build_ast_wraper(t_list **tokens)
 	while (*tokens && (((t_token *)(*tokens)->content)->type == TOKEN_AND
 		|| ((t_token *)(*tokens)->content)->type == TOKEN_OR))
 	{
-		node = new_ast_node(get_ast_op(((t_token *)(*tokens)->content)->type),
-				NULL);
+		if (((t_token *)(*tokens)->content)->type == TOKEN_AND)
+			node = new_ast_node(AST_AND, NULL);
+		else
+			node = new_ast_node(AST_OR, NULL);
 		if (!node)
 			return (free_ast(left), NULL);
 		advance_token(tokens);

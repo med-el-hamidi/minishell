@@ -12,26 +12,36 @@
 
 #include "../../includes_bonus/minishell_bonus.h"
 
+static int	is_control_operator(t_token_type type)
+{
+	return (type == TOKEN_PIPE || type == TOKEN_AND || type == TOKEN_OR);
+}
+
 int	syntax_error(t_list *tokens)
 {
+	t_list	*curr;
 	t_list	*prev;
 
 	if (!tokens)
 		return (1);
-	if (is_special(((t_token *)tokens->content)->type) || \
-		is_special(((t_token *)ft_lstlast(tokens)->content)->type))
+	if (is_control_operator(((t_token *)tokens->content)->type) || \
+		is_control_operator(((t_token *)ft_lstlast(tokens)->content)->type))
+		return (print_syntax_error(((t_token *)tokens->content)->value));
+	if (((t_token *)tokens->content)->type == TOKEN_P_CLOSE || \
+		((t_token *)ft_lstlast(tokens)->content)->type == TOKEN_P_OPEN)
 		return (print_syntax_error(((t_token *)tokens->content)->value));
 	prev = NULL;
-	while (tokens)
+	curr = tokens;
+	while (curr)
 	{
-		if (is_special(((t_token *)tokens->content)->type) && \
-			prev && is_special(((t_token *)prev->content)->type))
-			return (print_syntax_error(((t_token *)tokens->content)->value));
-		else if (is_redirection(((t_token *)tokens->content)->type)
-			&& !((t_token *)tokens->content)->value)
+		if (is_control_operator(((t_token *)curr->content)->type) && \
+			prev && is_control_operator(((t_token *)prev->content)->type))
+			return (print_syntax_error(((t_token *)curr->content)->value));
+		else if (is_redirection(((t_token *)curr->content)->type)
+			&& !((t_token *)curr->content)->value)
 			return (SNTX_EXIT_STATUS);
-		prev = tokens;
-		tokens = tokens->next;
+		prev = curr;
+		curr = curr->next;
 	}
 	return (0);
 }

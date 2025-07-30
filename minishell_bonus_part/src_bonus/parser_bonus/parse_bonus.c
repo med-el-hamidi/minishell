@@ -12,6 +12,26 @@
 
 #include "../../includes_bonus/minishell_bonus.h"
 
+static t_ast	*parse_subshell(t_list	**tokens)
+{
+	t_ast	*left;
+	t_ast	*subshell;
+
+	if (!tokens || !*tokens)
+		return (NULL);
+	advance_token(tokens);
+	left = build_ast_wraper(tokens);
+	if (!left || !*tokens
+		|| ((t_token *)(*tokens)->content)->type != TOKEN_P_CLOSE)
+		return (free_ast(left), NULL);
+	advance_token(tokens);
+	subshell = new_ast_node(AST_SUBSHELL, NULL);
+	if (!subshell)
+		return (free_ast(left), NULL);
+	subshell->left = left;
+	return (subshell);
+}
+
 static int	_count_args(t_list **tokens)
 {
 	int		count;
@@ -63,15 +83,13 @@ static t_ast	*_link_leading_redir_to_cmd(t_ast *redir_chain, t_ast *command)
 {
 	t_ast	*last;
 
-	if (redir_chain)
-	{
-		last = redir_chain;
-		while (last->left)
-			last = last->left;
-		last->left = command;
-		return (redir_chain);
-	}
-	return (command);
+	if (!redir_chain)
+		return (command);
+	last = redir_chain;
+	while (last->left)
+		last = last->left;
+	last->left = command;
+	return (redir_chain);
 }
 
 t_ast	*parse_command(t_list **tokens)
@@ -80,13 +98,9 @@ t_ast	*parse_command(t_list **tokens)
 	t_ast	*redir_chain;
 	char	**args;
 
-	redir_chain = NULL;
-	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
-	{
-		redir_chain = parse_redirection(tokens, redir_chain);
-		if (!redir_chain)
-			return (NULL);
-	}
+	if (((t_token *)(*tokens)->content)->type == TOKEN_P_OPEN)
+		return (parse_subshell(tokens));
+	redir_chain = parse_leading_redirection(tokens);
 	if (!*tokens || ((t_token *)(*tokens)->content)->type != TOKEN_WORD)
 	{
 		if (redir_chain)

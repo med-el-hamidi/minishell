@@ -15,7 +15,7 @@
 static int	redir_filename_loop(t_lexerctx *ctx, char *input, char **result)
 {
 	while (input[*ctx->i] && !is_whitespace(input[*ctx->i])
-		&& !ft_strchr("|<>", input[*ctx->i])
+		&& !ft_strchr("|<>()", input[*ctx->i])
 		&& ft_strncmp(input + *ctx->i, "&&", 2))
 	{
 		if (!handle_lexer_word(ctx, result))
