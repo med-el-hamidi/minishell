@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:12:34 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/26 18:26:07 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/30 13:48:26 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,12 @@ static int	exec_subshell(t_ast *node, t_shell *shell)
 		return (perror("subshell fork"), 1);
 	if (pid == 0)
 		exit(executor(node->left, shell));
+	signal(SIGINT, SIG_IGN);
 	if (waitpid(pid, &status, 0) == -1)
-		return (perror("waitpid"), 1);
+		return (setup_signals(), perror("waitpid"), 1);
 	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (1);
+		return (setup_signals(), WEXITSTATUS(status));
+	return (setup_signals(), 1);
 }
 
 static int	exec_and_or(t_ast *node, t_shell *shell)
