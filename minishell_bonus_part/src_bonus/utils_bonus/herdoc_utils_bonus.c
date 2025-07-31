@@ -72,7 +72,8 @@ static void	_herdoc_loop(t_shell *shell, char *delimiter, int fd, int f)
 	exit(0);
 }
 
-static int	_ignore_all_heredocs(t_shell *shell, char *tmp_file, int *fd, int sig)
+static int	_ignore_all_heredocs(t_shell *shell, char *tmp_file, int *fd,
+	int sig)
 {
 	tcsetattr(STDIN_FILENO, TCSANOW, &shell->new_termios);
 	if (sig == SIGKILL)
@@ -106,7 +107,7 @@ int	set_herdoc_tmp_file(t_shell *shell, char **delimiter, int parse)
 	waitpid(pid, &status, 0);
 	setup_signals();
 	if (WIFSIGNALED(status) && WTERMSIG(status))
-		ret = _ignore_all_heredocs(shell, tmp_file, &fd,  WTERMSIG(status));
+		ret = _ignore_all_heredocs(shell, tmp_file, &fd, WTERMSIG(status));
 	(free(*delimiter), close (fd));
 	return ((*delimiter = tmp_file), ret);
 }
