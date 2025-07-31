@@ -12,10 +12,24 @@
 
 #include "../../includes_bonus/minishell_bonus.h"
 
+static t_ast	*_link_leading_redir_to_cmd(t_ast *redir_chain, t_ast *command)
+{
+	t_ast	*last;
+
+	if (!redir_chain)
+		return (command);
+	last = redir_chain;
+	while (last->left)
+		last = last->left;
+	last->left = command;
+	return (redir_chain);
+}
+
 static t_ast	*parse_subshell(t_list	**tokens)
 {
 	t_ast	*left;
 	t_ast	*subshell;
+	t_ast	*redir_chain;
 
 	if (!tokens || !*tokens)
 		return (NULL);
@@ -29,7 +43,14 @@ static t_ast	*parse_subshell(t_list	**tokens)
 	if (!subshell)
 		return (free_ast(left), NULL);
 	subshell->left = left;
-	return (subshell);
+	redir_chain = NULL;
+	while (*tokens && is_redirection(((t_token *)(*tokens)->content)->type))
+	{
+		redir_chain = parse_redirection(tokens, redir_chain);
+		if (!redir_chain)
+			return (free_ast(subshell), NULL);
+	}
+	return (_link_leading_redir_to_cmd(redir_chain, subshell));
 }
 
 static int	_count_args(t_list **tokens)
@@ -77,19 +98,6 @@ static char	**gather_args(t_list **tokens, t_ast **redir_chain)
 		}
 	}
 	return (args);
-}
-
-static t_ast	*_link_leading_redir_to_cmd(t_ast *redir_chain, t_ast *command)
-{
-	t_ast	*last;
-
-	if (!redir_chain)
-		return (command);
-	last = redir_chain;
-	while (last->left)
-		last = last->left;
-	last->left = command;
-	return (redir_chain);
 }
 
 t_ast	*parse_command(t_list **tokens)
