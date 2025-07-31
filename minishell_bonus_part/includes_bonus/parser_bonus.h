@@ -16,7 +16,7 @@
 t_ast	*new_ast_node(int type, char **args);
 void	advance_token(t_list **tokens);
 int		is_redirection(int type);
-int     is_control_operator(t_token_type type);
+int		is_control_operator(t_token_type type);
 int		is_special(int type);
 
 int		syntax_error(t_list *tokens);
