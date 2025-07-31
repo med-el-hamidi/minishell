@@ -66,6 +66,20 @@ t_ast	*build_ast_wraper(t_list **tokens)
 	return (left);
 }
 
+static int	syntax_error_ast(t_ast *node)
+{
+	if (!node)
+		return (1);
+	if (node->type == AST_CMD)
+		return (!node->args || !node->args[0]);
+	else if (node->type == AST_PIPE)
+		return (!node->left || !node->right
+			|| syntax_error_ast(node->left) || syntax_error_ast(node->right));
+	else if (node->type == AST_REDIR)
+		return (!node->redir_file);
+	return (0);
+}
+
 t_ast	*parser(t_list *tokens, t_shell *shell)
 {
 	t_ast	*ast;
