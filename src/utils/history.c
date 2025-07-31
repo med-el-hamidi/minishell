@@ -94,7 +94,7 @@ void	add_to_history(t_shell *shell, char *input)
 
 	if (!input || (input && !*input))
 		return ;
-	else if (shell->history.histfilesize == shell->history.count)
+	else if (shell->history.histfilesize <= shell->history.count)
 	{
 		free(shell->history.entries[0]);
 		ft_memmove(shell->history.entries,
