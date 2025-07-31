@@ -72,11 +72,18 @@ static int	syntax_error_ast(t_ast *node)
 		return (1);
 	if (node->type == AST_CMD)
 		return (!node->args || !node->args[0]);
-	else if (node->type == AST_PIPE)
+	else if (node->type == AST_PIPE
+		|| node->type == AST_AND
+		|| node->type == AST_OR)
+	{
 		return (!node->left || !node->right
-			|| syntax_error_ast(node->left) || syntax_error_ast(node->right));
+			|| syntax_error_ast(node->left)
+			|| syntax_error_ast(node->right));
+	}
 	else if (node->type == AST_REDIR)
-		return (!node->redir_file);
+		return (!node->redir_file || syntax_error_ast(node->left));
+	else if (node->type == AST_SUBSHELL)
+		return (!node->left || syntax_error_ast(node->left));
 	return (0);
 }
 
