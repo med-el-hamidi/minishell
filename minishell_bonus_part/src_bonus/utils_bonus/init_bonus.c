@@ -97,7 +97,7 @@ void	init_history(t_shell *shell)
 		return ;
 	}
 	ft_bzero(shell->history.entries,
-					(shell->history.histfilesize + 1) * sizeof(char *));
+		(shell->history.histfilesize + 1) * sizeof(char *));
 	set_histfile(shell);
 	if (!shell->history.path || !*shell->history.path)
 		return ;
