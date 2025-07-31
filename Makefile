@@ -1,13 +1,6 @@
 # ============================================================================ #
 #                               MINISHELL MAKEFILE                             #
 # ============================================================================ #
-# ******************************** COLORS ************************************ #
-RED		:= \033[31m
-GREEN	:= \033[32m
-YELLOW	:= \033[33m
-BLUE	:= \033[34m
-BOLD	:= \033[1m
-RESET	:= \033[0m
 
 # ******************************* VARIABLES ********************************** #
 NAME		:= minishell
@@ -168,11 +161,9 @@ BONUS_OBJS		:= $(BONUS_SRCS:.c=.o)
 
 $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
-	@printf "$(GREEN)$(BOLD)✅ Minishell ready!$(RESET)\n"
 
-%.o: %.c $(INCLUDES)
+$(OBJS): %.o: %.c $(INCLUDES)
 	$(CC) $(CFLAGS) -c $< -o $@
-	@printf "$(BLUE)🔧 Building: $(notdir $<)$(RESET)\n"
 
 $(LIBFT): $(LIBFT_SRCS) libft/libft.h
 	make -C libft
@@ -181,33 +172,22 @@ all: $(NAME)
 
 $(BONUS_NAME): $(LIBFT) $(BONUS_OBJS)
 	$(CC) $(CFLAGS) $(BONUS_OBJS) $(LDFLAGS) -o $(BONUS_NAME)
-	@printf "$(GREEN)$(BOLD)✅ Minishell Bonus ready!$(RESET)\n"
 
-%.o: %.c $(BONUS_INCLUDES)
+$(BONUS_OBJS): %.o: %.c $(BONUS_INCLUDES)
 	$(CC) $(CFLAGS) -c $< -o $@
-	@printf "$(BLUE)🔧 Building: $(notdir $<)$(RESET)\n"
 
 bonus: $(BONUS_NAME)
 
 clean:
 	make -C libft clean
 	rm -f $(OBJS)
-	@printf "$(YELLOW)🧹 Cleaned object files$(RESET)\n"
 	rm -f $(BONUS_OBJS)
-	@printf "$(YELLOW)🧹 Cleaned bonus object files$(RESET)\n"
 
 fclean: clean
 	make -C libft fclean
 	rm -f $(NAME)
-	@printf "$(RED)🔥 Full clean complete$(RESET)\n"
 	rm -f $(BONUS_NAME)
-	@printf "$(RED)🔥 Full clean complete for Bonus$(RESET)\n"
 
 re: fclean all
 
-norm:
-	@norminette $(SRC_DIR) includes
-#   libft already tested :)
-	@printf "$(YELLOW)🧐 Norm check completed$(RESET)\n"
-
-.PHONY: clean norm
+.PHONY: clean
