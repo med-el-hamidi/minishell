@@ -42,8 +42,13 @@ int	is_redirection(int type)
 		|| type == TOKEN_AMB_REDIR);
 }
 
+int	is_control_operator(t_token_type type)
+{
+	return (type == TOKEN_PIPE || type == TOKEN_AND || type == TOKEN_OR);
+}
+
 int	is_special(int type)
 {
-	return (type == TOKEN_PIPE || type == TOKEN_AND || type == TOKEN_OR
+	return (is_control_operator(type)
 		|| type == TOKEN_P_OPEN || type == TOKEN_P_CLOSE);
 }
