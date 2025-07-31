@@ -81,7 +81,7 @@ static int	syntax_error_ast(t_ast *node)
 			|| syntax_error_ast(node->right));
 	}
 	else if (node->type == AST_REDIR)
-		return (!node->redir_file || syntax_error_ast(node->left));
+		return (!node->redir_file);
 	else if (node->type == AST_SUBSHELL)
 		return (!node->left || syntax_error_ast(node->left));
 	return (0);
