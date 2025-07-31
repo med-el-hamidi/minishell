@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:33:03 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/19 00:14:06 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/07/31 14:32:05 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static t_int_f	custom_ft_atoi(const char *str)
 
 static void	_exit_print_error(t_shell *sh, char *arg)
 {
-	sh->exit_status = 2;
+	sh->exit_status = 255;
 	ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
 	ft_putendl_fd(": numeric argument required", STDERR_FILENO);
