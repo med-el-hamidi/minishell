@@ -89,15 +89,15 @@ void	init_history(t_shell *shell)
 	shell->history.current = 0;
 	shell->history.histmem_lines_c = 0;
 	_set_history_sizes(shell);
-	shell->history.entries = malloc((shell->history.histfilesize + 1) \
-														* sizeof(char *));
+	shell->history.entries = \
+		malloc((shell->history.histfilesize + 1) * sizeof(char *));
 	if (!shell->history.entries)
 	{
 		perror("minishell: history is not initialized!");
 		return ;
 	}
-	ft_bzero(shell->history.entries, (shell->history.histfilesize + 1) * \
-															sizeof(char *));
+	ft_bzero(shell->history.entries,
+					(shell->history.histfilesize + 1) * sizeof(char *));
 	set_histfile(shell);
 	if (!shell->history.path || !*shell->history.path)
 		return ;
