@@ -84,9 +84,13 @@ static char	**gather_args(t_list **tokens, t_ast **redir_chain)
 	{
 		if (((t_token *)(*tokens)->content)->type == TOKEN_WORD)
 		{
-			args[i] = ft_strdup(((t_token *)(*tokens)->content)->value);
-			if (!args[i])
-				return (free_2d_array(args), NULL);
+			if (((t_token *)(*tokens)->content)->value)
+				args[i] = ft_strdup(((t_token *)(*tokens)->content)->value);
+			else
+			{
+				advance_token(tokens);
+				continue ;
+			}
 			args[++i] = NULL;
 			advance_token(tokens);
 		}

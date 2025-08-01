@@ -71,7 +71,7 @@ static int	syntax_error_ast(t_ast *node)
 	if (!node)
 		return (1);
 	if (node->type == AST_CMD)
-		return (!node->args || !node->args[0]);
+		return (!node->args);
 	else if (node->type == AST_PIPE
 		|| node->type == AST_AND
 		|| node->type == AST_OR)

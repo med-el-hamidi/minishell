@@ -30,7 +30,7 @@ static int	lexer_word(t_shell *shell, t_list **tokens, char *input, size_t *i)
 			return (shell->exit_status = SNTX_EXIT_STATUS,
 				ft_lstclear(tokens, del_token), 0);
 	if (word && !*word && ctx.f)
-		return (free(word), 1);
+		add_token(tokens, create_token(TOKEN_WORD, NULL));
 	else if (word)
 		add_token_word(&ctx, word);
 	return (free(word), 1);
