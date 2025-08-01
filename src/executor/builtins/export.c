@@ -6,13 +6,13 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:30:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/11 23:54:50 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/01 00:26:24 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
-static int	is_valid_identifier(const char *arg)
+int	is_valid_identifier(const char *arg)
 {
 	int	i;
 

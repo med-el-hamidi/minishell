@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:33:03 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/31 14:32:05 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/01 00:16:47 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ static int	_finish_exit(char **argv, t_shell *sh)
 
 	should_exit = 1;
 	sh->exit_status = 0;
-	ft_putendl_fd("exit", STDERR_FILENO);
+	if (isatty(STDOUT_FILENO) && isatty(STDIN_FILENO))
+		ft_putendl_fd("exit", STDERR_FILENO);
 	if (argv[1] && argv[2] && ft_strisnum(argv[1]))
 	{
 		sh->exit_status = 1;
@@ -63,9 +64,7 @@ static int	_finish_exit(char **argv, t_shell *sh)
 		should_exit = 0;
 	}
 	else if (argv[1] && ft_strisnum(argv[1]) == 0)
-	{
 		_exit_print_error(sh, argv[1]);
-	}
 	else if (argv[1])
 	{
 		exit_nbr = custom_ft_atoi(argv[1]);

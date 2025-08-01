@@ -6,37 +6,55 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:28:33 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/19 00:14:40 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/01 01:51:52 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes_bonus/minishell_bonus.h"
 
-int	builtin_unset(char **argv, t_list **vars)
+static void	traverse_vars(t_list **vars, char *arg, t_list **prev)
 {
 	t_list	*current;
-	t_list	*prev;
-	int		i;
 
-	if (!argv || !*vars)
-		return (0);
-	prev = NULL;
 	current = *vars;
 	while (current)
 	{
-		i = 0;
-		while (argv[++i])
+		if (!ft_strcmp(((t_var *)current->content)->key, arg))
 		{
-			if (!ft_strcmp(((t_var *)current->content)->key, argv[i]))
-			{
-				unset_node(vars, &current, &prev);
-				break ;
-			}
+			unset_node(vars, &current, &*prev);
+			break ;
 		}
-		if (!argv[i])
-			update_iterators(&prev, &current);
+		update_iterators(&*prev, &current);
 	}
-	return (0);
+}
+
+int	builtin_unset(char **args, t_list **vars)
+{
+	t_list	*prev;
+	char	**invalid_args;
+	int		i;
+	int		invalid_count;
+
+	if (!args || !*vars)
+		return (0);
+	invalid_args = malloc(sizeof(char *) * count_2d_array(args));
+	if (!invalid_args)
+		return (perror("malloc unset failed"), 1);
+	prev = NULL;
+	invalid_count = 0;
+	i = 0;
+	while (args[++i])
+	{
+		if (!is_valid_identifier(args[i]))
+			invalid_args[invalid_count++] = args[i];
+		else
+			traverse_vars(vars, args[i], &prev);
+	}
+	i = 0;
+	while (i < invalid_count)
+		export_print_error(invalid_args[i++]);
+	free(invalid_args);
+	return (invalid_count > 0);
 }
 
 void	unset_node(t_list **vars, t_list **current, t_list **prev)

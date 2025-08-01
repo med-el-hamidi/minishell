@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 21:20:15 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/06/29 21:31:47 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/01 10:22:18 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,4 +135,11 @@ typedef struct s_glob
 	int				f;
 	int				must_be_dir;
 }	t_glob;
+
+typedef struct s_int_f
+{
+	int	nbr;
+	int	f;
+}	t_int_f;
+
 #endif

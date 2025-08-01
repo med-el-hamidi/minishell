@@ -6,7 +6,7 @@
 NAME		:= minishell
 BONUS_NAME	:= minishell_bonus
 CC			:= cc
-CFLAGS		:= -Wall -Wextra -Werror -I$(HOME)/brew/opt/readline/include -fsanitize=address
+CFLAGS		:= -Wall -Wextra -Werror -I$(HOME)/brew/opt/readline/include
 LDFLAGS		:= -Llibft -lft -L$(HOME)/brew/opt/readline/lib -lreadline
 LIBFT		:= libft/libft.a
 LIBFT_SRCS	:= libft/ft_isalpha.c libft/ft_isdigit.c libft/ft_isalnum.c libft/ft_isascii.c libft/ft_isprint.c libft/ft_strlen.c \
@@ -72,7 +72,6 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(BLT_DIR)/export.c \
 			$(BLT_DIR)/export_utils_0.c \
 			$(BLT_DIR)/export_utils_1.c \
-			$(EXE_DIR)/is_builtin.c \
 			$(EXE_DIR)/errors_utils.c \
 			$(EXE_DIR)/executor.c \
 			$(EXE_DIR)/utils.c \
@@ -142,7 +141,6 @@ BONUS_SRCS		:= $(BONUS_SRC_DIR)/main_bonus.c \
 			$(BONUS_BLT_DIR)/export_bonus.c \
 			$(BONUS_BLT_DIR)/export_utils_0_bonus.c \
 			$(BONUS_BLT_DIR)/export_utils_1_bonus.c \
-			$(BONUS_EXE_DIR)/is_builtin_bonus.c \
 			$(BONUS_EXE_DIR)/errors_utils_bonus.c \
 			$(BONUS_EXE_DIR)/executor_bonus.c \
 			$(BONUS_EXE_DIR)/utils_bonus.c \
