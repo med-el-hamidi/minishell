@@ -80,7 +80,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(EXECVE_DIR)/execve_utils.c \
 			$(EXECVE_DIR)/execve.c \
 			$(RED_PIP_DIR)/pipe.c \
-			$(RED_PIP_DIR)/exec_redir.c
+			$(RED_PIP_DIR)/redirection.c
 
 # ******************************* BONUS ********************************** #
 BONUS_PATH := minishell_bonus_part
@@ -149,7 +149,7 @@ BONUS_SRCS		:= $(BONUS_SRC_DIR)/main_bonus.c \
 			$(BONUS_EXECVE_DIR)/execve_utils_bonus.c \
 			$(BONUS_EXECVE_DIR)/execve_bonus.c \
 			$(BONUS_RED_PIP_DIR)/pipe_bonus.c \
-			$(BONUS_RED_PIP_DIR)/exec_redir_bonus.c
+			$(BONUS_RED_PIP_DIR)/redirection_bonus.c
 
 # Object files
 OBJS		:= $(SRCS:.c=.o)
