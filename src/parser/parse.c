@@ -30,6 +30,18 @@ static int	_count_args(t_list **tokens)
 	return (count);
 }
 
+static int	add_new_arg(char **args, int *i, char *value)
+{
+	if (value)
+	{
+		args[*i] = ft_strdup(value);
+		if (!args[*i])
+			return (0);
+		args[++(*i)] = NULL;
+	}
+	return (1);
+}
+
 static char	**gather_args(t_list **tokens, t_ast **redir_chain)
 {
 	char	**args;
@@ -43,16 +55,8 @@ static char	**gather_args(t_list **tokens, t_ast **redir_chain)
 	{
 		if (((t_token *)(*tokens)->content)->type == TOKEN_WORD)
 		{
-			if (((t_token *)(*tokens)->content)->value)
-				args[i] = ft_strdup(((t_token *)(*tokens)->content)->value);
-			else
-			{
-				advance_token(tokens);
-				continue ;
-			}
-			if (!args[i])
+			if (!add_new_arg(args, &i, ((t_token *)(*tokens)->content)->value))
 				return (free_2d_array(args), NULL);
-			args[++i] = NULL;
 			advance_token(tokens);
 		}
 		else if (is_redirection(((t_token *)(*tokens)->content)->type))
