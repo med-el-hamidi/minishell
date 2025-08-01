@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:12:34 by obensarj          #+#    #+#             */
-/*   Updated: 2025/08/01 14:45:24 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/01 15:06:25 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static int	is_builtin(char *cmd)
 		|| !ft_strcmp(cmd, "env")
 		|| !ft_strcmp(cmd, "export"));
 }
+
 static int	exec_builtins(t_ast *node, t_shell *shell)
 {
 	if (!ft_strcmp(node->args[0], "echo"))

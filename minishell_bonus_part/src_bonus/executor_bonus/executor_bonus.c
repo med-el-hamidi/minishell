@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:12:34 by obensarj          #+#    #+#             */
-/*   Updated: 2025/08/01 14:48:27 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/01 15:07:04 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,3 @@ int	executor(t_ast *node, t_shell *shell)
 	}
 	return (1);
 }
-
