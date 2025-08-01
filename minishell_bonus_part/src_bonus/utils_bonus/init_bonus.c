@@ -30,7 +30,7 @@ static t_var	*create_env_v(char *str)
 	return (v);
 }
 
-t_list	*init_env(char **envp)
+t_list	*init_env(char *name, char **envp)
 {
 	t_list	*head_env;
 	t_list	*node_env;
@@ -52,7 +52,7 @@ t_list	*init_env(char **envp)
 			ft_lstadd_back(&head_env, node_env);
 		}
 	}
-	init_shell_vars(&head_env);
+	init_shell_vars(name, &head_env);
 	return (head_env);
 }
 

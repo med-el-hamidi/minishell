@@ -43,8 +43,8 @@ int		print_syntax_error(const char *token);
 void	open_script_err_exit(char *script, char *msg, int e);
 
 /* Init functions*/
-t_list	*init_env(char **envp);
-void	init_shell_vars(t_list **vars);
+t_list	*init_env(char *name, char **envp);
+void	init_shell_vars(char *name, t_list **vars);
 void	setup_signals(void);
 void	init_history(t_shell *shell);
 void	init_termios(t_shell *shell);

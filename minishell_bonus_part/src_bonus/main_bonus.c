@@ -17,7 +17,7 @@ volatile sig_atomic_t	g_exit_status = 0;
 void	init_shell(t_shell *shell, char **envp)
 {
 	shell->vars = NULL;
-	shell->vars = init_env(envp);
+	shell->vars = init_env(shell->argv[0], envp);
 	if (!shell->vars)
 		_print_error("Failed to initialize the environment\n", 0);
 	shell->exit_status = 0;
@@ -41,6 +41,7 @@ void	script_shell_loop(t_shell *shell, char *script)
 	t_list		*tokens;
 	t_ast		*ast;
 
+	shell->tokens = &tokens;
 	while (1)
 	{
 		input = get_next_line(fd);
@@ -48,12 +49,12 @@ void	script_shell_loop(t_shell *shell, char *script)
 			break ;
 		tokens = lexer(shell, input);
 		free(input);
-		shell->tokens = &tokens;
 		if (tokens)
 		{
 			ast = parser(tokens, shell);
 			if (ast)
 			{
+				update_lastarg_var(tokens, shell->vars);
 				shell->exit_status = executor(ast, shell);
 				free_ast(ast);
 			}
@@ -69,6 +70,7 @@ void	shell_loop(t_shell *shell)
 	t_list	*tokens;
 	t_ast	*ast;
 
+	shell->tokens = &tokens;
 	while (1)
 	{
 		input = readline(shell->prompt);
@@ -77,12 +79,12 @@ void	shell_loop(t_shell *shell)
 		add_to_history(shell, input);
 		tokens = lexer(shell, input);
 		free(input);
-		shell->tokens = &tokens;
 		if (tokens)
 		{
 			ast = parser(tokens, shell);
 			if (ast)
 			{
+				update_lastarg_var(tokens, shell->vars);
 				shell->exit_status = executor(ast, shell);
 				free_ast(ast);
 			}

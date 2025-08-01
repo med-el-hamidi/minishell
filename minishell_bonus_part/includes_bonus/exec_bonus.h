@@ -41,6 +41,7 @@ int		_export(t_list *vars);
 void	update_shell_var(t_list *node, char *value, t_var_type flag);
 void	create_shell_var(t_list **vars, char *key, \
 char	*value, t_var_type flag);
+void	update_lastarg_var(t_list *tokens, t_list *vars);
 int		is_directory(char *path);
 int		is_regular_file(char *path);
 void	_add_or_update_path_cd(t_list **vars, char *name, char *value);

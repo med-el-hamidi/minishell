@@ -39,7 +39,7 @@ static void	increment_shell_level(t_list **vars)
 	}
 }
 
-void	init_shell_vars(t_list **vars)
+void	init_shell_vars(char *name, t_list **vars)
 {
 	char	*cwd;
 
@@ -55,5 +55,7 @@ void	init_shell_vars(t_list **vars)
 			free(cwd);
 		}
 	}
+	if (!getenv("_"))
+		create_shell_var(vars, "_", name, VAR_ENV);
 	increment_shell_level(vars);
 }

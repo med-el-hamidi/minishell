@@ -30,7 +30,7 @@ static int	_count_args(t_list **tokens)
 	return (count);
 }
 
-static int	add_new_arg(char **args, int *i, char *value)
+static int	add_new_arg(char **args, size_t *i, char *value)
 {
 	if (value)
 	{

@@ -48,7 +48,6 @@ int	exec_pipe(t_ast *node, t_shell *sh)
 		dup2_and_exec(node->right, sh, pipefd[0], pipefd);
 	(signal(SIGINT, SIG_IGN), close(pipefd[0]), close(pipefd[1]));
 	waitpid(child_pid[0], NULL, 0);
-	update_shell_var(find_shell_var(sh->vars, "_"), "", VAR_ENV);
 	if (waitpid(child_pid[1], &status, 0) != -1 && WIFEXITED(status))
 		return (setup_signals(), WEXITSTATUS(status));
 	return (setup_signals(), EXIT_FAILURE);
