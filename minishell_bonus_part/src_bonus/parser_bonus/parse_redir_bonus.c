@@ -75,3 +75,16 @@ t_ast	*parse_leading_redirection(t_list **tokens)
 	}
 	return (redir_chain);
 }
+
+t_ast	*_link_leading_redir_to_cmd(t_ast *redir_chain, t_ast *command)
+{
+	t_ast	*last;
+
+	if (!redir_chain)
+		return (command);
+	last = redir_chain;
+	while (last->left)
+		last = last->left;
+	last->left = command;
+	return (redir_chain);
+}
