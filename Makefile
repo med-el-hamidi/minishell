@@ -72,7 +72,7 @@ SRCS		:= $(SRC_DIR)/main.c \
 			$(BLT_DIR)/export.c \
 			$(BLT_DIR)/export_utils_0.c \
 			$(BLT_DIR)/export_utils_1.c \
-			$(EXE_DIR)/errors_utils.c \
+			$(EXE_DIR)/error.c \
 			$(EXE_DIR)/executor.c \
 			$(EXE_DIR)/utils.c \
 			$(LOC_VA_DIR)/local_utils.c \
@@ -141,7 +141,7 @@ BONUS_SRCS		:= $(BONUS_SRC_DIR)/main_bonus.c \
 			$(BONUS_BLT_DIR)/export_bonus.c \
 			$(BONUS_BLT_DIR)/export_utils_0_bonus.c \
 			$(BONUS_BLT_DIR)/export_utils_1_bonus.c \
-			$(BONUS_EXE_DIR)/errors_utils_bonus.c \
+			$(BONUS_EXE_DIR)/error_bonus.c \
 			$(BONUS_EXE_DIR)/executor_bonus.c \
 			$(BONUS_EXE_DIR)/utils_bonus.c \
 			$(BONUS_LOC_VA_DIR)/local_utils_bonus.c \
