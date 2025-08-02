@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 20:48:34 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/06/28 20:48:35 by mel-hami         ###   ########.fr       */
+/*   Updated: 2025/08/02 16:12:19 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ int	open_script(char *script)
 	int			fd;
 	struct stat	state;
 
+	if (!script)
+		return (STDIN_FILENO);
 	fd = open(script, O_RDONLY);
 	if (fd == -1)
 	{

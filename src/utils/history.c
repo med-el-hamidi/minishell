@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mel-hami <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:56:39 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/06/29 15:56:40 by mel-hami         ###   ########.fr       */
+/*   Updated: 2025/08/02 15:18:10 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	add_to_history(t_shell *shell, char *input)
 {
 	int	i;
 
-	if (!input || (input && !*input))
+	if (!shell->is_interactive || !input || (input && !*input))
 		return ;
 	else if (shell->history.histfilesize <= shell->history.count)
 	{
