@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mel-hami <mel-hami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:30:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/08/01 10:24:23 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 23:28:39 by mel-hami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	is_valid_identifier(const char *arg)
 	return (1);
 }
 
-static void	_add_or_update_var(t_list **vars, char *arg, char **alloc_value)
+static char	*_add_or_update_var(t_list **vars, char *arg, char **alloc_value)
 {
 	t_list	*node;
 	char	*assign;
@@ -59,9 +59,10 @@ static void	_add_or_update_var(t_list **vars, char *arg, char **alloc_value)
 		update_shell_var(node, value, VAR_ENV);
 	else
 		create_shell_var(vars, arg, value, VAR_ENV);
+	return (arg);
 }
 
-static void	_handle_arg(t_list **vars, char *arg)
+static void	_handle_arg(t_list **vars, char *arg, char **last_arg)
 {
 	t_list	*node;
 	char	*assign;
@@ -81,32 +82,34 @@ static void	_handle_arg(t_list **vars, char *arg)
 			create_shell_var(vars, arg, NULL, VAR_EXPORTED);
 	}
 	else
-	{
-		_add_or_update_var(vars, arg, &alloc_value);
-	}
+		*last_arg = _add_or_update_var(vars, arg, &alloc_value);
 	if (alloc_value)
 		free(alloc_value);
 }
 
-static int	_export_var(char **arg, t_list **vars)
+static int	_export_var(char **args, t_list **vars, char **last_arg)
 {
 	int		i;
 	char	**invalid_args;
 	int		invalid_count;
 	int		arg_counter;
 
-	arg_counter = count_2d_array(arg);
+	arg_counter = count_2d_array(args);
 	invalid_args = malloc(sizeof(char *) * arg_counter);
 	if (!invalid_args)
 		return (perror("malloc export failed"), 1);
 	invalid_count = 0;
 	i = 0;
-	while (arg[++i])
+	while (args[++i])
 	{
-		if (!is_valid_identifier(arg[i]))
-			invalid_args[invalid_count++] = arg[i];
+		if (!is_valid_identifier(args[i]))
+		{
+			invalid_args[invalid_count++] = args[i];
+			if (!args[i + 1])
+				*last_arg = NULL;
+		}
 		else
-			_handle_arg(vars, arg[i]);
+			_handle_arg(vars, args[i], last_arg);
 	}
 	i = -1;
 	while (++i < invalid_count)
@@ -115,13 +118,18 @@ static int	_export_var(char **arg, t_list **vars)
 	return (invalid_count > 0);
 }
 
-int	builtin_export(char **argv, t_list **vars)
+int	builtin_export(char **args, t_list **vars)
 {
-	if (!argv || !vars)
+	char	*last_arg;
+
+	if (!args || !vars)
 		return (1);
-	if (!argv[1])
+	if (!args[1])
 		return (_export(*vars));
-	if (_export_var(argv, vars))
+	last_arg = NULL;
+	if (_export_var(args, vars, &last_arg))
 		return (1);
+	if (last_arg)
+		update_shell_var(find_shell_var(*vars, "_"), last_arg, VAR_ENV);
 	return (0);
 }
