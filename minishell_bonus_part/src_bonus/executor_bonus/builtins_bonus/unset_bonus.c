@@ -6,31 +6,32 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:28:33 by obensarj          #+#    #+#             */
-/*   Updated: 2025/08/01 01:51:52 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 11:37:38 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes_bonus/minishell_bonus.h"
 
-static void	traverse_vars(t_list **vars, char *arg, t_list **prev)
+static void	traverse_vars(t_list **vars, char *arg)
 {
 	t_list	*current;
+	t_list	*prev;
 
 	current = *vars;
+	prev = NULL;
 	while (current)
 	{
 		if (!ft_strcmp(((t_var *)current->content)->key, arg))
 		{
-			unset_node(vars, &current, &*prev);
+			unset_node(vars, &current, &prev);
 			break ;
 		}
-		update_iterators(&*prev, &current);
+		update_iterators(&prev, &current);
 	}
 }
 
 int	builtin_unset(char **args, t_list **vars)
 {
-	t_list	*prev;
 	char	**invalid_args;
 	int		i;
 	int		invalid_count;
@@ -40,7 +41,6 @@ int	builtin_unset(char **args, t_list **vars)
 	invalid_args = malloc(sizeof(char *) * count_2d_array(args));
 	if (!invalid_args)
 		return (perror("malloc unset failed"), 1);
-	prev = NULL;
 	invalid_count = 0;
 	i = 0;
 	while (args[++i])
@@ -48,7 +48,7 @@ int	builtin_unset(char **args, t_list **vars)
 		if (!is_valid_identifier(args[i]))
 			invalid_args[invalid_count++] = args[i];
 		else
-			traverse_vars(vars, args[i], &prev);
+			traverse_vars(vars, args[i]);
 	}
 	i = 0;
 	while (i < invalid_count)
