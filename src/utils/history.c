@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mel-hami <mel-hami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 15:56:39 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/08/02 15:18:10 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 23:31:14 by mel-hami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ void	add_to_history(t_shell *shell, char *input)
 		if (shell->history.current)
 			shell->history.current--;
 	}
-	shell->history.entries[shell->history.count++] = ft_strdup(input);
 	if (shell->history.histsize <= shell->history.count)
 	{
 		rl_clear_history();
@@ -112,5 +111,6 @@ void	add_to_history(t_shell *shell, char *input)
 		while (i < shell->history.count)
 			add_history(shell->history.entries[i++]);
 	}
+	shell->history.entries[shell->history.count++] = ft_strdup(input);
 	add_history(input);
 }
