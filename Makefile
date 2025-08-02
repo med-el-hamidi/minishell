@@ -157,35 +157,55 @@ BONUS_OBJS		:= $(BONUS_SRCS:.c=.o)
 
 # ******************************** RULES ************************************* #
 
+COLOR_RESET := \033[0m
+COLOR_GREEN := \033[1;32m
+COLOR_BLUE  := \033[1;34m
+COLOR_RED   := \033[1;31m
+
 $(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
+	@echo "$(COLOR_BLUE)🔨 Linking $(NAME)...$(COLOR_RESET)"
+	@$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
+	@echo "$(COLOR_GREEN)✅ Successfully built $(NAME)!$(COLOR_RESET)"
 
 $(OBJS): %.o: %.c $(INCLUDES)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "$(COLOR_BLUE)📦 Compiling $<...$(COLOR_RESET)"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT): $(LIBFT_SRCS) libft/libft.h
-	make -C libft
+	@echo "$(COLOR_BLUE)📚 Building libft...$(COLOR_RESET)"
+	@make -C libft
 
-all: $(NAME)
+all:
+	@echo "$(COLOR_BLUE)🚀 Building mandatory project...$(COLOR_RESET)"
+	@$(MAKE) $(NAME)
 
 $(BONUS_NAME): $(LIBFT) $(BONUS_OBJS)
-	$(CC) $(CFLAGS) $(BONUS_OBJS) $(LDFLAGS) -o $(BONUS_NAME)
+	@echo "$(COLOR_BLUE)🔨 Linking $(BONUS_NAME)...$(COLOR_RESET)"
+	@$(CC) $(CFLAGS) $(BONUS_OBJS) $(LDFLAGS) -o $(BONUS_NAME)
+	@echo "$(COLOR_GREEN)✅ Successfully built $(BONUS_NAME)!$(COLOR_RESET)"
 
 $(BONUS_OBJS): %.o: %.c $(BONUS_INCLUDES)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "$(COLOR_BLUE)📦 Compiling $<...$(COLOR_RESET)"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
-bonus: $(BONUS_NAME)
+bonus:
+	@echo "$(COLOR_BLUE)🚀 Building bonus project...$(COLOR_RESET)"
+	@$(MAKE) $(BONUS_NAME)
 
 clean:
-	make -C libft clean
-	rm -f $(OBJS)
-	rm -f $(BONUS_OBJS)
+	@echo "$(COLOR_RED)🧹 Cleaning object files...$(COLOR_RESET)"
+	@make -C libft clean
+	@rm -f $(OBJS)
+	@rm -f $(BONUS_OBJS)
+	@echo "$(COLOR_GREEN)✅ Clean done.$(COLOR_RESET)"
 
 fclean: clean
-	make -C libft fclean
-	rm -f $(NAME)
-	rm -f $(BONUS_NAME)
+	@echo "$(COLOR_RED)🧨 Full clean (executables)...$(COLOR_RESET)"
+	@make -C libft fclean
+	@rm -f $(NAME)
+	@rm -f $(BONUS_NAME)
+	@echo "$(COLOR_GREEN)✅ Full clean complete.$(COLOR_RESET)"
 
 re: fclean all
 
-.PHONY: clean
+.PHONY: all bonus clean fclean re
