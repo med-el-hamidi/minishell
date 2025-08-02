@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   export_utils_1_bonus.c                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/08 11:25:39 by obensarj          #+#    #+#             */
-/*   Updated: 2025/08/02 14:35:03 by obensarj         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../../includes_bonus/minishell_bonus.h"
 
 void	update_shell_var(t_list *node, char *value, t_var_type flag)

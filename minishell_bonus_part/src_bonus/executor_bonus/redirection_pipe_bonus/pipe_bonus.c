@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   pipe_bonus.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/07 22:41:10 by obensarj          #+#    #+#             */
-/*   Updated: 2025/08/02 14:05:54 by obensarj         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../../includes_bonus/minishell_bonus.h"
 
 static void	dup2_and_exec(t_ast *node, t_shell *sh, int src_fd, int pipefd[2])

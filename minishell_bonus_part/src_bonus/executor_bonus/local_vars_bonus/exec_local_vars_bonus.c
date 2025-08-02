@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   exec_local_vars_bonus.c                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/07 17:07:46 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/30 21:44:19 by obensarj         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../../includes_bonus/minishell_bonus.h"
 
 static void	_set_shell_var(t_list **vars, char *args, char *value)

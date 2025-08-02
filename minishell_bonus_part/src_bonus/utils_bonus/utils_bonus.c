@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils_bonus.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/28 20:48:34 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/08/02 16:13:07 by obensarj         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../../includes_bonus/minishell_bonus.h"
 
 static int	check_buffer_binary(unsigned char *buffer, ssize_t size)
