@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 20:47:02 by mel-hami          #+#    #+#             */
-/*   Updated: 2025/06/29 21:35:02 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 14:35:34 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	script_shell_loop(t_shell *shell, char *script)
 			ast = parser(tokens, shell);
 			if (ast)
 			{
-				update_lastarg_var(tokens, shell->vars);
 				shell->exit_status = executor(ast, shell);
 				free_ast(ast);
 			}
@@ -84,7 +83,6 @@ void	shell_loop(t_shell *shell)
 			ast = parser(tokens, shell);
 			if (ast)
 			{
-				update_lastarg_var(tokens, shell->vars);
 				shell->exit_status = executor(ast, shell);
 				free_ast(ast);
 			}

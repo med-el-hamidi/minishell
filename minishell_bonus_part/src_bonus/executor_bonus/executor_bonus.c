@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:12:34 by obensarj          #+#    #+#             */
-/*   Updated: 2025/08/01 15:07:04 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 14:34:26 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ int	executor(t_ast *node, t_shell *shell)
 	{
 		if (!node->args[0])
 			return (0);
+		update_lastarg_var(shell->vars,
+			node->args[count_2d_array(node->args) - 1]);
 		if (_is_local_vars(node))
 			return (exec_local_vars(node->args, &shell->vars));
 		else if (is_builtin(node->args[0]))

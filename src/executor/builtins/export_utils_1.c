@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 11:25:39 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/13 16:54:40 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 14:35:57 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,25 +58,10 @@ void	_add_or_update_path_cd(t_list **vars, char *name, char *value)
 		create_shell_var(vars, name, value, VAR_ENV);
 }
 
-void	update_lastarg_var(t_list *tokens, t_list *vars)
+void	update_lastarg_var(t_list *vars, char *value)
 {
-	t_token	*token;
-	char	*last_arg;
-	int		f;
-
-	last_arg = NULL;
-	f = 0;
-	while (tokens)
-	{
-		token = (t_token *)tokens->content;
-		if (token->type == TOKEN_PIPE)
-			f = 1;
-		else if (!f && token->type == TOKEN_WORD && token->value)
-			last_arg = token->value;
-		tokens = tokens->next;
-	}
-	if (!f && last_arg)
-		update_shell_var(find_shell_var(vars, "_"), last_arg, VAR_ENV);
+	if (isatty(STDIN_FILENO) && isatty(STDOUT_FILENO))
+		update_shell_var(find_shell_var(vars, "_"), value, VAR_ENV);
 	else
 		update_shell_var(find_shell_var(vars, "_"), "", VAR_ENV);
 }

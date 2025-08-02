@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:28:33 by obensarj          #+#    #+#             */
-/*   Updated: 2025/08/02 12:03:57 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 12:56:35 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ static void	traverse_vars(t_list **vars, char *arg)
 	t_list	*current;
 	t_list	*prev;
 
+	if (!ft_strcmp(arg, "_"))
+		return ;
 	current = *vars;
 	prev = NULL;
 	while (current)

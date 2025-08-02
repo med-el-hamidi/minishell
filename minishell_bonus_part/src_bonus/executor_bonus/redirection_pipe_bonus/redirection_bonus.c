@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 17:46:27 by obensarj          #+#    #+#             */
-/*   Updated: 2025/08/01 15:19:21 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 14:26:29 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,10 @@ int	exec_redirection(t_ast *node, t_shell *shell)
 		exit_status = executor(node, shell);
 	dup2(shell->stdin_fd, STDIN_FILENO);
 	dup2(shell->stdout_fd, STDOUT_FILENO);
+	if (node && node->args && node->args[0])
+		update_shell_var(find_shell_var(shell->vars, "_"),
+			node->args[count_2d_array(node->args) - 1], VAR_ENV);
+	else
+		update_shell_var(find_shell_var(shell->vars, "_"), "", VAR_ENV);
 	return (exit_status);
 }

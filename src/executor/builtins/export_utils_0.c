@@ -6,7 +6,7 @@
 /*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:27:46 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/11 15:29:41 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 12:58:19 by obensarj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ static void	find_min(t_list *vars, t_var **min_var, \
 
 static void	put_out_exported(t_list *vars, t_var *min_var)
 {
+	if (!ft_strcmp(min_var->key, "_"))
+		return ;
 	if (min_var->value)
 		printf("declare -x %s=\"%s\"\n", min_var->key, \
 			expand_env(vars, min_var->key));
