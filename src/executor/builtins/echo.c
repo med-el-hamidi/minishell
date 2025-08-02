@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: obensarj <obensarj@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mel-hami <mel-hami@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 22:33:36 by obensarj          #+#    #+#             */
-/*   Updated: 2025/07/08 09:37:35 by obensarj         ###   ########.fr       */
+/*   Updated: 2025/08/02 23:30:14 by mel-hami         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	put_out(char **args, int i, int new_line)
 		ft_putchar_fd('\n', 1);
 }
 
-int	builtin_echo(char **argv)
+int	builtin_echo(char **args)
 {
 	int	i;
 	int	j;
@@ -33,14 +33,14 @@ int	builtin_echo(char **argv)
 
 	i = 1;
 	new_line = 1;
-	if (!argv)
+	if (!args)
 		return (1);
-	while (argv[i] && ft_strncmp(argv[i], "-n", 2) == 0)
+	while (args[i] && ft_strncmp(args[i], "-n", 2) == 0)
 	{
 		j = 2;
-		while (argv[i][j] == 'n')
+		while (args[i][j] == 'n')
 			j++;
-		if (!argv[i][j])
+		if (!args[i][j])
 		{
 			new_line = 0;
 			i++;
@@ -48,6 +48,6 @@ int	builtin_echo(char **argv)
 		else
 			break ;
 	}
-	put_out(argv, i, new_line);
+	put_out(args, i, new_line);
 	return (0);
 }
