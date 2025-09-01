@@ -53,6 +53,7 @@ Beyond the 42 requirements, we also implemented:
 - **Shell script execution with arguments**:  
   ```bash
   ./minishell script.sh arg1 arg2 arg3
+  ```
 Positional parameters: $0 to $9
 
 $0 → name of the minishell or script
@@ -69,8 +70,8 @@ opendir, readdir, closedir, perror, strerror, isatty, ttyname,
 ttyslot, ioctl, getcwd, chdir, unlink, signal, sigaction, kill, exit
 and libft functions (A static library developed at the begining of the curriculum).
 
-🛠️ Installation & Usage
-Build
+### 🛠️ Installation & Usage
+#### Build
 ```bash
 git clone https://github.com/med-el-hamidi/minishell.git
 cd minishell
@@ -78,10 +79,10 @@ make
 ```
 OR ``` make bonus ``` For the bonus part
 
-Run interactively
+#### Run interactively
 ```./minishell ``` OR ```./minishell_bonus ``` For the bonus part
 
-Run with script & arguments
+#### Run with script & arguments
 ```bash
 ./minishell script.sh 1 2 3
 ```
@@ -92,7 +93,7 @@ echo "Script name: $0"
 echo "First argument: $1"
 echo "Second argument: $2"
 ```
-📖 Examples
+### 📖 Examples
 ```bash
 minishell$ echo Hello Mohamed!
 Hello Mohamed!
@@ -110,7 +111,7 @@ Second argument: 2
 ```
 Note: You can rename the executable file from minishell to whatever you want, and you gonna notice the prompt changed as well!
 
-📚 What We Learned
+## 📚 What We Learned
 
 Process management (fork, execve, waitpid)
 
@@ -138,6 +139,6 @@ Team collaboration with Git/GitHub
 - [Bensarjane](https://github.com/Oussama-Bensarjane)
   *Role:* Executor, redirections, pipe, &&, ||, subshells ()
 
-⚖️ License
+## ⚖️ License
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/med-el-hamidi/minishell/blob/main/LICENSE.md)
