@@ -30,7 +30,9 @@ The project reproduces the behavior of a real shell (`bash`) by implementing par
   - `Ctrl-D`: exit minishell
   - `Ctrl-\`: ignored
 - **Error handling** with clear messages (syntax errors, invalid commands, Ambiguous rediretion,etc.)
-- **No memory leaks** (checked with `valgrind`).
+- **No memory leaks** (checked with `valgrind` OR track using `leaks` program e.g. ```while true; do leaks minishell; sleep 2; done;```).
+- **No file descriptors leaks** (tracked using `lsof` program e.g. ```while true; do lsof -c minishell; sleep 2; done;```).
+  Note please that there are 2 additional open FDs (Those are backups for fd_stdin and fd_stdout), closed at the end :)
 
 ---
 
