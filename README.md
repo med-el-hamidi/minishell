@@ -77,6 +77,7 @@ cd minishell
 make
 ```
 OR ``` make bonus ``` For the bonus part
+
 Run interactively
 ```./minishell ``` OR ```./minishell_bonus ``` For the bonus part
 
