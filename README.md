@@ -1,6 +1,6 @@
 # 🐚 Minishell
 
-A simplified Unix shell written in C, developed as part of **1337 & 42 School** curriculum by **Me** and **Oussama**.  
+A simplified Unix shell written in C, developed as part of **1337 & 42 School** curriculum by **Me** and **Oussama** (See authors bellow).  
 The project reproduces the behavior of a real shell (`bash`) by implementing parsing, execution, redirections, signals, and job control — with additional custom features.  
 
 ---
