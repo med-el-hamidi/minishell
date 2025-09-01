@@ -70,7 +70,7 @@ opendir, readdir, closedir, perror, strerror, isatty, ttyname,
 ttyslot, ioctl, getcwd, chdir, unlink, signal, sigaction, kill, exit
 and libft functions (A static library developed at the begining of the curriculum).
 
-### 🛠️ Installation & Usage
+## 🛠️ Installation & Usage
 #### Build
 ```bash
 git clone https://github.com/med-el-hamidi/minishell.git
@@ -93,7 +93,7 @@ echo "Script name: $0"
 echo "First argument: $1"
 echo "Second argument: $2"
 ```
-### 📖 Examples
+#### 📖 Examples
 ```bash
 minishell$ echo Hello Mohamed!
 Hello Mohamed!
