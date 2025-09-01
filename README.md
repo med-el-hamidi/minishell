@@ -8,7 +8,7 @@ The project reproduces the behavior of a real shell (`bash`) by implementing par
 ## ✨ Features (Mandatory)
 
 - **Prompt** that waits for user input.
-- **History** simple history mechanism (using Up & DOWN) to get to the previous entered input.
+- **History** ,A simple history mechanism that uses the Up and Down keys to navigate through previously entered inputs.
 - **Command execution** with arguments.
 - **Builtins**:
   - `echo` with option `-n`
