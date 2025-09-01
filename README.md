@@ -76,12 +76,9 @@ git clone https://github.com/med-el-hamidi/minishell.git
 cd minishell
 make
 ```
-OR ```bash make bonus ``` For the bonus part
+OR ``` make bonus ``` For the bonus part
 Run interactively
-```bash
-./minishell
-```
-OR ```./minishell_bonus ``` For the bonus part
+```./minishell ``` OR ```./minishell_bonus ``` For the bonus part
 
 Run with script & arguments
 ```bash
