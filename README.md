@@ -27,7 +27,7 @@ The project reproduces the behavior of a real shell (`bash`) by implementing par
 - **Environment variables**: `$VAR`, `$?`
 - **Signals**:
   - `Ctrl-C`: new line, redisplay prompt
-  - `Ctrl-D`: exit minishell
+  - `Ctrl-D`: exit minishell (EOF, not a signal)
   - `Ctrl-\`: ignored
 - **Error handling** with clear messages (syntax errors, invalid commands, Ambiguous rediretion,etc.)
 - **No memory leaks** (checked with `valgrind` OR track using `leaks` program e.g. ```while true; do leaks minishell; sleep 2; done;```).
